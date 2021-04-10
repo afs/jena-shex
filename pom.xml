@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.seaborne</groupId>
+  <artifactId>jena-shex</artifactId>
+  <packaging>jar</packaging>
+  <version>0.0.0-SNAPSHOT</version>
+
+  <description>AFS workspace</description>
+
+  <properties>
+    <ver.jena>4.1.0-SNAPSHOT</ver.jena>
+    <ver.fuseki>${ver.jena}</ver.fuseki>
+    <ver.slf4j>1.7.30</ver.slf4j>
+    <ver.log4j2>2.13.3</ver.log4j2>
+    <ver.junit>4.13.1</ver.junit>
+
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>${ver.log4j2}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>    
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>apache-jena-libs</artifactId>
+      <version>${ver.jena}</version>
+      <type>pom</type>
+    </dependency> 
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-base</artifactId>
+      <version>${ver.jena}</version>
+      <classifier>tests</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-core</artifactId>
+      <version>${ver.jena}</version>
+      <classifier>tests</classifier> 
+      <scope>compile</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <version>${ver.jena}</version>
+      <classifier>tests</classifier> 
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-cmds</artifactId>
+      <version>${ver.jena}</version> 
+      <!-- JUL
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-jdk14</artifactId>
+        </exclusion>
+      </exclusions>
+      -->
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-cmds</artifactId>
+      <version>${ver.jena}</version> 
+      <classifier>tests</classifier> 
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${ver.junit}</version>
+    </dependency>
+    
+    <!-- Require a logging implementation -->
+    
+    <!-- Log4j2 -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${ver.slf4j}</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+	      <version>3.8.0</version>
+        <configuration>
+          <release>11</release>
+        </configuration>
+<!--
+          <encoding>UTF-8</encoding>
+          <debug>true</debug>
+          <debuglevel>source,lines,vars</debuglevel>
+          <optimize>true</optimize>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+-->
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+	      <version>2.5</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <overWriteReleases>false</overWriteReleases>
+          <overWriteIfNewer>true</overWriteIfNewer>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+</project>
