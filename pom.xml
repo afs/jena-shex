@@ -14,12 +14,12 @@
   <description>AFS workspace</description>
 
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <ver.jena>4.1.0-SNAPSHOT</ver.jena>
     <ver.fuseki>${ver.jena}</ver.fuseki>
     <ver.slf4j>1.7.30</ver.slf4j>
     <ver.log4j2>2.13.3</ver.log4j2>
     <ver.junit>4.13.1</ver.junit>
-
   </properties>
 
   <dependencyManagement>
@@ -100,12 +100,6 @@
       <artifactId>log4j-slf4j-impl</artifactId>
     </dependency>
     
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>${ver.slf4j}</version>
-    </dependency>
-
   </dependencies>
 
   <build>
@@ -115,7 +109,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
 	      <version>3.8.0</version>
         <configuration>
-          <release>11</release>
+          <release>14</release>
         </configuration>
 <!--
           <encoding>UTF-8</encoding>

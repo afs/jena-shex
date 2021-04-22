@@ -16,8 +16,29 @@
  * limitations under the License.
  */
 
-package shex.parser;
+package shex.expressions;
 
-public class ShExBase {
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
+import shex.ReportItem;
+import shex.ValidationContext;
 
+/** A shape expression that is always false.  */
+public class ShapeExpressionFalse extends ShapeExpression {
+
+    public ShapeExpressionFalse() {}
+
+    @Override
+    public void print(IndentedWriter out, NodeFormatter nFmt) {
+        out.println(toString());
+    }
+
+    @Override
+    public ReportItem validate(ValidationContext vCxt, Node data) {
+        return new ReportItem("False", data);
+    }
+
+    @Override
+    public String toString() { return "ShapeExpressionNoOp"; }
 }

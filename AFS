@@ -1,4 +1,166 @@
+==== SHACL vs SheX
+
+SHACL ++
+    Reporting
+    
+Node contraints
+
+SHACL ++
+    better language tag handling.
+      sh:uniqueLang
+
+ShEx ++
+    better value handling.
+      sets and exclusions.
+    enumerations
+    
+ShEx ++
+    Semantic annotations
+    Annotations
+    (SHACL/RDF - both for free)
+
+SHACL ++ Not compact
+    Pair-wise
+
+SHACL ++
+    ignored and CLOSED
+
+ShEx ?? ShapeMap
+
+SHACL ?? has sh:class -> Hook to RDFS?
+
+ShEx / SHACL
+    ShapeMap vs Targets
+    Targets associate shape with class
+    (ShEx - in shape map)
+
+SHACL-AF: ShEx devolves to shape map.
+    Custom Targets
+        3.1 SPARQL-based Targets
+        3.2 SPARQL-based Target Types
+
+
 == Parser
   Check grammar
   Token order -> align to grammar.
   Conflict adjustments
+
+https://github.com/shexSpec/spec
+https://github.com/shexSpec/shexTest
+
+https://github.com/shexSpec/grammar/blob/master/ShExDoc.g4
+
+REPEAT_RANGE
+  Why "{}"?
+  Why a token? (ambiguity!)
+  Why no WS?
+
+1/ iriExclusion (spec wrong)
+2/ ShExDoc.g4 => valueSetValue (rewrite - intermediate stage for lookahead(1)
+3/ tripleExpression (shift/reduce)
+
+anyExclusion need fixing.
+
+jjdoc
+
+Tests:
+https://github.com/shexSpec/shexTest/
+
+== Grammar
+1. Cardinalit : why "{ }" when [ ] is maths notation.
+2. REPEAT_RANGE  Why a token? (ambiguity!) No WS.
+3. LANG_STRING Why a token? (minor)
+
+4/ iriRange (spec wrong)
+
+  [51]   	iriRange	   ::=   	   iri ('~' exclusion*)?
+  ==>> g4
+                                                   iri ('~' iriExclusion*)?
+
+5/ ShExDoc.g4 => valueSetValue (rewrite - intermediate stage for lookahead(1)
+
+6/ tripleExpression (shift/reduce) (rewrite)
+
+
+7a/ ?? Rename tripleExpression as tripleExpressionGroup
+// Then an OR-AND hierarchy with trailing AND-empty.
+
+"Clause" isa   SEMI_COLON cionjunctive block.
+7b/ tripleExpressionClause - remove recurision
+
+8/ ShapeAtom - why not allow literals-as-subject
+
+// void multiElementGroup() : {}
+// {
+//   	unaryTripleExpr()
+//      (LOOKAHEAD(2) <SEMI_COLON> unaryTripleExpr())+
+//      (<SEMI_COLON>)?
+// }
+better:
+// void multiElementGroup() : {}
+// {
+//   	unaryTripleExpr()
+//      (<SEMI_COLON> (unaryTripleExpr())?)*
+// }
+
+9/ No use of shapeAtomNoRef
+
+10/ { :p {0,6} } for cardinality (looks like shape but it's a token.).
+
+11/ WS in cardinality. (COMMA distinguishes from next shape)
+    [*] [?] [+] ?
+
+12/ Cardinality [] more common - use $..$ for value sets (don't nest?)
+
+13/ valueSet - final case using DOT
+
+Pull out the MINUS
+
+valueSetValue ::= .... <DOT> (anyExclusions())?
+anyExclusions ::= <MINUS>
+    (
+      ( iri()     (<TILDE>)? (<MINUS> iri()     (<TILDE>)?)* )
+    | ( literal() (<TILDE>)? (<MINUS> literal() (<TILDE>)?)* )
+    | ( <LANGTAG> (<TILDE>)? (<MINUS> <LANGTAG> (<TILDE>)?)* )
+    )
+
+14/ StrignFacter
+"Length=" more obvious
+Length=[0,5]
+
+==== spec
+
+== 2.5 Validation process
+
+Formatting hard to understand. List? Use ";"?
+Bad accessibility.
+
+== 5.4.4 XML Schema String Facet Constraints
+
+Stray:
+"Let lex ="
+
+== 5.2 Validation Definition
+
+A/
+satisfies(n, s, G, Sch, completeTyping(G, Sch)).
+
+Presumably sl = shape label -> names s
+??
+This forward reference style is unclear.
+
+B/
+a typing is a set of pairs of the form (n, s) where n is a node in G and s is a Shape that appears in some shape expression in the shapes mapping of Sch.
+
+What is "in some shape expression"? If a shape expression is used/nested
+
+:S { :p xsd:integer }
+
+then triple constraint(:p, xsd:integer) is a shape expression (by grammar).
+
+If :S is in the shape map, then is the triple constraint (n, tc) in the typing?
+
+C/
+"negiation"
+
+D/
