@@ -78,12 +78,10 @@ https://github.com/shexSpec/grammar/blob/master/ShExDoc.g4
 [47]    senseFlags             ::=         '^'
 [48]    valueSet               ::=         '[' valueSetValue* ']'
 [49]    valueSetValue          ::=         iriRange | literalRange | languageRange | exclusion+
-[50]    exclusion              ::=         '-' (iri | literal | LANGTAG) '~'?
+[50]    exclusion              ::=         '.' '-' (iri | literal | LANGTAG) '~'?
 
 [51]    iriRange               ::=         iri ('~' exclusion*)?
----- g4
-  iri ('~' iriExclusion*)?
----- g4
+---- g4                                    iri ('~' iriExclusion*)?
 
 [52]    iriExclusion           ::=         '-' iri '~'?
 [53]    literalRange           ::=         literal ('~' literalExclusion*)?

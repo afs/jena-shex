@@ -50,20 +50,20 @@ public class NumRangeConstraint extends NodeConstraint {
         if ( ! n.isLiteral() )
             return new ReportItem("NumRange: Not a literal number", n);
         NodeValue nv = NodeValue.makeNode(n);
-        int r = NodeValue.compare(numericValue, nv);
+        int r = NodeValue.compare(nv, numericValue);
 
         switch(rangeKind) {
             case MAXEXCLUSIVE :
-                if ( r < 0 ) return null;
-                break;
-            case MAXINCLUSIVE :
-                if ( r <= 0 ) return null;
-                break;
-            case MINEXCLUSIVE :
                 if ( r > 0 ) return null;
                 break;
-            case MININCLUSIVE :
+            case MAXINCLUSIVE :
                 if ( r >= 0 ) return null;
+                break;
+            case MINEXCLUSIVE :
+                if ( r < 0 ) return null;
+                break;
+            case MININCLUSIVE :
+                if ( r <= 0 ) return null;
                 break;
             default :
                 break;

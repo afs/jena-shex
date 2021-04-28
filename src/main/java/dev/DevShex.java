@@ -66,7 +66,8 @@ public class DevShex {
 
     static String strTest = StrUtils.strjoinNL
             (""
-            , "dev:test0 { :p xsd:string minlength 5 maxlength 10 }"
+            , "dev:test0 { :p [ :p~ - :p1~ ] ; :q [ . - 123 ]}"
+            , "dev:vs3   { :lang [ @en~ - @en-fr ]; }"
 //            , "dev:testNum { :p xsd:decimal MinExclusive -87 TotalDigits 6 FractionDigits 2 }"
 //            , "dev:test1 { ^:p . {0} }"
 //            , "dev:vs1   { :p [ 123 ] }"

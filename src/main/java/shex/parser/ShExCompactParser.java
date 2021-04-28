@@ -353,6 +353,36 @@ public class ShExCompactParser extends LangParserBase {
         debug("valueSet");
     }
 
+    protected void startIriRange() { start("iriRange"); }
+    protected void seenIri(String irirStr) {}
+    protected void seenIriTilde() {}
+    protected void seenMinusIri(String irirStr) {}
+    protected void seenMinusIriTilde() {}
+    protected void finishIriRange() { finish("iriRange"); }
+
+    protected void startLiteralRange() { start("literalRange"); }
+    protected void seenLiteral(Node literal) {}
+    protected void seenLiteralTilde() {}
+    protected void seenMinusLiteral(Node literal) {}
+    protected void seenMinusLiteralTilde() {}
+    protected void finishLiteralRange() { finish("literalRange"); }
+
+    protected void startLanguageRange() {start("languageRange"); }
+    protected void seenLanguage(String lang) {}
+    protected void seenLanguageTilde() {}
+    protected void seenMinusLanguage(String lang) {}
+    protected void seenMinusLanguageTilde() {}
+    protected void finishLanguageRange() { finish("languageRange"); }
+
+    protected void startValueExclusion() { start("valueExclusion"); }
+    protected void seenExclusionIri(String iriStr) {}
+    protected void seenExclusionIriTilde() {}
+    protected void seenExclusionLiteral(Node lit) {}
+    protected void seenExclusionLiteralTilde() {}
+    protected void seenExclusionLanguage(String lang) {}
+    protected void seenExclusionLanguageTilde() {}
+    protected void finishValueExclusion() { finish("valueExclusion"); }
+
     static Pattern repeatRange = Pattern.compile(".(\\d+)(,(\\d+|\\*)?)?.");
 
     /** micro-parse a cardinality range. */

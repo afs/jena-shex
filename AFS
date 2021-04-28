@@ -112,19 +112,32 @@ better:
 
 12/ Cardinality [] more common - use $..$ for value sets (don't nest?)
 
-13/ valueSet - final case using DOT
+13/ Ambiguity:
 
-Pull out the MINUS
+<LBRACKET> (valueSetValue())* <RBRACKET>
+but
+valueSetValue ::= | exclusion+
 
-valueSetValue ::= .... <DOT> (anyExclusions())?
-anyExclusions ::= <MINUS>
-    (
-      ( iri()     (<TILDE>)? (<MINUS> iri()     (<TILDE>)?)* )
-    | ( literal() (<TILDE>)? (<MINUS> literal() (<TILDE>)?)* )
-    | ( <LANGTAG> (<TILDE>)? (<MINUS> <LANGTAG> (<TILDE>)?)* )
-    )
+g4:is different:
+ | <DOT> (iriExclusion())+ | (literalExclusion())+ | (languageExclusion()+)
+ which is limiting (no mix)
 
-14/ StrignFacter
+==> suggest:
+<DOT> (exclusion())+
+
+exclusion ::= <MINUS>
+              ( iri() (<TILDE>)?
+              | literal() (<TILDE>)?
+              | <LANGTAG> (<TILDE>)?
+              ) 
+
+then iriRamnge can include the iriExclusion. Easier!
+
+(<LANGTAG> | <AT>)
+
+"exclusion" => "valueExclusion"
+
+14/ StringFacet
 "Length=" more obvious
 Length=[0,5]
 

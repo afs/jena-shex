@@ -18,13 +18,12 @@
 
 options
 {
-JAVA_UNICODE_ESCAPE   = false ;
-//??
-UNICODE_INPUT         = true ;
+    JAVA_UNICODE_ESCAPE   = false ;
+    UNICODE_INPUT         = true ;
 
-STATIC                = false ;
-//   DEBUG_PARSER          = true ;
-//   DEBUG_TOKEN_MANAGER   = true ;
+    STATIC                = false ;
+    //   DEBUG_PARSER          = true ;
+    //   DEBUG_TOKEN_MANAGER   = true ;
 }
 
 PARSER_BEGIN(ShExJavacc)
@@ -499,48 +498,46 @@ void valueSet() : {}
 void valueSetValue() : {}
 {
     { cValueSet(); }
-    iriRange() | literalRange() | languageRange() 
-     | <DOT> (anyExclusions())?
-// Does not work:
-//               ( iriExclusion())+
-//             | ( literalExclusion())+
-//             | ( languageExclusion())+
-}
-
-// Needs fixing.
-// Better exclusion.
-void anyExclusions() : {}
-{
-    <MINUS>
-    (
-      ( iri()     (<TILDE>)? (<MINUS> iri() (<TILDE>)?)* )
-    | ( literal() (<TILDE>)? (<MINUS> literal() (<TILDE>)?)* )
-    | ( <LANGTAG> (<TILDE>)? (<MINUS> <LANGTAG> (<TILDE>)?)* )
+    ( iriRange()
+    | literalRange()
+    | languageRange() 
+    | <DOT> (valueExclusion())+
     )
 }
 
-// Original
-// void iriRange() : {}
-// {
-//    iri() (<TILDE> ( exclusion())*)?
-// }
+void valueExclusion() : { String iriStr; Node lit; }
+{
+    <MINUS>
+    { startValueExclusion(); }
+    ( iriStr = iri() {seenExclusionIri(iriStr); } (<TILDE> { seenExclusionIriTilde(); } )?
+    | lit = literal() {seenExclusionLiteral(lit); } (<TILDE> { seenExclusionLiteralTilde() ; } )?
+    | <LANGTAG> { seenExclusionLanguage(token.image); } (<TILDE>{ seenExclusionLanguageTilde(); } )?
+    )    
+    { finishValueExclusion(); }
+}
 
-// ----
+
 // void iriRange() : {}
 // {
-//    iri() (<TILDE> ( iriExclusion() )* )?
+//    iri() (<TILDE> ( iriExclusion())*)?
 // }
-// 
 // 
 // void iriExclusion() : {}
 // {
 //     <MINUS> iri() (<TILDE>)?
 // }
 
-// Combine iriRange and iriExclusion - put the actions in one place.
-void iriRange() : {}
+void iriRange() : { String iriStr; }
 {
-  iri() (<TILDE> ( <MINUS> iri() (<TILDE>)? )* )?
+    // iri() (<TILDE> ( <MINUS> iri() (<TILDE>)? )* )?
+    { startIriRange(); }
+    iriStr = iri() { seenIri(iriStr); }
+    ( <TILDE> { seenIriTilde(); }
+        ( <MINUS> iriStr = iri() { seenMinusIri(iriStr); }
+          (<TILDE>)? { seenMinusIriTilde(); }
+        )*
+    )?
+    { finishIriRange(); }
 }
 
 // void literalRange() : {}
@@ -553,24 +550,43 @@ void iriRange() : {}
 //     <MINUS> literal() (<TILDE>)?
 // }
 
-void literalRange() : {}
+void literalRange() : { Node lit; }
 {
-     literal() (<TILDE> ( <MINUS> literal() (<TILDE>)? )* )?
+    // literal() (<TILDE> ( <MINUS> literal() (<TILDE>)? )* )?
+    { startLiteralRange(); }
+    lit = literal() { seenLiteral(lit); }
+    ( <TILDE> { seenLiteralTilde(); }
+        ( <MINUS> lit = literal() { seenMinusLiteral(lit); }
+          (<TILDE>)? { seenMinusLiteralTilde(); }
+        )*
+    )?
+    { finishLiteralRange(); }
 }
 
-// Could do the same here.
-void languageRange() : {}
-{
-    (
-    <LANGTAG> (<TILDE> ( languageExclusion() )* )?
-    |
-    <AT> <TILDE> ( languageExclusion() )*
-    )
-}
+// void languageRange() : {}
+// {
+//     (
+//     <LANGTAG> (<TILDE> ( languageExclusion() )* )?
+//     |
+//     <AT> <TILDE> ( languageExclusion() )*
+//     )
+// }
+// 
+// void languageExclusion() : {}
+// {
+//     <MINUS> <LANGTAG> (<TILDE>)?
+// }
 
-void languageExclusion() : {}
+void languageRange() : { }
 {
-    <MINUS> <LANGTAG> (<TILDE>)?
+   { startLanguageRange(); }
+   ( <LANGTAG>|<AT> ) { seenLanguage(token.image); }
+   ( <TILDE> { seenLanguageTilde(); }
+      ( <MINUS> <LANGTAG>  { seenMinusLanguage(token.image); }
+          (<TILDE>)? { seenMinusLanguageTilde(); }
+      )*
+   )?
+   { finishLanguageRange(); }
 }
 
 void include() : {}

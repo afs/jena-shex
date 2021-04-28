@@ -22,6 +22,24 @@ public class NotesShex {
     // Grammar.
     // Test Suite
 
+    // [ ] Grammar wrong for value sets.
+    /*
+[48]    valueSet               ::=         '[' valueSetValue* ']'
+[49]    valueSetValue          ::=         iriRange | literalRange | languageRange | exclusion+
+
+[50]    exclusion              ::=         '-' (iri | literal | LANGTAG) '~'?
+
+[51]    iriRange               ::=         iri ('~' iriExclusion*)?
+[52]    iriExclusion           ::=         '-' iri '~'?
+
+[53]    literalRange           ::=         literal ('~' literalExclusion*)?
+[54]    literalExclusion       ::=         '-' literal '~'?
+
+[55]    languageRange          ::=         LANGTAG ('~' languageExclusion*)? | '@' '~' languageExclusion*
+[56]    languageExclusion      ::=         '-' LANGTAG '~'?
+
+     */
+
     // [ ] Print
     // [x] Cardinality {0}
     // [x] ShapeAtom DOT
@@ -29,12 +47,12 @@ public class NotesShex {
     // [x] Facets
     //     [x] FacetString
     //     [x] FacetNumeric
-    // [ ] Value Sets
     // [x] RegexConstraint - regex escaping.
+
+    // [ ] Value Sets
     // [ ] TripleConstraint printing.
-    // [ ] AND collapse.
-    // [ ] Consolidate NumberFacet. NumLength, NumRange,
-    // [ ] Consolidate String facet. minlength
+    // [ ] Consolidate NumberFacet. NumLength, NumRange to avoid NodeValue creation
+    // [ ] Consolidate String facet. minlength to avoid NodeFunctions.str(n); (less important)
 
     // [ ] ShapeMap parser (same file, different entry point : shex.jj)
 
@@ -42,12 +60,13 @@ public class NotesShex {
 
     // --- Nesting and structure
     // [ ] Schema Requirements
-    // [x] Unescaping. Support \U
-    //     [x] Strings, lexical
-    //     [?x] IRIs
     // [ ] Terminology
     // [ ] Annotations
     // [ ] Semantic actions
     // [ ] ShapeExpression -> ShapeExpr
     // [ ] ShexConstraint-> ShexExpression
+
+    // [x] Unescaping. Support \U
+    //     [x] Strings, lexical
+    //     [x] IRIs
 }
