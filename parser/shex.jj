@@ -509,8 +509,8 @@ void valueExclusion() : { String iriStr; Node lit; }
 {
     <MINUS>
     { startValueExclusion(); }
-    ( iriStr = iri() {seenExclusionIri(iriStr); } (<TILDE> { seenExclusionIriTilde(); } )?
-    | lit = literal() {seenExclusionLiteral(lit); } (<TILDE> { seenExclusionLiteralTilde() ; } )?
+    ( iriStr = iri()  {seenExclusionIri(iriStr); }   (<TILDE> { seenExclusionIriTilde(); } )?
+    | lit = literal() {seenExclusionLiteral(lit); }  (<TILDE> { seenExclusionLiteralTilde() ; } )?
     | <LANGTAG> { seenExclusionLanguage(token.image); } (<TILDE>{ seenExclusionLanguageTilde(); } )?
     )    
     { finishValueExclusion(); }
@@ -534,7 +534,7 @@ void iriRange() : { String iriStr; }
     iriStr = iri() { seenIri(iriStr); }
     ( <TILDE> { seenIriTilde(); }
         ( <MINUS> iriStr = iri() { seenMinusIri(iriStr); }
-          (<TILDE>)? { seenMinusIriTilde(); }
+          (<TILDE> { seenMinusIriTilde(); })?
         )*
     )?
     { finishIriRange(); }
@@ -557,7 +557,7 @@ void literalRange() : { Node lit; }
     lit = literal() { seenLiteral(lit); }
     ( <TILDE> { seenLiteralTilde(); }
         ( <MINUS> lit = literal() { seenMinusLiteral(lit); }
-          (<TILDE>)? { seenMinusLiteralTilde(); }
+          (<TILDE> { seenMinusLiteralTilde(); })?
         )*
     )?
     { finishLiteralRange(); }
@@ -580,12 +580,19 @@ void literalRange() : { Node lit; }
 void languageRange() : { }
 {
    { startLanguageRange(); }
-   ( <LANGTAG>|<AT> ) { seenLanguage(token.image); }
-   ( <TILDE> { seenLanguageTilde(); }
-      ( <MINUS> <LANGTAG>  { seenMinusLanguage(token.image); }
-          (<TILDE>)? { seenMinusLanguageTilde(); }
-      )*
-   )?
+   ( <LANGTAG> { seenLanguage(token.image); }
+     ( <TILDE> { seenLanguageTilde(); }
+        ( <MINUS> <LANGTAG>  { seenMinusLanguage(token.image); }
+            (<TILDE> { seenMinusLanguageTilde(); })?
+        )*
+     )?
+   |
+     <AT>  { seenLanguage(token.image); }
+     <TILDE> { seenLanguageTilde(); }
+     ( <MINUS> <LANGTAG>  { seenMinusLanguage(token.image); }
+          (<TILDE> { seenMinusLanguageTilde(); })?
+     )*
+   )
    { finishLanguageRange(); }
 }
 
@@ -758,6 +765,7 @@ SKIP :
 
 TOKEN: { 
   <BOM:    "\uFEFF">
+| <RDF_TYPE         : "a" >
 }
 
 TOKEN [IGNORE_CASE] :
@@ -793,7 +801,6 @@ TOKEN [IGNORE_CASE] :
 
 | <CLOSED           : "closed" >
 | <EXTRA            : "extra" >
-| <RDF_TYPE         : "a" >
 
 | <CODE             : "{" (~[ "%","\\"] | "\\" ["%","\\"] | <UCHAR>)* "%" "}" >
 // Why is this a token?

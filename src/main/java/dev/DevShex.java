@@ -66,8 +66,16 @@ public class DevShex {
 
     static String strTest = StrUtils.strjoinNL
             (""
-            , "dev:test0 { :p [ :p~ - :p1~ ] ; :q [ . - 123 ]}"
-            , "dev:vs3   { :lang [ @en~ - @en-fr ]; }"
+//            , "dev:test0 { :p [ :p~ - :p1 - :p2 ] ; } "
+//            , "dev:test0 { :p  [:Class1 :Class2]}"
+//            , "dev:test1 { :p  ['abc'~ - 'abcd' ]}"
+
+            , "dev:test1 { :p [. - @en-US - 'abc' - <x>]}"
+
+//            , "            :q [ . - 123 ]"
+//            , "}"
+//            , "dev:vs3   { :lang [ @en~ - @en-fr ]; }"
+
 //            , "dev:testNum { :p xsd:decimal MinExclusive -87 TotalDigits 6 FractionDigits 2 }"
 //            , "dev:test1 { ^:p . {0} }"
 //            , "dev:vs1   { :p [ 123 ] }"
@@ -86,7 +94,7 @@ public class DevShex {
         System.out.println();
         str = PREFIXES_DEV +"\n" + str;
         ShExCompactParser.DEBUG = true;
-        ShExCompactParser.DEBUG_PARSE = true;
+        //ShExCompactParser.DEBUG_PARSE = true;
         ShexShapes shapes = shapesFromString(str);
         //ShexShapes shapes = shapesFromFile(null);
 

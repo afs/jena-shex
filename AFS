@@ -116,30 +116,65 @@ better:
 
 <LBRACKET> (valueSetValue())* <RBRACKET>
 but
-valueSetValue ::= | exclusion+
+valueSetValue ::= ... | exclusion+
 
-g4:is different:
- | <DOT> (iriExclusion())+ | (literalExclusion())+ | (languageExclusion()+)
- which is limiting (no mix)
+14/ What is the intended syntax?
 
-==> suggest:
-<DOT> (exclusion())+
+Spec: [ . - "foo" . - "bar" ]
 
-exclusion ::= <MINUS>
+because "." , "-" is paert of "exclusion".
+
+    | '.' (iriExclusion+ | literalExclusion+ | languageExclusion+)
+
+Suggestion:
+
+ | <DOT> (exclusion())+
+
+    exclusion ::= <MINUS>
               ( iri() (<TILDE>)?
               | literal() (<TILDE>)?
               | <LANGTAG> (<TILDE>)?
-              ) 
+              )
 
-then iriRamnge can include the iriExclusion. Easier!
+so allowing:
 
-(<LANGTAG> | <AT>)
+[ . - 123 - <iri> ]
 
+And then "iriRange" can include the iriExclusion (iriExclusion is used only once so inline it).
+
+Rename:
 "exclusion" => "valueExclusion"
 
-14/ StringFacet
+14b/ Value MINUS
+Better as "^"?
+
+"-123" != "-" "123"
+
+15/ StringFacet
 "Length=" more obvious
+as is
 Length=[0,5]
+
+Std math notation is "[", inclusive and "(" exclusive. "[5,]" mean 5->infinity
+
+and change valueSet.
+
+16/ Why the "."
+
+{ :predicate  {0,1} }
+
+17/ Negative syntax test for LENGTH LENGTH but the grammar allows it.
+(of course it may get lost in the JSON but that's not grammar but then if LENGTH 10 LENGTH 20 - which is right?
+
+18/
+-- 1unknowndatatypeMaxInclusive
+<http://a.example/IssueShape> {
+   <http://a.example/p1> <http://a.example/dt1> MAXINCLUSIVE 5
+}
+
+Not a grammar error. (derived types?)
+
+19/
 
 ==== spec
 

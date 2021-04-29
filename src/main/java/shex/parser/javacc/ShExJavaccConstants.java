@@ -31,57 +31,57 @@ public interface ShExJavaccConstants {
   /** RegularExpression Id. */
   int BOM = 12;
   /** RegularExpression Id. */
-  int BASE = 13;
+  int RDF_TYPE = 13;
   /** RegularExpression Id. */
-  int IMPORT = 14;
+  int BASE = 14;
   /** RegularExpression Id. */
-  int PREFIX = 15;
+  int IMPORT = 15;
   /** RegularExpression Id. */
-  int SHAPE_CLASS = 16;
+  int PREFIX = 16;
   /** RegularExpression Id. */
-  int SHAPE = 17;
+  int SHAPE_CLASS = 17;
   /** RegularExpression Id. */
-  int START = 18;
+  int SHAPE = 18;
   /** RegularExpression Id. */
-  int EXTERNAL = 19;
+  int START = 19;
   /** RegularExpression Id. */
-  int NOT = 20;
+  int EXTERNAL = 20;
   /** RegularExpression Id. */
-  int OR = 21;
+  int NOT = 21;
   /** RegularExpression Id. */
-  int AND = 22;
+  int OR = 22;
   /** RegularExpression Id. */
-  int LITERAL = 23;
+  int AND = 23;
   /** RegularExpression Id. */
-  int IRI = 24;
+  int LITERAL = 24;
   /** RegularExpression Id. */
-  int BNODE = 25;
+  int IRI = 25;
   /** RegularExpression Id. */
-  int NONLITERAL = 26;
+  int BNODE = 26;
   /** RegularExpression Id. */
-  int LENGTH = 27;
+  int NONLITERAL = 27;
   /** RegularExpression Id. */
-  int MINLENGTH = 28;
+  int LENGTH = 28;
   /** RegularExpression Id. */
-  int MAXLENGTH = 29;
+  int MINLENGTH = 29;
   /** RegularExpression Id. */
-  int MININCLUSIVE = 30;
+  int MAXLENGTH = 30;
   /** RegularExpression Id. */
-  int MINEXCLUSIVE = 31;
+  int MININCLUSIVE = 31;
   /** RegularExpression Id. */
-  int MAXINCLUSIVE = 32;
+  int MINEXCLUSIVE = 32;
   /** RegularExpression Id. */
-  int MAXEXCLUSIVE = 33;
+  int MAXINCLUSIVE = 33;
   /** RegularExpression Id. */
-  int TOTALDIGITS = 34;
+  int MAXEXCLUSIVE = 34;
   /** RegularExpression Id. */
-  int FRACTIONDIGITS = 35;
+  int TOTALDIGITS = 35;
   /** RegularExpression Id. */
-  int CLOSED = 36;
+  int FRACTIONDIGITS = 36;
   /** RegularExpression Id. */
-  int EXTRA = 37;
+  int CLOSED = 37;
   /** RegularExpression Id. */
-  int RDF_TYPE = 38;
+  int EXTRA = 38;
   /** RegularExpression Id. */
   int CODE = 39;
   /** RegularExpression Id. */
@@ -233,6 +233,7 @@ public interface ShExJavaccConstants {
     "\"*/\"",
     "<token of kind 11>",
     "\"\\ufeff\"",
+    "\"a\"",
     "\"BASE\"",
     "\"IMPORT\"",
     "\"PREFIX\"",
@@ -258,7 +259,6 @@ public interface ShExJavaccConstants {
     "\"fractiondigits\"",
     "\"closed\"",
     "\"extra\"",
-    "\"a\"",
     "<CODE>",
     "<REPEAT_RANGE>",
     "\"true\"",

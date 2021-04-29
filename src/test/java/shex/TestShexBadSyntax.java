@@ -18,6 +18,8 @@
 
 package shex;
 
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,12 +40,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import shex.parser.ShexParseException;
 import shex.parser.ShexParser;
 
 @RunWith(Parameterized.class)
-public class TestShexSyntax {
+public class TestShexBadSyntax {
 
-    private static String DIR = "files/spec/syntax";
+    private static String DIR = "files/spec/negativeSyntax";
 
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
@@ -52,21 +55,6 @@ public class TestShexSyntax {
         BiPredicate<Path, BasicFileAttributes> predicate = (path,attr)->attr.isRegularFile() && path.toString().endsWith(".shex");
 
         Set<String> excludes = new HashSet<>();
-        //---- Exclusions
-        // java does to support character classes \N (all numbers)
-        excludes.add("1literalPattern_with_all_meta.shex");
-
-        // Has \() so ) not escaped.
-        excludes.add("1literalPattern_with_all_punctuation.shex");
-
-        // Regex has a null (unicode codepoint 0000) which is illegal.
-        excludes.add("1literalPattern_with_ascii_boundaries.shex");
-
-        // Contains \ud800 (ill-formed surrogate pair)
-        excludes.add("1refbnode_with_spanning_PN_CHARS_BASE1.shex");
-
-        // Contains \u0d00 (ill-formed surrogate pair)
-        excludes.add("_all.shex");
         //---- Exclusions
 
         // -- Explicit inclusions
@@ -94,13 +82,13 @@ public class TestShexSyntax {
     private String name;
     private String path;
 
-    public TestShexSyntax(String name, String path) {
+    public TestShexBadSyntax(String name, String path) {
         this.name = name ;
         this.path = path;
     }
 
     @Test public void test() {
-        ShexShapes shapes =  shapesFromFile(path.toString());
+        ShexShapes shapes = shapesFromFile(path.toString());
     }
 
     public static ShexShapes shapesFromFile(String filename) {
@@ -108,13 +96,18 @@ public class TestShexSyntax {
         InputStream input = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
         try {
             ShexShapes shapes = ShexParser.parse(input, null);
-            return shapes;
-        } catch (RuntimeException ex) {
             System.out.print("-- ");
             System.out.println(FileOps.basename(filename));
-            System.out.println(ex.getMessage());
             System.out.println(str);
-            throw ex;
+            fail("Parsed negative syntax test");
+            return shapes;
+        } catch (ShexParseException ex) {
+            return null;
+//            System.out.print("-- ");
+//            System.out.println(FileOps.basename(filename));
+//            System.out.println(ex.getMessage());
+//            System.out.println(str);
+//            throw ex;
         }
     }
 

@@ -22,7 +22,10 @@ public class NotesShex {
     // Grammar.
     // Test Suite
 
-    // [ ] Grammar wrong for value sets.
+    // [x] Grammar wrong for value sets.
+    // [ ] Bad syntax tests
+    // [ ] Record start line/column of a value set or range.
+    // [ ] Bad syntax: ["string"@1]
     /*
 [48]    valueSet               ::=         '[' valueSetValue* ']'
 [49]    valueSetValue          ::=         iriRange | literalRange | languageRange | exclusion+

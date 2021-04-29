@@ -18,14 +18,13 @@
 
 package shex.parser;
 
-import static org.apache.jena.riot.lang.extra.LangParserLib.unescapeStr;
 import static shex.parser.ShExCompactParser.Inline.INLINE;
 import static shex.parser.ShExCompactParser.Inline.NOT_INLINE;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
-//import java.util.regex.Pattern;
 import java.util.regex.Pattern;
 
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -33,7 +32,10 @@ import org.apache.jena.atlas.lib.EscapeStr;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.lang.extra.LangParserBase;
+import org.apache.jena.riot.lang.extra.LangParserLib;
+import org.apache.jena.riot.out.NodeFmtLib;
 import shex.ShexShape;
 import shex.ShexShapes;
 import shex.expressions.*;
@@ -68,9 +70,32 @@ public class ShExCompactParser extends LangParserBase {
         }
     }
 
+    // Points to rewrite exceptions.
+
     // [shex] XXX Rename!
     protected Node createNodeIRI(String iriStr, int line, int column) {
         return super.createNode(iriStr, line, column);
+    }
+
+    protected String unescapeStr(String lex, int line, int column) {
+        return convert(()->LangParserLib.unescapeStr(lex, line, column), line, column);
+    }
+
+    private static String convert(Supplier<String> action, int line, int column) {
+        try { return action.get(); }
+        catch (RiotException ex) { throw new ShexParseException(ex.getMessage(), line, column); }
+    }
+
+    //unescapeStr
+
+    @Override
+    protected String resolveQuotedIRI(String iriStr, int line, int column) {
+        return convert(()->super.resolveQuotedIRI(iriStr, line, column), line, column);
+    }
+
+    @Override
+    protected String resolvePName(String pname, int line, int column) {
+        return convert(()->super.resolvePName(pname, line, column), line, column);
     }
 
     private <T> void printStack(String string, Deque<T> stack) {
@@ -353,27 +378,99 @@ public class ShExCompactParser extends LangParserBase {
         debug("valueSet");
     }
 
-    protected void startIriRange() { start("iriRange"); }
-    protected void seenIri(String irirStr) {}
-    protected void seenIriTilde() {}
-    protected void seenMinusIri(String irirStr) {}
-    protected void seenMinusIriTilde() {}
-    protected void finishIriRange() { finish("iriRange"); }
+    // ----
+    // Value Set build
 
-    protected void startLiteralRange() { start("literalRange"); }
-    protected void seenLiteral(Node literal) {}
-    protected void seenLiteralTilde() {}
-    protected void seenMinusLiteral(Node literal) {}
-    protected void seenMinusLiteralTilde() {}
-    protected void finishLiteralRange() { finish("literalRange"); }
+    static class VSentry<T> {
+        final T item;
+        boolean tilde = false;
+        VSentry(T item) { this.item = item; }
+    }
 
-    protected void startLanguageRange() {start("languageRange"); }
-    protected void seenLanguage(String lang) {}
-    protected void seenLanguageTilde() {}
-    protected void seenMinusLanguage(String lang) {}
-    protected void seenMinusLanguageTilde() {}
-    protected void finishLanguageRange() { finish("languageRange"); }
+    // [shex] better name.
+    static class VSB<T> {
+        final String label;
+        VSentry<T> item;
+        List<VSentry<T>> notItems = new ArrayList<>();
+        VSB(String label) { this.label= label; }
+    }
 
+    private <T> VSB<T> startValueSetValue(String kind) { return new VSB<>(kind); }
+
+    private <T> void seenValueItem(VSB<T> range, T item) {
+        if ( range.item != null )
+            throw new InternalErrorException("ValueSet range item already set null");
+        range.item = new VSentry<>(item);
+    }
+
+    private <T> void seenValueTilde(VSB<T> values, boolean tilde) { values.item.tilde = tilde; }
+    private <T> void seenMinusValue(VSB<T> values, T item) { values.notItems.add(new VSentry<>(item));}
+    private <T> void seenMinusValueTilde(VSB<T> values, boolean tilde) {
+        int x = values.notItems.size();
+        values.notItems.get(x-1).tilde = tilde;
+    }
+
+    private <T> void finishValueSetValue(VSB<T> values, Function<T, String> str) {
+        if ( DEBUG ) {
+            out.printf("  [ %s", str.apply(values.item.item));
+            if ( values.item.tilde ) out.print("~");
+            out.print(" ");
+            values.notItems.forEach(ne->{
+                out.printf("- %s", str.apply(ne.item));
+                if ( ne.tilde ) out.print("~");
+                out.print(" ");
+            });
+            out.println("]");
+        }
+
+        //new ValueSetRangeIRI();
+
+
+    }
+    // ----
+    // -- ValueSet : IRI
+
+    private VSB<Node> vsIRI = null;
+
+    protected void startIriRange() { start("iriRange"); vsIRI = startValueSetValue("IRI"); }
+    protected void seenIri(String iriStr) { seenValueItem(vsIRI, createNodeIRI(iriStr, -1, -1)); }
+    protected void seenIriTilde() { seenValueTilde(vsIRI,  true); }
+    protected void seenMinusIri(String iriStr) { seenMinusValue(vsIRI, createNodeIRI(iriStr, -1, -1)); }
+    protected void seenMinusIriTilde() { seenMinusValueTilde(vsIRI,  true); }
+    protected void finishIriRange() {
+        finishValueSetValue(vsIRI, n->NodeFmtLib.displayStr(n));
+        vsIRI = null;
+        finish("iriRange");
+    }
+
+    // -- ValueSet : Literal
+    private VSB<Node> vsLiteral = null;
+
+    protected void startLiteralRange() { start("literalRange"); vsLiteral = startValueSetValue("Literal");}
+    protected void seenLiteral(Node literal) { seenValueItem(vsLiteral, literal); }
+    protected void seenLiteralTilde() { seenValueTilde(vsLiteral,  true); }
+    protected void seenMinusLiteral(Node literal) {seenMinusValue(vsLiteral, literal);}
+    protected void seenMinusLiteralTilde() { seenMinusValueTilde(vsLiteral,  true); }
+    protected void finishLiteralRange() {
+        finishValueSetValue(vsLiteral, n -> NodeFmtLib.displayStr(n));
+        vsLiteral = null;
+        finish("literalRange");
+    }
+
+    // -- ValueSet : Language
+    private VSB<String> vsLanguage = null;
+    protected void startLanguageRange() { start("languageRange"); vsLanguage = startValueSetValue("Language");}
+    protected void seenLanguage(String lang) { seenValueItem(vsLanguage, lang); }
+    protected void seenLanguageTilde() { seenValueTilde(vsLanguage,  true); }
+    protected void seenMinusLanguage(String lang) {seenMinusValue(vsLanguage, lang);}
+    protected void seenMinusLanguageTilde() { seenMinusValueTilde(vsLanguage,  true); }
+    protected void finishLanguageRange() {
+        finishValueSetValue(vsLanguage, s -> s);
+        vsLanguage = null;
+        finish("languageRange");
+    }
+
+    // -- ValueSet any exclusion
     protected void startValueExclusion() { start("valueExclusion"); }
     protected void seenExclusionIri(String iriStr) {}
     protected void seenExclusionIriTilde() {}
