@@ -21,7 +21,6 @@ package shex.expressions;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
-import shex.ReportItem;
 import shex.ValidationContext;
 
 /** A shape expression that is always true. For example "{ . }"  */
@@ -35,7 +34,7 @@ public class ShapeExpressionTrue extends ShapeExpression {
     }
 
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node data) { return null; }
+    public void validate(ValidationContext vCxt, Node data) { }
 
     @Override
     public String toString() { return "ShapeExpressionNoOp"; }

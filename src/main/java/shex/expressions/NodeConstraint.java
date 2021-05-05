@@ -26,7 +26,7 @@ import shex.ReportItem;
 import shex.ValidationContext;
 
 public abstract class NodeConstraint extends ShapeExpression {
-
+// Something that can only validates to one report.
     /*
      *  5.4 Node Constraints
      *  5.4.1 Semantics
@@ -37,11 +37,18 @@ public abstract class NodeConstraint extends ShapeExpression {
      *  5.4.6 Values Constraint
      */
 
-    // [shex] public abstract boolean validate(Node data) ;
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node data) {
+    public void validate(ValidationContext vCxt, Node data) {
+        ReportItem item = validateOne(vCxt, data);
+        if ( item != null )
+            vCxt.reportEntry(item);
+    }
+
+    // [shex] public abstract boolean validate(Node data) ;
+    public ReportItem validateOne(ValidationContext vCxt, Node data) {
         throw new NotImplemented(this.getClass().getSimpleName()+".validate");
     }
+
 
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {

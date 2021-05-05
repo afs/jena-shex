@@ -19,7 +19,10 @@
 package shex.expressions;
 
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
+import shex.ReportItem;
+import shex.ValidationContext;
 
 public class ShapeExpressionNOT extends ShapeExpression {
 
@@ -35,6 +38,16 @@ public class ShapeExpressionNOT extends ShapeExpression {
 
     public ShapeExpressionNOT(ShapeExpression shapeExpression) {
         this.other = shapeExpression;
+    }
+
+    @Override
+    public void validate(ValidationContext vCxt, Node data) {
+        ValidationContext vCxt2 = ValidationContext.create(vCxt);
+        other.validate(vCxt2, data);
+        if ( ! vCxt2.conforms() )
+            return;
+        ReportItem item = new ReportItem("NOT: Term reject becuase it conforms ", data);
+        vCxt.reportEntry(item);
     }
 
     @Override

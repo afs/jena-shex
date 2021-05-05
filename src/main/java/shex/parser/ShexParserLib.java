@@ -42,6 +42,7 @@ public class ShexParserLib {
      */
 
     // Main worker function for unescaping strings.
+    public // [shex]
     /*package*/static String unescapeShexRegex(String s, char escape, boolean pointCodeOnly) {
         int i = s.indexOf(escape) ;
 

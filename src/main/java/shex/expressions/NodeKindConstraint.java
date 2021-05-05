@@ -20,7 +20,9 @@ package shex.expressions;
 
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import shex.ReportItem;
 import shex.ValidationContext;
 
@@ -32,7 +34,7 @@ public class NodeKindConstraint extends NodeConstraint {
     }
 
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node n) {
+    public ReportItem validateOne(ValidationContext vCxt, Node n) {
         switch (nodeKind) {
             case BNODE :
                 if ( n.isBlank() )
@@ -58,6 +60,11 @@ public class NodeKindConstraint extends NodeConstraint {
         // Bad.
         String msg = toString()+" : Expected "+nodeKind.toString()+" for "+displayStr(n);
         return new ReportItem(msg, n);
+    }
+
+    @Override
+    public void print(IndentedWriter out, NodeFormatter nFmt) {
+        out.println(toString());
     }
 
     @Override

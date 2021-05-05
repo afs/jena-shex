@@ -23,7 +23,6 @@ import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import shex.ReportItem;
@@ -46,16 +45,32 @@ public class ShapeExpressionOR extends ShapeExpression {
     }
 
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node data) {
-        throw new NotImplemented(this.getClass().getSimpleName()+".validate");
+    public void validate(ValidationContext vCxt, Node data) {
+        // We need to ignore validation failures from expressions - we need to find one success.
+        for ( ShapeExpression shExpr : expressions ) {
+            ValidationContext vCxt2 = ValidationContext.create(vCxt);
+            shExpr.validate(vCxt2, data);
+            boolean innerConforms = vCxt2.conforms();
+            if ( innerConforms )
+                return;
+        }
+        ReportItem item = new ReportItem("OR expression not satisfied:", data);
+        vCxt.reportEntry(item);
     }
 
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {
-        out.println("OR");
-        out.incIndent();
-        expressions.forEach(ex->ex.print(out, nFmt));
-        out.decIndent();
+        //out.println("OR");
+        out.printf("OR(%d)\n", expressions.size());
+        int idx = 0;
+        for ( ShapeExpression shExpr : expressions ) {
+            idx++;
+            out.printf("%d -", idx);
+            out.incIndent(4);
+            shExpr.print(out, nFmt);
+            out.decIndent(4);
+
+        }
     }
 
     @Override

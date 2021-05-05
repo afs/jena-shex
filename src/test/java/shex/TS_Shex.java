@@ -16,12 +16,18 @@
  * limitations under the License.
  */
 
-package shex.expressions;
+package shex;
 
-public class FacetNumeric extends FacetXS {
-    /*
-     * [30]    numericFacet       ::=      numericRange numericLiteral | numericLength INTEGER
-     * [31]    numericRange       ::=      "MININCLUSIVE" | "MINEXCLUSIVE" | "MAXINCLUSIVE" | "MAXEXCLUSIVE"
-     * [32]    numericLength      ::=      "TOTALDIGITS" | "FRACTIONDIGITS"
-     */
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestShexSyntax.class,
+    TestShexBadSyntax.class,
+    Scripts_ShexValidation.class
+})
+
+public class TS_Shex {
+
 }

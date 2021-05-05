@@ -18,15 +18,16 @@
 
 package shex.expressions;
 
-import static org.apache.jena.shacl.lib.ShLib.displayStr;
+import static shex.expressions.PLib.*;
 
 import java.util.Objects;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.riot.out.NodeFormatter;
 // ----
-import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.vocabulary.XSD;
 import shex.ReportItem;
 import shex.ValidationContext;
@@ -53,7 +54,7 @@ public class DatatypeConstraint extends NodeConstraint {
     }
 
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node n) {
+    public ReportItem validateOne(ValidationContext vCxt, Node n) {
         if ( n.isLiteral() && dtURI.equals(n.getLiteralDatatypeURI()) ) {
             // Must be valid for the type
             if ( ! rdfDatatype.isValid(n.getLiteralLexicalForm()) ) {
@@ -66,15 +67,25 @@ public class DatatypeConstraint extends NodeConstraint {
         if ( ! n.isLiteral() )
             return new ReportItem(toString()+" : Not a literal", n);
         //String dtStr = vCxt.getShapesGraph().getPrefixMapping().qnameFor(dtURI);
-        String dtStr = dtURI;
-
-        if ( dtStr == null ) {
-            Node dt = NodeFactory.createURI(n.getLiteralDatatypeURI());
-            dtStr = ShLib.displayStr(dt);
-        }
-
-        String errMsg = toString()+" : Got datatype "+dtStr+" : Node "+displayStr(n);
+        Node dt = NodeFactory.createURI(n.getLiteralDatatypeURI());
+        String errMsg = toString()+" -- Wrong datatype: "+displayDT(n)+" for focus node: "+displayStr(n);
         return new ReportItem(errMsg, n);
+    }
+
+    @Override
+    public void print(IndentedWriter out, NodeFormatter nFmt) {
+        out.print("Datatype[");
+        if ( datatype.isBlank() ) {
+            out.print("<_:");
+            out.print(datatype.getBlankNodeLabel());
+            out.print(">");
+        } else if ( datatype.isURI() && dtURI.startsWith(XSD.getURI()) ) {
+            out.print("xsd:");
+            out.print(datatype.getLocalName());
+        } else {
+            nFmt.format(out, datatype);
+        }
+        out.println("]");
     }
 
     @Override
@@ -92,6 +103,8 @@ public class DatatypeConstraint extends NodeConstraint {
 
         return "Datatype["+x+"]";
     }
+
+
 
     @Override
     public int hashCode() {

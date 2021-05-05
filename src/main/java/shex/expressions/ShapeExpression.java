@@ -22,7 +22,6 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
-import shex.ReportItem;
 import shex.ShexConstraint;
 import shex.ValidationContext;
 
@@ -30,8 +29,8 @@ public abstract class ShapeExpression implements ShexConstraint {
 
     public ShapeExpression() { }
 
-    @Override
-    public ReportItem validate(ValidationContext vCxt, Node data) {
+    // [shex] return boolean for true -> OK, false -> not OK.
+    public void validate(ValidationContext vCxt, Node data) {
         throw new NotImplemented(this.getClass().getSimpleName()+".validate");
     }
 

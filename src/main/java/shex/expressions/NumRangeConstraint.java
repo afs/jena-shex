@@ -46,7 +46,7 @@ public class NumRangeConstraint extends NodeConstraint {
     }
 
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node n) {
+    public ReportItem validateOne(ValidationContext vCxt, Node n) {
         if ( ! n.isLiteral() )
             return new ReportItem("NumRange: Not a literal number", n);
         NodeValue nv = NodeValue.makeNode(n);

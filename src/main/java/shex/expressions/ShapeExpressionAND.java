@@ -23,10 +23,8 @@ import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
-import shex.ReportItem;
 import shex.ValidationContext;
 
 public class ShapeExpressionAND extends ShapeExpression {
@@ -45,17 +43,36 @@ public class ShapeExpressionAND extends ShapeExpression {
         this.expressions = expressions;
     }
 
+    public List<ShapeExpression> expressions() { return expressions; }
+
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node data) {
-        throw new NotImplemented(this.getClass().getSimpleName()+".validate");
+    public void validate(ValidationContext vCxt, Node data) {
+        // Record all reports.
+        for ( ShapeExpression shExpr : expressions ) {
+            shExpr.validate(vCxt, data);
+        }
+        return;
     }
 
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {
-        out.println("AND");
-        out.incIndent();
-        expressions.forEach(ex->ex.print(out, nFmt));
-        out.decIndent();
+        out.printf("AND(%d)\n", expressions.size());
+//        out.print("AND");
+        int idx = 0;
+        for ( ShapeExpression shExpr : expressions ) {
+            idx++;
+            out.printf("%d -", idx);
+            out.incIndent(4);
+            shExpr.print(out, nFmt);
+            out.decIndent(4);
+
+        }
+//
+//
+//        out.incIndent(4);
+//        expressions.forEach(ex->ex.print(out, nFmt));
+//        out.decIndent(4);
+////        expressions.forEach(ex->ex.print(out, nFmt));
     }
 
     @Override

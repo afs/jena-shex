@@ -32,7 +32,7 @@ import shex.ValidationContext;
  *
  * This applies to literals and URI through the use of SPARQL str().
  */
-public class StrRegexConstraint extends FacetString {
+public class StrRegexConstraint extends NodeConstraint {
     //See SHACL PatternConstraint.
 
     private final Pattern pattern;
@@ -59,7 +59,7 @@ public class StrRegexConstraint extends FacetString {
     }
 
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node n) {
+    public ReportItem validateOne(ValidationContext vCxt, Node n) {
         if ( n.isBlank() ) {
             String msg = toString()+": Blank node: "+ShLib.displayStr(n);
             return new ReportItem(msg, n);

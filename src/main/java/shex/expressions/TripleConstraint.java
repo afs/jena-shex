@@ -21,12 +21,13 @@ package shex.expressions;
 import java.util.List;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.atlas.lib.NotImplemented;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.out.NodeFormatter;
-import shex.ReportItem;
 import shex.ValidationContext;
 
+// [shex] Not a ShapeExpression per se - part of a TripleExpression.
 public class TripleConstraint extends ShapeExpression {
 
     /*
@@ -49,25 +50,33 @@ public class TripleConstraint extends ShapeExpression {
     }
 
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node data) {
-        throw new NotImplemented(this.getClass().getSimpleName()+".validate");
+    public void validate(ValidationContext vCxt, Node data) {
+        Graph graph = vCxt.getData();
+        List<Node> objects = G.listSP(graph, data, predicate);
+        for ( Node obj : objects ) {
+            for (  ShapeExpression shExpr : constraints ) {
+                shExpr.validate(vCxt, obj);
+            }
+        }
     }
 
     @Override
-    public void print(IndentedWriter out, NodeFormatter nFmt) {
-        //out.println(toString());
+    public void print(IndentedWriter iOut, NodeFormatter nFmt) {
+        iOut.print("TripleConstraint { predicate=");
         if ( reverse )
-            out.print("^");
-        out.print("<"+predicate+">");
+            iOut.print("^");
+        nFmt.format(iOut, predicate);
+
         if ( constraints.isEmpty() ) {
-            out.println("{ }");
+            iOut.println(" }");
             return;
         }
-        out.println(" {");
-        out.incIndent();
-        constraints.forEach(c->c.print(out, nFmt));
-        out.decIndent();
-        out.println("}");
+        iOut.println();
+        iOut.incIndent();
+        constraints.forEach(c->c.print(iOut, nFmt));
+        iOut.decIndent();
+
+        iOut.println("}");
     }
 
     public Node getPredicate() {

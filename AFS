@@ -67,7 +67,8 @@ Tests:
 https://github.com/shexSpec/shexTest/
 
 == Grammar
-1. Cardinalit : why "{ }" when [ ] is maths notation.
+
+1. Cardinality : why "{ }" when [ ] is maths notation.
 2. REPEAT_RANGE  Why a token? (ambiguity!) No WS.
 3. LANG_STRING Why a token? (minor)
 
@@ -122,7 +123,7 @@ valueSetValue ::= ... | exclusion+
 
 Spec: [ . - "foo" . - "bar" ]
 
-because "." , "-" is paert of "exclusion".
+because "." , "-" is part of "exclusion".
 
     | '.' (iriExclusion+ | literalExclusion+ | languageExclusion+)
 
@@ -174,7 +175,7 @@ and change valueSet.
 
 Not a grammar error. (derived types?)
 
-19/
+19/ true~
 
 ==== spec
 
@@ -209,6 +210,6 @@ then triple constraint(:p, xsd:integer) is a shape expression (by grammar).
 If :S is in the shape map, then is the triple constraint (n, tc) in the typing?
 
 C/
-"negiation"
+"negation"
 
 D/

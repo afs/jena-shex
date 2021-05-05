@@ -21,7 +21,7 @@ package shex.expressions;
 import shex.ShexException;
 
 public enum NodeKind {
-    IRI("IRI"), BNODE("BNode"), NONLITERAL("NonLiteral"), LITERAL("Literal");
+    IRI("IRI"), BNODE("BNode"), NONLITERAL("NonLiteral"), LITERAL("Literal"), TRIPLE("Triple");
 
     private final String label;
 
@@ -35,6 +35,7 @@ public enum NodeKind {
             case "bnode":       return BNODE;
             case "literal":     return LITERAL;
             case "nonliteral":  return NONLITERAL;
+            case "triple":      return TRIPLE;
             default:
                 throw new ShexException("NodeKind not recognized: '"+nodeKind+"'");
         }

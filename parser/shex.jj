@@ -332,7 +332,7 @@ String numericLength() : { Token t; }
 void shapeDefinition() : {}
 {
  	(extraPropertySet() | <CLOSED>)*
-    <LBRACE> (tripleExpressionGroup())? <RBRACE>
+    <LBRACE> (tripleExpression())? <RBRACE>
     (annotation())*
     semanticActions()
 }
@@ -340,7 +340,7 @@ void shapeDefinition() : {}
 void inlineShapeDefinition() : {}
 {
    	(extraPropertySet() | <CLOSED>)*
-    <LBRACE> (tripleExpressionGroup())? <RBRACE>
+    <LBRACE> (tripleExpression())? <RBRACE>
 }
 
 void extraPropertySet() : {}
@@ -388,11 +388,11 @@ void extraPropertySet() : {}
 // }
 
 // ---- Improvement for LL(1)
-void tripleExpressionGroup() : { int idx; }
+void tripleExpression() : { int idx; }
 {
-  { idx = startTripleExpressionGroup(); }
+  { idx = startTripleExpression(); }
   tripleExpressionClause() (<VBAR> tripleExpressionClause())*
-  { finishTripleExpressionGroup(idx); }
+  { finishTripleExpression(idx); }
 }
 
 void tripleExpressionClause() : { int idx; } {
@@ -440,7 +440,7 @@ void unaryTripleExpr() : {}
 
 void bracketedTripleExpr(): { }
 {
-   	<LPAREN> tripleExpressionGroup() <RPAREN>
+   	<LPAREN> tripleExpression() <RPAREN>
     (cardinality())?
     (annotation())*
     semanticActions()
@@ -577,6 +577,7 @@ void literalRange() : { Node lit; }
 //     <MINUS> <LANGTAG> (<TILDE>)?
 // }
 
+// Better as original
 void languageRange() : { }
 {
    { startLanguageRange(); }

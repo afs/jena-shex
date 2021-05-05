@@ -19,20 +19,38 @@
 package shex;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.jena.graph.Node;
+import org.apache.jena.riot.system.PrefixMap;
 
 public class ShexShapes {
-    private List<ShexShape> shapes = new ArrayList<>();
+    private final List<ShexShape> shapes = new ArrayList<>();
+    private final Map<Node, ShexShape> shapesMap = new HashMap<>();
+    private final PrefixMap prefixes;
 
-    public ShexShapes(List<ShexShape> shapes) {
-        this.shapes.addAll(shapes);
+    public ShexShapes(PrefixMap prefixes, List<ShexShape> shapes) {
+        this.prefixes = prefixes;
+        shapes.forEach(this::addShape);
     }
 
-    public void addShape(ShexShape shape) {
+    private void addShape(ShexShape shape) {
         shapes.add(shape);
+        if ( shape.getLabel() == null )
+            System.err.println("No shape label");
+        else
+            shapesMap.put(shape.getLabel(), shape);
     }
 
     public List<ShexShape> getShapes() {
         return shapes;
     }
+
+    public ShexShape get(Node n) {
+        return shapesMap.get(n);
+    }
+
+    public PrefixMap getPrefixMap() { return prefixes; }
 }

@@ -18,17 +18,22 @@
 
 package shex.expressions;
 
-public class FacetString extends FacetXS {
-    /*
-     * [28]    stringFacet    ::=      stringLength INTEGER | REGEXP
-     * [29]    stringLength   ::=      "LENGTH" | "MINLENGTH" | "MAXLENGTH"
-     */
+import org.apache.jena.graph.Node;
+import org.apache.jena.shacl.lib.ShLib;
+import org.apache.jena.vocabulary.XSD;
 
+public class PLib {
+    public static String displayStr(Node n) {
+        return ShLib.displayStr(n);
+    }
 
-    private static enum  STRLENGTH { LENGTH("Length"), MINLENGTH("MinLength"), MAXLENGTH("MaxLength");
-
-    STRLENGTH(String string) {} }
-
-
-    public FacetString() {}
+    public static String displayDT(Node n) {
+        if ( n.isLiteral() && n.getLiteralDatatypeURI().startsWith(XSD.getURI()) ) {
+            int x = XSD.getURI().length();
+            String s = n.getLiteralDatatypeURI().substring(x);
+            return "xsd:"+s;
+        }
+        String s = "<"+n.getLiteralDatatypeURI()+">";
+        return s;
+    }
 }

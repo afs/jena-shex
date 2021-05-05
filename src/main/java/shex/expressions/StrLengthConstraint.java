@@ -39,7 +39,7 @@ public class StrLengthConstraint extends NodeConstraint {
     }
 
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node n) {
+    public ReportItem validateOne(ValidationContext vCxt, Node n) {
         String str = NodeFunctions.str(n);
         switch (lengthType) {
             case LENGTH :

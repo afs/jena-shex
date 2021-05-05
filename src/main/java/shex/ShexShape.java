@@ -38,29 +38,14 @@ public class ShexShape {
     public ShapeExpression getShapeExpression() { return shExpression; }
 
     public void print(IndentedWriter iOut, NodeFormatter nFmt) {
-        iOut.printf("Shape: %s\n", getLabel());
+        iOut.printf("Shape: ");
+        nFmt.format(iOut, getLabel());
+        iOut.println();
         // [shex] Closed
         iOut.incIndent();
+        // ShapeExpressionAND:
+        // Consolidate adjacent TripleConstraints.
         getShapeExpression().print(iOut, nFmt);
-//
-//        List<NodeConstraint> x = getShapeExpression().getNodeConstraints();
-//        x.forEach(c -> {
-//            iOut.print("Node constraint:");
-//            c.print(iOut, nFmt);
-//            iOut.println();
-//        });
-//        List<Constraint> y = getShapeExpression().getTripleConstraints();
-//        y.forEach(c->{
-//            if ( c instanceof TripleConstraint ) {
-//                TripleConstraint tc = (TripleConstraint)c;
-//                tc.print(iOut, nFmt);
-////            } else if ( c instanceof ShapeExpression ) {
-////                ShapeExpression shExpr = (ShapeExpression)c;
-////                iOut.printf("ShapeExpression: %s\n", shExpr);
-//            } else {
-//                iOut.printf("Constraint: %s\n",c);
-//            }
-//        });
         iOut.decIndent();
     }
 

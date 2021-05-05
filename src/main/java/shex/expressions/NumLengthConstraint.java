@@ -39,7 +39,7 @@ public class NumLengthConstraint extends NodeConstraint {
     }
 
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node n) {
+    public ReportItem validateOne(ValidationContext vCxt, Node n) {
         String str = NodeFunctions.str(n);
         int idx = str.indexOf('.');
         int digits = (idx<0) ? length : length-1 ;

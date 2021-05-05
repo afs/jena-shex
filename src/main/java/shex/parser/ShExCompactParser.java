@@ -112,9 +112,7 @@ public class ShExCompactParser extends LangParserBase {
             throw new InternalErrorException("shape in-progress");
         if (! shapeExprStack.isEmpty() )
             throw new InternalErrorException("shape expresion stack not empty");
-        if ( DEBUG )
-            out.println();
-        return new ShexShapes(shapes);
+        return new ShexShapes(super.profile.getPrefixMap(), shapes);
     }
 
     protected void imports(String iri, int line, int column) {
@@ -283,13 +281,14 @@ public class ShExCompactParser extends LangParserBase {
         push(shapeExprStack, shapeRef);
     }
 
-    protected int startTripleExpressionGroup() {
+    protected int startTripleExpression() {
         start("TripleExpressionGroup");
         return startShapeOp();
     }
 
-    protected void finishTripleExpressionGroup(int idx) {
+    protected void finishTripleExpression(int idx) {
         finishShapeOp(idx, ShapeExpressionOR::create);
+        printState();
         finish("TripleExpressionGroup");
     }
 
@@ -359,7 +358,7 @@ public class ShExCompactParser extends LangParserBase {
     }
 
     private void addNodeConstraint(NodeConstraint constraint) {
-        debug("NodeConstraint: %s", constraint);
+        stack("NodeConstraint: %s", constraint);
         push(shapeExprStack, constraint);
     }
 
@@ -505,7 +504,7 @@ public class ShExCompactParser extends LangParserBase {
                 }
             }
             generateCardinality(image, min, max);
-            debug("Cardinality: %s min=%s, max=%d", image, min, max);
+            //debug("Cardinality: %s min=%s, max=%d", image, min, max);
         } catch ( Throwable th) {
             throw new ShexParseException("Bad cardinality: "+image, line, column);
         }
@@ -664,6 +663,13 @@ public class ShExCompactParser extends LangParserBase {
             out.print(label);
             if ( inline == INLINE)
                 out.print("'");
+            out.println();
+        }
+    }
+
+    private void stack(String fmt, Object...args) {
+        if ( DEBUG_PARSE ) {
+            out.print(String.format(fmt, args));
             out.println();
         }
     }

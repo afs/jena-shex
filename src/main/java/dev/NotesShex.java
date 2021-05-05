@@ -22,28 +22,42 @@ public class NotesShex {
     // Grammar.
     // Test Suite
 
+    // **
+    // [x] TripleExpressionGroup -> TripleExpression.
+    // [ ] Create TripleExpression()
+    // [ ] TripleExpression.validate
+    // [ ] TripleConstraint is not a ShapeExpression.
+    //     NOT ShapeExperssions in the same way?
+    // [ ] Need different AND OR for TripleExpression? "OneOf" and "EachOf"
+    //     Probably not.
+
+    // [ ] Better print of ADD,OR print index?
+
+    // [ ] Default cardinality of {1}
+    // [ ] Validation Context - current Triple constraint?
+    //     Clear going through a ref or inner shape.
+    //     Or path from start shape?
+    // [ ] Unclear cardinality - applies to triple or to triple and contraints (TripleConstraint)
+    // [ ] ReportItem to include shape.
+    // [ ] ShexValidationReport
+    // [ ] ReportItem gathering.
+    //     AND, tripleConstraint
+    // [ ] Print - {} at wrong point.
+    // [x] Shapes -> getPrefixMap();
+    // [x] TripleConstaint is a single ShapeExpressionAnd
+
+
+    // [ ] ShapeMap
+    // [ ] 1literalPattern_with_all_punctuation -- escape bug? And then 1literalPattern_with_REGEXP_escapes_escaped
+
     // [x] Grammar wrong for value sets.
-    // [ ] Bad syntax tests
+    // [x] Bad syntax tests
     // [ ] Record start line/column of a value set or range.
-    // [ ] Bad syntax: ["string"@1]
-    /*
-[48]    valueSet               ::=         '[' valueSetValue* ']'
-[49]    valueSetValue          ::=         iriRange | literalRange | languageRange | exclusion+
+    // [x] Bad syntax: ["string"@1]
 
-[50]    exclusion              ::=         '-' (iri | literal | LANGTAG) '~'?
+    // [ ] Unicode [\uD800-\uDB7F][\uDC00-\uDFFF]
 
-[51]    iriRange               ::=         iri ('~' iriExclusion*)?
-[52]    iriExclusion           ::=         '-' iri '~'?
-
-[53]    literalRange           ::=         literal ('~' literalExclusion*)?
-[54]    literalExclusion       ::=         '-' literal '~'?
-
-[55]    languageRange          ::=         LANGTAG ('~' languageExclusion*)? | '@' '~' languageExclusion*
-[56]    languageExclusion      ::=         '-' LANGTAG '~'?
-
-     */
-
-    // [ ] Print
+    // [ ] Print OR broken?
     // [x] Cardinality {0}
     // [x] ShapeAtom DOT
     // [x] ShapeExpressionEmpty() -- marker.

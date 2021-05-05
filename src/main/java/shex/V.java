@@ -16,11 +16,17 @@
  * limitations under the License.
  */
 
-package shex.expressions;
+package shex;
 
-public class FacetXS extends NodeConstraint {
-        /*
-         *  [27]     xsFacet       ::=      stringFacet | numericFacet
-         */
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
 
+public class V {
+
+    public static ValidationReport validate(Graph graphData, ShexShapes shapes, ShexShape shape, Node focus) {
+        ValidationContext vCxt = new ValidationContext(graphData, shapes);
+        shape.getShapeExpression().validate(vCxt, focus);
+        ValidationReport report = vCxt.generateReport();
+        return report;
+    }
 }

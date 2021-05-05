@@ -1026,7 +1026,7 @@ int num = integer(t.image, t.beginLine, t.beginColumn);
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:{
-      tripleExpressionGroup();
+      tripleExpression();
       break;
       }
     default:
@@ -1088,7 +1088,7 @@ int num = integer(t.image, t.beginLine, t.beginColumn);
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:{
-      tripleExpressionGroup();
+      tripleExpression();
       break;
       }
     default:
@@ -1158,8 +1158,8 @@ int num = integer(t.image, t.beginLine, t.beginColumn);
 // }
 
 // ---- Improvement for LL(1)
-  final public void tripleExpressionGroup() throws ParseException {int idx;
-idx = startTripleExpressionGroup();
+  final public void tripleExpression() throws ParseException {int idx;
+idx = startTripleExpression();
     tripleExpressionClause();
     label_18:
     while (true) {
@@ -1175,7 +1175,7 @@ idx = startTripleExpressionGroup();
       jj_consume_token(VBAR);
       tripleExpressionClause();
     }
-finishTripleExpressionGroup(idx);
+finishTripleExpression(idx);
   }
 
   final public void tripleExpressionClause() throws ParseException {int idx;
@@ -1328,7 +1328,7 @@ finishUnaryTripleExpr();
 
   final public void bracketedTripleExpr() throws ParseException {
     jj_consume_token(LPAREN);
-    tripleExpressionGroup();
+    tripleExpression();
     jj_consume_token(RPAREN);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case REPEAT_RANGE:
@@ -1730,8 +1730,9 @@ finishLiteralRange();
 // {
 //     <MINUS> <LANGTAG> (<TILDE>)?
 // }
-  final public 
-void languageRange() throws ParseException {
+
+// Better as original
+  final public void languageRange() throws ParseException {
 startLanguageRange();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case LANGTAG:{
@@ -2223,15 +2224,15 @@ lex = stripQuotes3(t.image) ;
     return false;
   }
 
-  private boolean jj_3R_35()
- {
-    if (jj_3R_38()) return true;
-    return false;
-  }
-
   private boolean jj_3R_50()
  {
     if (jj_scan_token(PNAME_NS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_35()
+ {
+    if (jj_3R_38()) return true;
     return false;
   }
 
@@ -2253,12 +2254,6 @@ lex = stripQuotes3(t.image) ;
     return false;
   }
 
-  private boolean jj_3R_33()
- {
-    if (jj_scan_token(DOLLAR)) return true;
-    return false;
-  }
-
   private boolean jj_3R_40()
  {
     Token xsp;
@@ -2266,6 +2261,23 @@ lex = stripQuotes3(t.image) ;
     if (jj_3R_42()) {
     jj_scanpos = xsp;
     if (jj_3R_43()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_33()
+ {
+    if (jj_scan_token(DOLLAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_48()
+ {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_49()) {
+    jj_scanpos = xsp;
+    if (jj_3R_50()) return true;
     }
     return false;
   }
@@ -2285,17 +2297,6 @@ lex = stripQuotes3(t.image) ;
     if (jj_3R_34()) {
     jj_scanpos = xsp;
     if (jj_3R_35()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_48()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_49()) {
-    jj_scanpos = xsp;
-    if (jj_3R_50()) return true;
     }
     return false;
   }

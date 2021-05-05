@@ -18,11 +18,10 @@
 
 package shex;
 
-import org.apache.jena.atlas.lib.NotImplemented;
-import org.apache.jena.graph.Node;
 
+// [shex] Becomes ShexExpression
 public interface ShexConstraint {
-    public default ReportItem validate(ValidationContext vCxt, Node data) {
-        throw new NotImplemented(this.getClass().getSimpleName()+".validate");
-    }
+//    public default ReportItem validate(ValidationContext vCxt, Node data) {
+//        throw new NotImplemented(this.getClass().getSimpleName()+".validate");
+//    }
 }
