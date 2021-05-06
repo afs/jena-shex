@@ -19,23 +19,14 @@
 package shex.expressions;
 
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.riot.out.NodeFormatter;
-import shex.ShexConstraint;
 
-public class ShapeExpressionConstraint extends ShapeExpression {
-    private final ShexConstraint constraint;
+public interface ShexPrintable {
 
-    public ShapeExpressionConstraint(ShexConstraint constraint) { this.constraint = constraint; }
+    //public void print(IndentedWriter iOut, NodeFormatter nFmt);
 
-    @Override
-    public void print(IndentedWriter out, NodeFormatter nFmt) {
-        out.print("Constraint: ");
-        out.print(constraint);
-        out.println();
-    }
-
-    @Override
-    public String toString() {
-        return "ShapeExpressionConstraint [constraint="+constraint+"]";
+    public default void print(IndentedWriter iOut, NodeFormatter nFmt) {
+        throw new NotImplemented(this.getClass().getSimpleName().toString()+".print");
     }
 }

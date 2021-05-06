@@ -18,27 +18,27 @@
 
 package shex.expressions;
 
-import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.atlas.lib.NotImplemented;
-import org.apache.jena.graph.Node;
-import org.apache.jena.riot.out.NodeFormatter;
-import shex.ValidationContext;
+public abstract class TripleExpression implements ShexPrintable {
 
-public class TripleExpression extends ShapeExpression {
+    // tripleExpr = EachOf | OneOf | TripleConstraint | tripleExprRef
 
-    private final ShapeExpression shExpr;
+    //cardinality, semActs, annotation.
 
-    public TripleExpression(ShapeExpression shExpr) {
-        this.shExpr = shExpr;
-    }
+    public TripleExpression() { }
 
-    public ShapeExpression getShapeExpression() { return shExpr; }
+//    @Override
+//    public void validate(ValidationContext vCxt, Node data) {
+//        throw new NotImplemented(this.getClass().getSimpleName()+".validate");
+//    }
 
     @Override
-    public void validate(ValidationContext vCxt, Node data) {
-        throw new NotImplemented(this.getClass().getSimpleName()+".validate");
-    }
+    public abstract int hashCode();
 
     @Override
-    public void print(IndentedWriter out, NodeFormatter nFmt) {};
+    public abstract boolean equals(Object obj);
+
+    @Override
+    public String toString() {
+        return "TripleExpression ["+this.getClass().getSimpleName()+"]";
+    }
 }

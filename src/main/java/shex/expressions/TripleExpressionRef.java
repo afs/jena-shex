@@ -16,45 +16,43 @@
  * limitations under the License.
  */
 
-package shex;
+package shex.expressions;
+
+import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
-import shex.expressions.ShapeExpression;
 
-// [shex] Isa Shape?
-// Shape -- TripleExpression.
-// ShexShape - ShapeExpression
+public class TripleExpressionRef implements ShexPrintable {
 
-public class ShexShape {
-    private final Node label;
-    private ShapeExpression shExpression;
+    private Node ref;
 
-    // [shex] Future : builder.
-    public ShexShape(Node label) {
-        this.label = label;
-    }
-
-    public Node getLabel() { return label; }
-
-    public void setShapeExpression(ShapeExpression shExpression) { this.shExpression = shExpression; }
-    public ShapeExpression getShapeExpression() { return shExpression; }
-
-    public void print(IndentedWriter iOut, NodeFormatter nFmt) {
-        iOut.printf("Shape: ");
-        nFmt.format(iOut, getLabel());
-        iOut.println();
-        // [shex] Closed
-        iOut.incIndent();
-        // ShapeExpressionAND:
-        // Consolidate adjacent TripleConstraints.
-        getShapeExpression().print(iOut, nFmt);
-        iOut.decIndent();
+    public TripleExpressionRef(Node node) {
+        this.ref = node;
     }
 
     @Override
-    public String toString() {
-        return "ShexShape [label="+label+" expr="+shExpression+"]";
+    public void print(IndentedWriter iOut, NodeFormatter nFmt) {
+        iOut.print("tripleExprRef: ");
+        nFmt.format(iOut, ref);
+        iOut.println();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ref);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        TripleExpressionRef other = (TripleExpressionRef)obj;
+        return Objects.equals(ref, other.ref);
     }
 }

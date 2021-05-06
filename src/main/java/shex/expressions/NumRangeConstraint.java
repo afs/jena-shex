@@ -73,6 +73,23 @@ public class NumRangeConstraint extends NodeConstraint {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(numericValue, rangeKind, value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        NumRangeConstraint other = (NumRangeConstraint)obj;
+        return Objects.equals(numericValue, other.numericValue) && rangeKind == other.rangeKind && Objects.equals(value, other.value);
+    }
+
+    @Override
     public String toString() {
         return "NumRange["+rangeKind.label()+" "+NodeFmtLib.displayStr(value)+"]";
     }

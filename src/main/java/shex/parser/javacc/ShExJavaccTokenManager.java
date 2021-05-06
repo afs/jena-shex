@@ -20,6 +20,7 @@
 
 package shex.parser.javacc;
 import shex.parser.*;
+import shex.expressions.*;
 import org.apache.jena.graph.*;
 import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 

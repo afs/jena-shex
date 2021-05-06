@@ -19,9 +19,11 @@
 package shex.expressions;
 
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
+import shex.ValidationContext;
 
-/** Absense of a shape expression. For example, the outcome of "{}" */
+/** Absence of a shape expression. For example, the outcome of "{}" */
 public class ShapeExpressionNone extends ShapeExpression {
 
     private static ShapeExpression instance = new ShapeExpressionNone();
@@ -30,8 +32,27 @@ public class ShapeExpressionNone extends ShapeExpression {
     private ShapeExpressionNone() {}
 
     @Override
+    public void validate(ValidationContext vCxt, Node data) { }
+
+    @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {
         out.println(toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return 60;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        return true;
     }
 
     @Override

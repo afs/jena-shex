@@ -19,30 +19,35 @@
 package shex.expressions;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.atlas.lib.NotImplemented;
-import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
-import shex.ValidationContext;
 
-public abstract class ShapeExpression {
+public class TripleExpressionNone extends TripleExpression {
+    private static TripleExpression instance = new TripleExpressionNone();
+    public static TripleExpression get() { return instance ; }
 
-    public ShapeExpression() { }
+    private TripleExpressionNone() {}
 
-    // [shex] return boolean for true -> OK, false -> not OK.
-    public void validate(ValidationContext vCxt, Node data) {
-        throw new NotImplemented(this.getClass().getSimpleName()+".validate");
+    @Override
+    public void print(IndentedWriter out, NodeFormatter nFmt) {
+        out.println(toString());
     }
 
-    public abstract void print(IndentedWriter out, NodeFormatter nFmt);
+    @Override
+    public String toString() { return "TripleExpressionNone"; }
 
     @Override
-    public abstract int hashCode();
+    public int hashCode() {
+        return 57;
+    }
 
     @Override
-    public abstract boolean equals(Object obj);
-
-    @Override
-    public String toString() {
-        return "ShapeExpression ["+this.getClass().getSimpleName()+"]";
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        return true;
     }
 }

@@ -48,6 +48,7 @@ PARSER_BEGIN(ShExJavacc)
 package shex.parser.javacc;
 
 import shex.parser.*;
+import shex.expressions.*;
 import org.apache.jena.graph.*;
 import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 
@@ -329,18 +330,22 @@ String numericLength() : { Token t; }
 }
 
 // "{ ... }"
-void shapeDefinition() : {}
+void shapeDefinition() : { boolean closed = false ; TripleExpression tripleExpr = null; }
 {
- 	(extraPropertySet() | <CLOSED>)*
-    <LBRACE> (tripleExpression())? <RBRACE>
+    { startShapeDefinition(); }
+ 	(extraPropertySet() | <CLOSED> { closed = true; } )*
+    <LBRACE> (tripleExpr = tripleExpression())? <RBRACE>
     (annotation())*
     semanticActions()
+    { finishShapeDefinition(tripleExpr, closed); }
 }
 
-void inlineShapeDefinition() : {}
+void inlineShapeDefinition() : { boolean closed = false ; TripleExpression tripleExpr = null; }
 {
-   	(extraPropertySet() | <CLOSED>)*
-    <LBRACE> (tripleExpression())? <RBRACE>
+    { startShapeDefinition(); }
+   	(extraPropertySet() | <CLOSED> { closed = true; } )*
+    <LBRACE> (tripleExpr = tripleExpression())? <RBRACE>
+    { finishShapeDefinition(tripleExpr, closed); }
 }
 
 void extraPropertySet() : {}
@@ -388,11 +393,11 @@ void extraPropertySet() : {}
 // }
 
 // ---- Improvement for LL(1)
-void tripleExpression() : { int idx; }
+TripleExpression tripleExpression() : { int idx; }
 {
   { idx = startTripleExpression(); }
   tripleExpressionClause() (<VBAR> tripleExpressionClause())*
-  { finishTripleExpression(idx); }
+  { return finishTripleExpression(idx); }
 }
 
 void tripleExpressionClause() : { int idx; } {
@@ -413,7 +418,6 @@ void tripleExpressionClause_0() : {}
 void tripleExpressionClause_1() : { }
 {
     unaryTripleExpr()
-//    ( LOOKAHEAD(<SEMI_COLON> iri())
     ( LOOKAHEAD(2)
       <SEMI_COLON> unaryTripleExpr()
     )*

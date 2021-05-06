@@ -18,6 +18,8 @@
 
 package shex.expressions;
 
+import java.util.Objects;
+
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
@@ -48,6 +50,23 @@ public class ShapeExpressionNOT extends ShapeExpression {
             return;
         ReportItem item = new ReportItem("NOT: Term reject becuase it conforms ", data);
         vCxt.reportEntry(item);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(other);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        ShapeExpressionNOT other = (ShapeExpressionNOT)obj;
+        return Objects.equals(this.other, other.other);
     }
 
     @Override

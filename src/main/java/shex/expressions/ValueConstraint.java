@@ -20,4 +20,14 @@ package shex.expressions;
 
 public class ValueConstraint extends NodeConstraint {
 
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return false;
+    }
+
 }

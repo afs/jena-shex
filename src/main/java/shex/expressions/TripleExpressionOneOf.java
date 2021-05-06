@@ -23,46 +23,31 @@ import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
-import shex.ValidationContext;
 
-public class ShapeExpressionAND extends ShapeExpression {
+public class TripleExpressionOneOf extends TripleExpression {
 
-    // Could pull out ShapeExpressionN
-    // [ ] print
-    // [ ] Most of equals.
-
-    public static ShapeExpression create(List<ShapeExpression> acc) {
+    public static TripleExpression create(List<TripleExpression> acc) {
         if ( acc.size() == 0 )
             throw new InternalErrorException("Empty list");
         if ( acc.size() == 1 )
             return acc.get(0);
-        return new ShapeExpressionAND(acc);
+        return new TripleExpressionOneOf(acc);
     }
 
-    List<ShapeExpression> shapeExpressions;
+    private List<TripleExpression> tripleExpression;
 
-    private ShapeExpressionAND(List<ShapeExpression> expressions) {
-        this.shapeExpressions = expressions;
+    private TripleExpressionOneOf(List<TripleExpression> expressions) {
+        this.tripleExpression = expressions;
     }
 
-    public List<ShapeExpression> expressions() {
-        return shapeExpressions;
+    public List<TripleExpression> expressions() {
+        return tripleExpression;
     }
 
     @Override
-    public void validate(ValidationContext vCxt, Node data) {
-        // Record all reports.
-        for ( ShapeExpression shExpr : shapeExpressions ) {
-            shExpr.validate(vCxt, data);
-        }
-        return;
-    }
-
-        @Override
     public int hashCode() {
-        return Objects.hash(1, shapeExpressions);
+        return Objects.hash(4, tripleExpression);
     }
 
     @Override
@@ -73,27 +58,25 @@ public class ShapeExpressionAND extends ShapeExpression {
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        ShapeExpressionAND other = (ShapeExpressionAND)obj;
-        return Objects.equals(shapeExpressions, other.shapeExpressions);
+        TripleExpressionOneOf other = (TripleExpressionOneOf)obj;
+        return Objects.equals(tripleExpression, other.tripleExpression);
     }
 
     @Override
-    public void print(IndentedWriter out, NodeFormatter nFmt) {
-        //out.printf("AND(%d)\n", shapeExpressions.size());
-        out.println("AND");
+    public void print(IndentedWriter iOut, NodeFormatter nFmt) {
+//        iOut.println("OneOf");
+//        iOut.incIndent();
+//        expressions().forEach(tExpr->tExpr.print(iOut, nFmt));
+//        iOut.decIndent();
+//        iOut.println("/OneOf");
+
+        iOut.println("OneOf");
         int idx = 0;
-        for ( ShapeExpression shExpr : shapeExpressions ) {
+        for ( TripleExpression tExpr : tripleExpression ) {
             idx++;
-            out.printf("%d -", idx);
-            out.incIndent(4);
-            shExpr.print(out, nFmt);
-            out.decIndent(4);
+            iOut.printf("%d - ", idx);
+            tExpr.print(iOut, nFmt);
         }
-        out.println("/AND");
-    }
-
-    @Override
-    public String toString() {
-        return "ShapeExpressionAnd "+expressions();
+        iOut.println("/OneOf");
     }
 }

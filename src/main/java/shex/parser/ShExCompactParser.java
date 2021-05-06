@@ -54,19 +54,25 @@ public class ShExCompactParser extends LangParserBase {
         this.out = IndentedWriter.clone(IndentedWriter.stdout);
     }
 
-    // -- parser state
+    // -- Top level shapes.
     private List<ShexShape> shapes = new ArrayList<>();
 
     // The shape currently in progress.
+    // [shex] Shape.newBuilder.
     private ShexShape currentShexShape = null;
+    private ShapeTripleExpression.Builder currentShapeBuilder = null;
     // Stack of shape expressions used during parsing a top level shape.
     private Deque<ShapeExpression> shapeExprStack = new ArrayDeque<>();
     private ShapeExpression currentShapeExpression() { return peek(shapeExprStack); }
 
+    // Stack of shape expressions used during parsing a top level shape.
+    private Deque<TripleExpression> tripleExprStack = new ArrayDeque<>();
+    private TripleExpression currentTripleExpression() { return peek(tripleExprStack); }
+
     private void printState() {
         if ( DEBUG ) {
             printStack("shapeExprStack", shapeExprStack);
-            //printStack("tripleConstraints", tripleConstraints);
+            printStack("tripleExprStack", tripleExprStack);
         }
     }
 
@@ -130,6 +136,7 @@ public class ShExCompactParser extends LangParserBase {
         startShapeExpressionTop();
     }
 
+    // [shex] Shape.newBuilder
     protected void finishShapeExprDecl() {
         ShapeExpression sExpr = finishShapeExpressionTop();
         currentShexShape.setShapeExpression(sExpr);
@@ -187,7 +194,7 @@ public class ShExCompactParser extends LangParserBase {
         return sExpr;
     }
 
-    // ---- Shape structure
+    // ---- Shape expressions
 
     private int startShapeOp() {
         return front(shapeExprStack);
@@ -206,16 +213,71 @@ public class ShExCompactParser extends LangParserBase {
         List<ShapeExpression> args = finishShapeOp(idx);
         if ( args == null )
             return ;
-        finishShapeOp(args, action);
+        processShapeExprArgs(args, action);
     }
 
-    private void finishShapeOp(List<ShapeExpression> args, Function<List<ShapeExpression>, ShapeExpression> action) {
+    private void processShapeExprArgs(List<ShapeExpression> args, Function<List<ShapeExpression>, ShapeExpression> action) {
         if ( action != null ) {
             ShapeExpression sExpr = action.apply(args);
             if ( sExpr != null )
                 push(shapeExprStack, sExpr);
         }
     }
+
+    // ---- TripleExpression
+
+//    private void startTripleExpressionTop() {
+//        start("startTripleExpressionTop");
+//        // Stack is empty.
+//        if ( DEBUG ) {
+//            if ( ! tripleExprStack.isEmpty() )
+//                debug("startTripleExpressionTop: Stack not empty");
+//        }
+//    }
+//
+//    private TripleExpression finishTripleExpressionTop() {
+//        if ( tripleExprStack.isEmpty() )
+//            return TripleExpressionNone.get();
+//
+//        TripleExpression tExpr = pop(tripleExprStack);
+//        if ( DEBUG ) {
+//            if ( ! tripleExprStack.isEmpty() )
+//                debug("finishShapeExpressionTop: Stack not empty");
+//        }
+//        finish("finishShapeExpressionTop");
+//        return tExpr;
+//    }
+
+    private int startTripleOp() {
+        return front(tripleExprStack);
+    }
+
+    // Do noting with the stack but pairs with startShapeOp
+    private void finishTripleOpNoAction(String operation, int idx) { }
+
+    private List<TripleExpression> finishTripleOp(int idx) {
+        return pop(tripleExprStack, idx);
+    }
+
+    private void finishTripleOp(int idx, Function<List<TripleExpression>, TripleExpression> action) {
+        if ( action == null )
+            return ;
+        List<TripleExpression> args = finishTripleOp(idx);
+        if ( args == null )
+            return ;
+        processTripleExprArgs(args, action);
+    }
+
+    private void processTripleExprArgs(List<TripleExpression> args, Function<List<TripleExpression>, TripleExpression> action) {
+        if ( action != null ) {
+            TripleExpression tExpr = action.apply(args);
+            if ( tExpr != null )
+                push(tripleExprStack, tExpr);
+        }
+    }
+
+
+    // -- Shape Structure
 
     protected int startShapeExpression(Inline inline) {
         start(inline, "ShapeExpression");
@@ -281,31 +343,44 @@ public class ShExCompactParser extends LangParserBase {
         push(shapeExprStack, shapeRef);
     }
 
-    protected int startTripleExpression() {
-        start("TripleExpressionGroup");
-        return startShapeOp();
+    protected void startShapeDefinition() {
+        start("ShapeDefinition");
     }
 
-    protected void finishTripleExpression(int idx) {
-        finishShapeOp(idx, ShapeExpressionOR::create);
-        printState();
-        finish("TripleExpressionGroup");
+    protected void finishShapeDefinition(TripleExpression tripleExpr, boolean closed) {
+        // XXX Empty.
+        // XXX Other
+        ShapeTripleExpression shape = ShapeTripleExpression.newBuilder()
+                //.label(???)
+                .closed(closed)
+                .shapeExpr(tripleExpr).build();
+        push(shapeExprStack, shape);
+        finish("ShapeDefinition");
+    }
+
+
+    // ?? Top of TripleExpression
+    protected int startTripleExpression() {
+        start("TripleExpression");
+        return startTripleOp();
+    }
+
+    protected TripleExpression finishTripleExpression(int idx) {
+        finishTripleOp(idx, TripleExpressionOneOf::create);
+        TripleExpression tripleExpr = pop(tripleExprStack);
+        finish("TripleExpression");
+        return tripleExpr;
     }
 
     // ---- TripleExpression, TripleConstraint
-    // The grammar naming is a bit odd : TripleExpression a block of triple constraints.
-    // Each block is a tripleExpressionClause which is many TripleConstraints.
-    // "TripleExpressionGroup" :: and-or hierarchy
-    // "TripleExpressionClause" :: predicate-constraints block (conjunction)
-    // "UnaryTripleExpr" :: individual tripleExpression.
 
     protected int startTripleExpressionClause() {
         start("TripleExpressionClause");
-        return startShapeOp();
+        return startTripleOp();
     }
 
     protected void finishTripleExpressionClause(int idx) {
-        finishShapeOp(idx, ShapeExpressionAND::create);
+        finishTripleOp(idx, TripleExpressionEachOf::create);
         finish("TripleExpressionClause");
     }
 
@@ -327,10 +402,14 @@ public class ShExCompactParser extends LangParserBase {
 
     protected void finishTripleConstraint(int idx, Node predicate, boolean reverse) {
         List<ShapeExpression> args = finishShapeOp(idx);
+        if ( args.size() != 1 )
+            throw new InternalErrorException("TripleConstraint with multiple ShapeExpressions");
+
+        ShapeExpression arg = args.get(0);
         if ( args != null ) {
             // Cardinality as argument.
-            ShapeExpression shExpr = new TripleConstraint(predicate, reverse, args);
-            push(shapeExprStack, shExpr);
+            TripleExpression shExpr = new TripleConstraint(predicate, reverse, arg);
+            push(tripleExprStack, shExpr);
         }
         finish("TripleConstraint");
     }

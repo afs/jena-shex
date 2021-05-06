@@ -21,6 +21,7 @@
 package shex.parser.javacc;
 
 import shex.parser.*;
+import shex.expressions.*;
 import org.apache.jena.graph.*;
 import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 
@@ -988,7 +989,8 @@ int num = integer(t.image, t.beginLine, t.beginColumn);
   }
 
 // "{ ... }"
-  final public void shapeDefinition() throws ParseException {
+  final public void shapeDefinition() throws ParseException {boolean closed = false ; TripleExpression tripleExpr = null;
+startShapeDefinition();
     label_14:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1008,6 +1010,7 @@ int num = integer(t.image, t.beginLine, t.beginColumn);
         }
       case CLOSED:{
         jj_consume_token(CLOSED);
+closed = true;
         break;
         }
       default:
@@ -1026,7 +1029,7 @@ int num = integer(t.image, t.beginLine, t.beginColumn);
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:{
-      tripleExpression();
+      tripleExpr = tripleExpression();
       break;
       }
     default:
@@ -1048,9 +1051,11 @@ int num = integer(t.image, t.beginLine, t.beginColumn);
       annotation();
     }
     semanticActions();
+finishShapeDefinition(tripleExpr, closed);
   }
 
-  final public void inlineShapeDefinition() throws ParseException {
+  final public void inlineShapeDefinition() throws ParseException {boolean closed = false ; TripleExpression tripleExpr = null;
+startShapeDefinition();
     label_16:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1070,6 +1075,7 @@ int num = integer(t.image, t.beginLine, t.beginColumn);
         }
       case CLOSED:{
         jj_consume_token(CLOSED);
+closed = true;
         break;
         }
       default:
@@ -1088,7 +1094,7 @@ int num = integer(t.image, t.beginLine, t.beginColumn);
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:{
-      tripleExpression();
+      tripleExpr = tripleExpression();
       break;
       }
     default:
@@ -1096,6 +1102,7 @@ int num = integer(t.image, t.beginLine, t.beginColumn);
       ;
     }
     jj_consume_token(RBRACE);
+finishShapeDefinition(tripleExpr, closed);
   }
 
   final public void extraPropertySet() throws ParseException {
@@ -1158,7 +1165,7 @@ int num = integer(t.image, t.beginLine, t.beginColumn);
 // }
 
 // ---- Improvement for LL(1)
-  final public void tripleExpression() throws ParseException {int idx;
+  final public TripleExpression tripleExpression() throws ParseException {int idx;
 idx = startTripleExpression();
     tripleExpressionClause();
     label_18:
@@ -1175,7 +1182,9 @@ idx = startTripleExpression();
       jj_consume_token(VBAR);
       tripleExpressionClause();
     }
-finishTripleExpression(idx);
+TripleExpression tripleExpression = finishTripleExpression(idx);
+    {if ("" != null) return tripleExpression;}
+    throw new Error("Missing return statement in function");
   }
 
   final public void tripleExpressionClause() throws ParseException {int idx;
@@ -2191,12 +2200,6 @@ lex = stripQuotes3(t.image) ;
     finally { jj_save(0, xla); }
   }
 
-  private boolean jj_3R_36()
- {
-    if (jj_scan_token(AMP)) return true;
-    return false;
-  }
-
   private boolean jj_3R_39()
  {
     if (jj_3R_41()) return true;
@@ -2351,6 +2354,12 @@ lex = stripQuotes3(t.image) ;
  {
     if (jj_scan_token(SEMI_COLON)) return true;
     if (jj_3R_30()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_36()
+ {
+    if (jj_scan_token(AMP)) return true;
     return false;
   }
 

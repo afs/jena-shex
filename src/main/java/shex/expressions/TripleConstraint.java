@@ -18,64 +18,62 @@
 
 package shex.expressions;
 
-import java.util.List;
+import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.out.NodeFormatter;
-import shex.ValidationContext;
 
 // [shex] Not a ShapeExpression per se - part of a TripleExpression.
-public class TripleConstraint extends ShapeExpression {
+public class TripleConstraint extends TripleExpression {
 
     /*
-     *   5.5 Shapes and Triple Expressions
+    TripleConstraint {
+        id:tripleExprLabel?
+        inverse:BOOL?
+        predicate:IRIREF
+        valueExpr:shapeExpr?
+        min:INTEGER?
+        max:INTEGER?
+        semActs:[SemAct+]?
+        annotations:[Annotation+]?
+    }
      */
 
     private final Node predicate;
     // [shex] Move to a block of constraints object
-    private final List<ShapeExpression> constraints;
+    private final ShapeExpression shapeExpression;
     private final boolean reverse;
 
     // Unset values
     private int min = -1;
     private int max = -1;
 
-    public TripleConstraint(Node predicate, boolean reverse, List<ShapeExpression> args) {
+    public TripleConstraint(Node predicate, boolean reverse, ShapeExpression arg) {
         this.predicate = predicate;
         this.reverse = reverse;
-        this.constraints = args;
+        this.shapeExpression = arg;
     }
 
-    @Override
-    public void validate(ValidationContext vCxt, Node data) {
-        Graph graph = vCxt.getData();
-        List<Node> objects = G.listSP(graph, data, predicate);
-        for ( Node obj : objects ) {
-            for (  ShapeExpression shExpr : constraints ) {
-                shExpr.validate(vCxt, obj);
-            }
-        }
-    }
+//    @Override
+//    public void validate(ValidationContext vCxt, Node data) {
+//        Graph graph = vCxt.getData();
+//        List<Node> objects = G.listSP(graph, data, predicate);
+//        for ( Node obj : objects )
+//            shapeExpression.validate(vCxt, obj);
+//    }
 
     @Override
     public void print(IndentedWriter iOut, NodeFormatter nFmt) {
-        iOut.print("TripleConstraint { predicate=");
+        iOut.println("TripleConstraint {");
+        iOut.incIndent();
+        iOut.printf("predicate = ");
         if ( reverse )
             iOut.print("^");
         nFmt.format(iOut, predicate);
-
-        if ( constraints.isEmpty() ) {
-            iOut.println(" }");
-            return;
-        }
         iOut.println();
-        iOut.incIndent();
-        constraints.forEach(c->c.print(iOut, nFmt));
+        shapeExpression.print(iOut, nFmt);
         iOut.decIndent();
-
         iOut.println("}");
     }
 
@@ -88,12 +86,20 @@ public class TripleConstraint extends ShapeExpression {
         this.max = max;
     }
 
+    public int min() {
+        return min;
+    }
+
+    public int max() {
+        return max;
+    }
+
     @Override
     public String toString() {
         String cardinality = cardStr(min, max);
         if ( ! cardinality.isEmpty() )
             cardinality = "cardinality="+cardinality+", ";
-        return "TripleConstraint [predicate=" + predicate + ", "+cardinality+"constraints=" + constraints + "]";
+        return "TripleConstraint [predicate=" + predicate + ", "+cardinality+"shapeExpr=" + shapeExpression + "]";
     }
 
     private String cardStr(int min, int max) {
@@ -124,6 +130,24 @@ public class TripleConstraint extends ShapeExpression {
         if ( x == -2 )
             return "*";
         return Integer.toString(x);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(max, min, predicate, reverse, shapeExpression);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        TripleConstraint other = (TripleConstraint)obj;
+        return max == other.max && min == other.min && Objects.equals(predicate, other.predicate) && reverse == other.reverse
+               && Objects.equals(shapeExpression, other.shapeExpression);
     }
 
 }

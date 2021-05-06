@@ -38,16 +38,21 @@ public class ShapeExpressionOR extends ShapeExpression {
         return new ShapeExpressionOR(acc);
     }
 
-    private final List<ShapeExpression> expressions;
+    private List<ShapeExpression> shapeExpressions;
 
     private ShapeExpressionOR(List<ShapeExpression> expressions) {
-        this.expressions = expressions;
+        this.shapeExpressions = expressions;
     }
+
+    public List<ShapeExpression> expressions() {
+        return shapeExpressions;
+    }
+
 
     @Override
     public void validate(ValidationContext vCxt, Node data) {
         // We need to ignore validation failures from expressions - we need to find one success.
-        for ( ShapeExpression shExpr : expressions ) {
+        for ( ShapeExpression shExpr : shapeExpressions ) {
             ValidationContext vCxt2 = ValidationContext.create(vCxt);
             shExpr.validate(vCxt2, data);
             boolean innerConforms = vCxt2.conforms();
@@ -59,23 +64,8 @@ public class ShapeExpressionOR extends ShapeExpression {
     }
 
     @Override
-    public void print(IndentedWriter out, NodeFormatter nFmt) {
-        //out.println("OR");
-        out.printf("OR(%d)\n", expressions.size());
-        int idx = 0;
-        for ( ShapeExpression shExpr : expressions ) {
-            idx++;
-            out.printf("%d -", idx);
-            out.incIndent(4);
-            shExpr.print(out, nFmt);
-            out.decIndent(4);
-
-        }
-    }
-
-    @Override
     public int hashCode() {
-        return Objects.hash(1, expressions);
+        return Objects.hash(2, shapeExpressions);
     }
 
     @Override
@@ -87,11 +77,26 @@ public class ShapeExpressionOR extends ShapeExpression {
         if ( getClass() != obj.getClass() )
             return false;
         ShapeExpressionOR other = (ShapeExpressionOR)obj;
-        return Objects.equals(expressions, other.expressions);
+        return Objects.equals(shapeExpressions, other.shapeExpressions);
+    }
+
+    @Override
+    public void print(IndentedWriter out, NodeFormatter nFmt) {
+        out.println("OR");
+        //out.printf("OR(%d)\n", shapeExpressions.size());
+        int idx = 0;
+        for ( ShapeExpression shExpr : shapeExpressions ) {
+            idx++;
+            out.printf("%d -", idx);
+            out.incIndent(4);
+            shExpr.print(out, nFmt);
+            out.decIndent(4);
+        }
+        out.println("/OR");
     }
 
     @Override
     public String toString() {
-        return "ShapeExpressionOr "+expressions;
+        return "ShapeExpressionOr "+expressions();
     }
 }

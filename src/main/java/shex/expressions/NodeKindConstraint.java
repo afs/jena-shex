@@ -20,6 +20,8 @@ package shex.expressions;
 
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
+import java.util.Objects;
+
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
@@ -70,5 +72,22 @@ public class NodeKindConstraint extends NodeConstraint {
     @Override
     public String toString() {
         return "NodeKind: "+nodeKind.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nodeKind);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        NodeKindConstraint other = (NodeKindConstraint)obj;
+        return nodeKind == other.nodeKind;
     }
 }

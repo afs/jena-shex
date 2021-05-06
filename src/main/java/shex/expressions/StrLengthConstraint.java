@@ -64,6 +64,23 @@ public class StrLengthConstraint extends NodeConstraint {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(length, lengthType);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        StrLengthConstraint other = (StrLengthConstraint)obj;
+        return length == other.length && lengthType == other.lengthType;
+    }
+
+    @Override
     public String toString() {
         return "StrLength["+lengthType.label()+" "+length+"]";
     }

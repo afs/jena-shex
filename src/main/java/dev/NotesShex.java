@@ -22,6 +22,21 @@ public class NotesShex {
     // Grammar.
     // Test Suite
 
+    // *** Fix parser around TripleExpression.
+    // [-]  Shape (inlineShapeDefinition) and ShexShape (shapeExprDecl)
+    //      Shape -> TripleExpression;
+    //      ShexShape -> ShapeExpression
+
+    // [ ] AST
+    // [ ] Common triple expression - cardinality, semActs, annotation.
+    // [x] TripleExpression
+    // [x] EachOf (TripleExpressionEachOf)
+    // [x] OneOf (TripleExpressionOneOf)
+    // [ ] TripleConstraint
+    // [x] tripleExprRef
+    // [x] Adjust shex.jj for TripleExpression.
+    // [ ] Whitespace: shacl/ValidationReport.java
+
     // **
     // [x] TripleExpressionGroup -> TripleExpression.
     // [ ] Create TripleExpression()

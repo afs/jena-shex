@@ -51,9 +51,9 @@ public class DevShex {
 
     static String strParserTest = StrUtils.strjoinNL
             (""
-            , "dev:testNum {"
-            , "   :p xsd:decimal MinExclusive -87 ;"
-            , "   :s xsd:string  MINLENGTH 5 ;"
+            , "dev:testNum IRI AND {"
+            , "   :p xsd:decimal ;"
+            , "   :s xsd:string  ;"
             , "|"
 //            , "   :d xsd:decimal MinExclusive -87 TotalDigits 6 FractionDigits 2 ;"
             // Where is v?
@@ -63,8 +63,8 @@ public class DevShex {
             );
 
     public static void main(String[] args) {
-        parsePrint();
-        //validate();
+        //parsePrint();
+        validate();
     }
 
     public static void validate() {
@@ -93,11 +93,13 @@ public class DevShex {
     }
 
     public static void parsePrint() {
-        parsePrint(strParserTest, false, false);
+        parsePrint(strParserTest, true, true);
     }
 
     public static ShexShapes parsePrint(String str, boolean debug, boolean debugParse) {
         ShexShapes shapes = parse(str, debug, debugParse);
+        if ( debug || debugParse )
+            System.out.println();
         printShapes(shapes);
         return shapes;
     }
