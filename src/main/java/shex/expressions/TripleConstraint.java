@@ -18,11 +18,17 @@
 
 package shex.expressions;
 
+import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.out.NodeFormatter;
+import shex.ValidationContext;
 
 // [shex] Not a ShapeExpression per se - part of a TripleExpression.
 public class TripleConstraint extends TripleExpression {
@@ -45,11 +51,8 @@ public class TripleConstraint extends TripleExpression {
     private final ShapeExpression shapeExpression;
     private final boolean reverse;
 
-    // Unset values
-    private int min = -1;
-    private int max = -1;
-
-    public TripleConstraint(Node predicate, boolean reverse, ShapeExpression arg) {
+    public TripleConstraint(Node predicate, boolean reverse, ShapeExpression arg, Cardinality cardinality) {
+        super(cardinality);
         this.predicate = predicate;
         this.reverse = reverse;
         this.shapeExpression = arg;
@@ -63,74 +66,63 @@ public class TripleConstraint extends TripleExpression {
 //            shapeExpression.validate(vCxt, obj);
 //    }
 
-    @Override
-    public void print(IndentedWriter iOut, NodeFormatter nFmt) {
-        iOut.println("TripleConstraint {");
-        iOut.incIndent();
-        iOut.printf("predicate = ");
-        if ( reverse )
-            iOut.print("^");
-        nFmt.format(iOut, predicate);
-        iOut.println();
-        shapeExpression.print(iOut, nFmt);
-        iOut.decIndent();
-        iOut.println("}");
-    }
-
     public Node getPredicate() {
         return predicate;
     }
 
-    public void setCardinality(int min, int max) {
-        this.min = min;
-        this.max = max;
-    }
+    @Override
+    public Set<Triple> matches(ValidationContext vCxt, Node node) {
+        Graph graph = vCxt.getData();
+//        Set<Triple> x =
+//                reverse
+//                ? G.find(graph, null, predicate, node).toSet()
+//                : G.find(graph, node, predicate, null).toSet();
+        Collection<Node> values = reverse
+                ? G.listPO(graph, predicate, node)
+                : G.listSP(graph, node, predicate);
+        int countGood = 0;
+        int countBad = 0;
+        for ( Node n : values ) {
+            shapeExpression.validate(vCxt, n);
+        }
 
-    public int min() {
-        return min;
-    }
-
-    public int max() {
-        return max;
+        return null;
     }
 
     @Override
-    public String toString() {
-        String cardinality = cardStr(min, max);
-        if ( ! cardinality.isEmpty() )
-            cardinality = "cardinality="+cardinality+", ";
-        return "TripleConstraint [predicate=" + predicate + ", "+cardinality+"shapeExpr=" + shapeExpression + "]";
+    public void visit(TripleExpressionVisitor visitor) {
+        visitor.visit(this);
     }
 
-    private String cardStr(int min, int max) {
-        String cardinality="";
-        if ( min != -1 || max != -1 ) {
-            if ( min == 0 && max == -2 )
-                cardinality = "*";
-            else if ( min == 1 && max == -2 )
-                cardinality = "+";
-            else if ( min == 0 && max == 1 )
-                cardinality = "?";
-            else if ( max == -2 )
-                cardinality = "{"+min+",*}";
-            else {
-                cardinality = "{"+cardStr(min);
-                if ( max ==-1 )
-                    cardinality = cardinality+"}";
+    //    @Override
+    //    public void validate(ValidationContext vCxt, Node data) {
+    //        Graph graph = vCxt.getData();
+    //        List<Node> objects = G.listSP(graph, data, predicate);
+    //        for ( Node obj : objects )
+    //            shapeExpression.validate(vCxt, obj);
+    //    }
+
+        @Override
+        public void print(IndentedWriter iOut, NodeFormatter nFmt) {
+            iOut.println("TripleConstraint {");
+            iOut.incIndent();
+            iOut.printf("predicate = ");
+            if ( reverse )
+                iOut.print("^");
+            nFmt.format(iOut, predicate);
+            iOut.println();
+            shapeExpression.print(iOut, nFmt);
+            if ( cardinality != null ) {
+                //iOut.print(cardinality.image);
+                if ( cardinality.image.length() != 1 )
+                    iOut.printf("{%d,%d}", min, max);
                 else
-                    cardinality = cardinality+","+cardStr(max)+"}";
+                    iOut.printf(cardinality.image);
+                iOut.println();
             }
+            iOut.decIndent();
+            iOut.println("}");
         }
-        return cardinality;
-    }
-
-    private String cardStr(int x) {
-        if ( x == -1 )
-            return "1";
-        if ( x == -2 )
-            return "*";
-        return Integer.toString(x);
-    }
 
     @Override
     public int hashCode() {
@@ -148,6 +140,14 @@ public class TripleConstraint extends TripleExpression {
         TripleConstraint other = (TripleConstraint)obj;
         return max == other.max && min == other.min && Objects.equals(predicate, other.predicate) && reverse == other.reverse
                && Objects.equals(shapeExpression, other.shapeExpression);
+    }
+
+    @Override
+    public String toString() {
+        String cardStr = "";
+        if ( ! cardinalityString().isEmpty() )
+            cardStr = "cardinality="+cardinalityString()+", ";
+        return "TripleConstraint [predicate=" + predicate + ", "+cardStr+"shapeExpr=" + shapeExpression + "]";
     }
 
 }

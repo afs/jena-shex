@@ -43,13 +43,14 @@ public class ShapeExpressionNOT extends ShapeExpression {
     }
 
     @Override
-    public void validate(ValidationContext vCxt, Node data) {
+    public boolean validate(ValidationContext vCxt, Node data) {
         ValidationContext vCxt2 = ValidationContext.create(vCxt);
         other.validate(vCxt2, data);
         if ( ! vCxt2.conforms() )
-            return;
-        ReportItem item = new ReportItem("NOT: Term reject becuase it conforms ", data);
+            return true;
+        ReportItem item = new ReportItem("NOT: Term reject because it conforms ", data);
         vCxt.reportEntry(item);
+        return false;
     }
 
     @Override

@@ -18,18 +18,52 @@
 
 package shex.expressions;
 
+import java.util.Set;
+
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import shex.ValidationContext;
+
 public abstract class TripleExpression implements ShexPrintable {
 
     // tripleExpr = EachOf | OneOf | TripleConstraint | tripleExprRef
 
     //cardinality, semActs, annotation.
 
-    public TripleExpression() { }
+    protected final int min;
+    protected final int max;
+    protected final Cardinality cardinality;
+    // [shex] annotations
+    // [shex] semanticActions
+
+    protected TripleExpression(Cardinality cardinality) {
+        this.cardinality = cardinality;
+        this.min = (cardinality==null) ? -1 : cardinality.min;
+        this.max = (cardinality==null) ? -1 : cardinality.max;
+    }
+
+    public String cardinalityString() {
+        if ( cardinality == null )
+            return "";
+        return cardinality.image;
+    }
+
+    public int min() {
+        return min;
+    }
+
+    public int max() {
+        return max;
+    }
 
 //    @Override
 //    public void validate(ValidationContext vCxt, Node data) {
 //        throw new NotImplemented(this.getClass().getSimpleName()+".validate");
 //    }
+
+    public abstract Set<Triple> matches(ValidationContext vCxt, Node data);
+
+    public abstract void visit(TripleExpressionVisitor visitor);
 
     @Override
     public abstract int hashCode();
@@ -39,6 +73,6 @@ public abstract class TripleExpression implements ShexPrintable {
 
     @Override
     public String toString() {
-        return "TripleExpression ["+this.getClass().getSimpleName()+"]";
+        return this.getClass().getSimpleName()+"[]";
     }
 }

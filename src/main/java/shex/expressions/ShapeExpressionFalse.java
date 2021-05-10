@@ -35,9 +35,10 @@ public class ShapeExpressionFalse extends ShapeExpression {
     }
 
     @Override
-    public void validate(ValidationContext vCxt, Node data) {
+    public boolean validate(ValidationContext vCxt, Node data) {
         ReportItem r = new ReportItem("False", data);
         vCxt.reportEntry(r);
+        return false;
     }
 
     @Override

@@ -21,13 +21,20 @@ package shex.expressions;
 import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
+import shex.ValidationContext;
 
 public class ShapeExpressionRef extends ShapeExpression {
     private final Node ref;
 
     public ShapeExpressionRef(Node ref) { this.ref = ref; }
+
+    @Override
+    public boolean validate(ValidationContext vCxt, Node data) {
+        throw new NotImplemented(this.getClass().getSimpleName()+".validate");
+    }
 
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {

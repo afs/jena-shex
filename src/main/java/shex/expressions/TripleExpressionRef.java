@@ -19,24 +19,33 @@
 package shex.expressions;
 
 import java.util.Objects;
+import java.util.Set;
 
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.out.NodeFormatter;
+import shex.ValidationContext;
 
-public class TripleExpressionRef implements ShexPrintable {
+public class TripleExpressionRef extends TripleExpression {
 
     private Node ref;
 
     public TripleExpressionRef(Node node) {
+        super(null);
         this.ref = node;
     }
 
     @Override
-    public void print(IndentedWriter iOut, NodeFormatter nFmt) {
-        iOut.print("tripleExprRef: ");
-        nFmt.format(iOut, ref);
-        iOut.println();
+    public Set<Triple> matches(ValidationContext vCxt, Node data) {
+        throw new NotImplemented();
+    }
+
+
+    @Override
+    public void visit(TripleExpressionVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override
@@ -54,5 +63,17 @@ public class TripleExpressionRef implements ShexPrintable {
             return false;
         TripleExpressionRef other = (TripleExpressionRef)obj;
         return Objects.equals(ref, other.ref);
+    }
+
+    @Override
+    public void print(IndentedWriter iOut, NodeFormatter nFmt) {
+        iOut.print("tripleExprRef: ");
+        nFmt.format(iOut, ref);
+        iOut.println();
+    }
+
+    @Override
+    public String toString() {
+        return "TripleExpressionRef["+PLib.displayStr(ref)+"]";
     }
 }

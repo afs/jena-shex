@@ -210,6 +210,6 @@ then triple constraint(:p, xsd:integer) is a shape expression (by grammar).
 If :S is in the shape map, then is the triple constraint (n, tc) in the typing?
 
 C/
-"negation"
+"negiation"
 
 D/

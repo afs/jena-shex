@@ -34,7 +34,9 @@ public class ShapeExpressionTrue extends ShapeExpression {
     }
 
     @Override
-    public void validate(ValidationContext vCxt, Node data) { }
+    public boolean validate(ValidationContext vCxt, Node data) {
+        return true;
+    }
 
     @Override
     public int hashCode() {

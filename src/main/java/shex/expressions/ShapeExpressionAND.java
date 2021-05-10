@@ -52,15 +52,17 @@ public class ShapeExpressionAND extends ShapeExpression {
     }
 
     @Override
-    public void validate(ValidationContext vCxt, Node data) {
+    public boolean validate(ValidationContext vCxt, Node data) {
         // Record all reports.
         for ( ShapeExpression shExpr : shapeExpressions ) {
-            shExpr.validate(vCxt, data);
+            boolean b = shExpr.validate(vCxt, data);
+            if ( !b )
+                return false;
         }
-        return;
+        return true;
     }
 
-        @Override
+    @Override
     public int hashCode() {
         return Objects.hash(1, shapeExpressions);
     }

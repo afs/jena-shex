@@ -18,7 +18,14 @@
 
 package shex.expressions;
 
+import org.apache.jena.graph.Node;
+import shex.ReportItem;
+import shex.ValidationContext;
+
 public class ValueConstraint extends NodeConstraint {
+
+    @Override
+    public  ReportItem validateOne(ValidationContext vCxt, Node data) { return null; }
 
     @Override
     public int hashCode() {

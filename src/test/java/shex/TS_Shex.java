@@ -25,7 +25,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( {
     TestShexSyntax.class,
     TestShexBadSyntax.class,
-    Scripts_ShexValidation.class
+    //Scripts_ShexValidation.class
 })
 
 public class TS_Shex {

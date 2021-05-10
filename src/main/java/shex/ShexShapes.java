@@ -27,6 +27,8 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.system.PrefixMap;
 
 public class ShexShapes {
+
+
     private final List<ShexShape> shapes = new ArrayList<>();
     private final Map<Node, ShexShape> shapesMap = new HashMap<>();
     private final PrefixMap prefixes;
@@ -53,4 +55,6 @@ public class ShexShapes {
     }
 
     public PrefixMap getPrefixMap() { return prefixes; }
+
+
 }

@@ -18,9 +18,7 @@
 
 package dev;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.util.function.Supplier;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -33,12 +31,8 @@ import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
-import shex.ShexShape;
-import shex.ShexShapes;
-import shex.V;
-import shex.ValidationReport;
+import shex.*;
 import shex.parser.ShExCompactParser;
-import shex.parser.ShexParser;
 
 public class DevShex {
 
@@ -51,24 +45,24 @@ public class DevShex {
 
     static String strParserTest = StrUtils.strjoinNL
             (""
-            , "dev:testNum IRI AND {"
-            , "   :p xsd:decimal ;"
-            , "   :s xsd:string  ;"
-            , "|"
+            , "dev:testNum EXTRA :p {"
+            , "   ( :p xsd:decimal | :s xsd:string {3,4} ) {1,2} ;"
+            //, "   :p xsd:decimal+ | :s xsd:string {2};"
 //            , "   :d xsd:decimal MinExclusive -87 TotalDigits 6 FractionDigits 2 ;"
             // Where is v?
             //, "   :v [. - @en-US - 'abc' - <x>]"
-            ,"    :iri IRI"
+            //,"    :iri IRI"
             ,"}"
             );
 
     public static void main(String[] args) {
-        //parsePrint();
-        validate();
+        parsePrint();
+        //validate();
     }
 
     public static void validate() {
-        ShexShapes shapes = parse(strValidateTest, false, false);
+        String str = PREFIXES_DEV +"\n" + strValidateTest;
+        ShexShapes shapes = Shex.shapesFromString(str);
         printShapes(shapes);
         Node target = SSE.parseNode("<http://example/s1>");
         Node focus = SSE.parseNode("<http://example/f1>");
@@ -93,47 +87,42 @@ public class DevShex {
     }
 
     public static void parsePrint() {
-        parsePrint(strParserTest, true, true);
+        parsePrintFile("/home/afs/ASF/shapes/jena-shex/files/spec/schemas/1val1IRIREF.shex", true, true);
+        //parsePrintString(strParserTest, true, true);
     }
 
-    public static ShexShapes parsePrint(String str, boolean debug, boolean debugParse) {
-        ShexShapes shapes = parse(str, debug, debugParse);
+
+    public static ShexShapes parsePrintFile(String filename, boolean debug, boolean debugParse) {
+        String str = IO.readWholeFileAsUTF8(filename);
+        System.out.println("----");
+        System.out.println(str);
+        System.out.println("----");
+        return parsePrint(()->Shex.shapesFromFile(filename), debug, debugParse);
+    }
+
+    public static ShexShapes parsePrintString(String str, boolean debug, boolean debugParse) {
+        System.out.println("----");
+        System.out.println(str);
+        System.out.println("----");
+        String str2 = PREFIXES_DEV +"\n" + str;
+        return parsePrint(()->Shex.shapesFromString(str2), debug, debugParse);
+    }
+
+    public static ShexShapes parsePrint(Supplier<ShexShapes> supplier, boolean debug, boolean debugParse) {
         if ( debug || debugParse )
             System.out.println();
+        ShexShapes shapes = parse(supplier, debug, debugParse);
         printShapes(shapes);
         return shapes;
     }
 
-    private static ShexShapes parse(String strTest, boolean debug, boolean debugParse) {
-        //String str = devShapeTripleExpr;
-        String str = strTest;
-        System.out.println("----");
-        System.out.println(str);
-        System.out.println("----");
-        str = PREFIXES_DEV +"\n" + str;
-
+    private static ShexShapes parse(Supplier<ShexShapes> supplier, boolean debug, boolean debugParse) {
         ShExCompactParser.DEBUG = debug;
         ShExCompactParser.DEBUG_PARSE = debugParse;
-
-        ShexShapes shapes = shapesFromString(str);
-        return shapes;
-
+        return supplier.get();
     }
 
-    public static ShexShapes shapesFromFile(String filename) {
-        InputStream input = IO.openFileBuffered(filename);
-        ShexShapes shapes = ShexParser.parse(input, null);
-        return shapes;
-    }
-
-    public static ShexShapes shapesFromString(String inputStr) {
-        InputStream input = new ByteArrayInputStream(inputStr.getBytes(StandardCharsets.UTF_8));
-        //ShexShapes shapes = shapesFromFile(null);
-        ShexShapes shapes = ShexParser.parse(input, null);
-        return shapes;
-    }
-
-    private static void printShapes(ShexShapes shapes) {
+    public static void printShapes(ShexShapes shapes) {
         IndentedWriter iOut = IndentedWriter.clone(IndentedWriter.stdout);
         NodeFormatter nFmt = new NodeFormatterTTL(null, shapes.getPrefixMap());
         shapes.getShapes().forEach(shape->shape.print(iOut, nFmt));

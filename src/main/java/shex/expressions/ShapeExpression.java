@@ -19,7 +19,6 @@
 package shex.expressions;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import shex.ValidationContext;
@@ -29,9 +28,8 @@ public abstract class ShapeExpression {
     public ShapeExpression() { }
 
     // [shex] return boolean for true -> OK, false -> not OK.
-    public void validate(ValidationContext vCxt, Node data) {
-        throw new NotImplemented(this.getClass().getSimpleName()+".validate");
-    }
+    // Is this satisfies?
+    public abstract boolean validate(ValidationContext vCxt, Node data);
 
     public abstract void print(IndentedWriter out, NodeFormatter nFmt);
 

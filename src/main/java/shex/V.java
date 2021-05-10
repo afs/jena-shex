@@ -18,14 +18,36 @@
 
 package shex;
 
+import java.util.Objects;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import shex.expressions.PLib;
 
 public class V {
 
+    public static ValidationReport validate(Graph graphData, ShexShapes shapes, Node shapeRef, Node focus) {
+        Objects.requireNonNull(shapeRef);
+        ShexShape shape = shapes.get(shapeRef);
+        if ( shape == null ) {
+            ValidationContext vCxt = new ValidationContext(graphData, shapes);
+//            ReportItem item = new ReportItem("No such shape: "+PLib.displayStr(shapeRef), shapeRef);
+//            vCxt.reportEntry(item);
+            return vCxt.generateReport();
+        }
+        return validate(graphData, shapes, shape, focus);
+    }
+
+
     public static ValidationReport validate(Graph graphData, ShexShapes shapes, ShexShape shape, Node focus) {
+        Objects.requireNonNull(shape);
         ValidationContext vCxt = new ValidationContext(graphData, shapes);
-        shape.getShapeExpression().validate(vCxt, focus);
+        boolean b = shape.getShapeExpression().validate(vCxt, focus);
+        if ( b != vCxt.conforms() ) {
+            System.out.println("ValidationContext.conforms = "+vCxt.conforms());
+            System.out.println("ShapeExpression().validate = "+b);
+        }
+
         ValidationReport report = vCxt.generateReport();
         return report;
     }

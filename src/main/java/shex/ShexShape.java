@@ -24,7 +24,7 @@ import org.apache.jena.riot.out.NodeFormatter;
 import shex.expressions.ShapeExpression;
 
 // [shex] Isa Shape?
-// Shape -- TripleExpression.
+// ShapeTripleExpression -- TripleExpression.
 // ShexShape - ShapeExpression
 
 public class ShexShape {

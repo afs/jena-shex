@@ -51,6 +51,7 @@ import shex.parser.*;
 import shex.expressions.*;
 import org.apache.jena.graph.*;
 import static org.apache.jena.riot.lang.extra.LangParserLib.*;
+import java.util.*;
 
 public class ShExJavacc extends ShExCompactParser
 {}
@@ -330,27 +331,35 @@ String numericLength() : { Token t; }
 }
 
 // "{ ... }"
-void shapeDefinition() : { boolean closed = false ; TripleExpression tripleExpr = null; }
+void shapeDefinition() :
+{ boolean closed = false ;
+  TripleExpression tripleExpr = null;
+  List<Node> extras = new ArrayList<Node>();
+}
 {
     { startShapeDefinition(); }
- 	(extraPropertySet() | <CLOSED> { closed = true; } )*
+ 	(extraPropertySet(extras) | <CLOSED> { closed = true; } )*
     <LBRACE> (tripleExpr = tripleExpression())? <RBRACE>
     (annotation())*
     semanticActions()
-    { finishShapeDefinition(tripleExpr, closed); }
+    { finishShapeDefinition(tripleExpr, extras, closed); }
 }
 
-void inlineShapeDefinition() : { boolean closed = false ; TripleExpression tripleExpr = null; }
+void inlineShapeDefinition() :
+{ boolean closed = false ;
+  TripleExpression tripleExpr = null;
+  List<Node> extras = new ArrayList<Node>();
+}
 {
     { startShapeDefinition(); }
-   	(extraPropertySet() | <CLOSED> { closed = true; } )*
+   	( extraPropertySet(extras) | <CLOSED> { closed = true; } )*
     <LBRACE> (tripleExpr = tripleExpression())? <RBRACE>
-    { finishShapeDefinition(tripleExpr, closed); }
+    { finishShapeDefinition(tripleExpr, extras, closed); }
 }
 
-void extraPropertySet() : {}
+void extraPropertySet(List<Node> extras) : { Node p; }
 {
-   	<EXTRA> (predicate())+
+   	<EXTRA> (p = predicate() { extras.add(p); })+
 }
 
 // Original:
@@ -406,13 +415,13 @@ void tripleExpressionClause() : { int idx; } {
    { finishTripleExpressionClause(idx); }
 }
 
-// Can end in single ";"
-void tripleExpressionClause_0() : {}
-{
-    unaryTripleExpr()
-// Allows ";;;"
-    (<SEMI_COLON> ( unaryTripleExpr() )?)*
-}
+// // Can end in single ";"
+// void tripleExpressionClause_0() : {}
+// {
+//     unaryTripleExpr()
+// // Allows ";;;"
+//     (<SEMI_COLON> ( unaryTripleExpr() )?)*
+// }
 
 // Iterative, but needs LOOKAHEAD(2)
 void tripleExpressionClause_1() : { }
@@ -424,11 +433,11 @@ void tripleExpressionClause_1() : { }
     (<SEMI_COLON>)?
 }
 
-// Recursive
-void tripleExpressionClause_2() : { }
-{
-    unaryTripleExpr() (<SEMI_COLON> (tripleExpressionClause() )? )?
-}
+// // Recursive
+// void tripleExpressionClause_2() : { }
+// {
+//     unaryTripleExpr() (<SEMI_COLON> (tripleExpressionClause() )? )?
+// }
 
 // ----
 
@@ -442,30 +451,32 @@ void unaryTripleExpr() : {}
     { finishUnaryTripleExpr(); }
 }
 
-void bracketedTripleExpr(): { }
+void bracketedTripleExpr(): { TripleExpression tripleExpr = null; Cardinality cardinality = null; }
 {
-   	<LPAREN> tripleExpression() <RPAREN>
-    (cardinality())?
+    { startBracketedTripleExpr(); }
+   	<LPAREN> tripleExpr = tripleExpression() <RPAREN>
+    (cardinality = cardinality())?
     (annotation())*
     semanticActions()
+    { finishBracketedTripleExpr(tripleExpr, cardinality); }
 }
 
-void tripleConstraint() : { Node p; int idx; boolean reverse = false;}
+void tripleConstraint() : { Node p; int idx; boolean reverse = false; Cardinality cardinality = null; }
 {
     { idx = startTripleConstraint(); }
   	( reverse = senseFlags() )?
     p = predicate()
     inlineShapeExpression()
-    (cardinality())?
+    (cardinality = cardinality())?
     (annotation())*
     semanticActions()
-    { finishTripleConstraint(idx, p, reverse); }
+    { finishTripleConstraint(idx, p, reverse, cardinality); }
 }
 
-void cardinality() : {}
+Cardinality cardinality() : {}
 {
    	( <STAR> | <PLUS>| <QMARK> | <REPEAT_RANGE> )
-    { cardinalityRange(token.image, token.beginLine, token.beginColumn); }
+    { return cardinalityRange(token.image, token.beginLine, token.beginColumn); }
 }
 
 boolean senseFlags() : {}

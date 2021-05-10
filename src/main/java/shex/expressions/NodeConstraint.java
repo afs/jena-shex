@@ -19,7 +19,6 @@
 package shex.expressions;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import shex.ReportItem;
@@ -38,16 +37,17 @@ public abstract class NodeConstraint extends ShapeExpression {
      */
 
     @Override
-    public void validate(ValidationContext vCxt, Node data) {
+    public boolean validate(ValidationContext vCxt, Node data) {
         ReportItem item = validateOne(vCxt, data);
-        if ( item != null )
+        if ( item != null ) {
             vCxt.reportEntry(item);
+            return false;
+        }
+        return true;
     }
 
     // [shex] public abstract boolean validate(Node data) ;
-    public ReportItem validateOne(ValidationContext vCxt, Node data) {
-        throw new NotImplemented(this.getClass().getSimpleName()+".validate");
-    }
+    public abstract ReportItem validateOne(ValidationContext vCxt, Node data);
 
 
     @Override

@@ -32,7 +32,9 @@ public class ShapeExpressionNone extends ShapeExpression {
     private ShapeExpressionNone() {}
 
     @Override
-    public void validate(ValidationContext vCxt, Node data) { }
+    public boolean validate(ValidationContext vCxt, Node data) {
+        return true;
+    }
 
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {

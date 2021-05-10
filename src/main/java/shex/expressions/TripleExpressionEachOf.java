@@ -20,10 +20,14 @@ package shex.expressions;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.out.NodeFormatter;
+import shex.ValidationContext;
 
 public class TripleExpressionEachOf extends TripleExpression {
 
@@ -35,19 +39,30 @@ public class TripleExpressionEachOf extends TripleExpression {
         return new TripleExpressionEachOf(acc);
     }
 
-    private List<TripleExpression> tripleExpression;
+    private List<TripleExpression> tripleExpressions;
 
     private TripleExpressionEachOf(List<TripleExpression> expressions) {
-        this.tripleExpression = expressions;
+        super(null);
+        this.tripleExpressions = expressions;
     }
 
     public List<TripleExpression> expressions() {
-        return tripleExpression;
+        return tripleExpressions;
+    }
+
+    @Override
+    public Set<Triple> matches(ValidationContext vCxt, Node data) {
+        return null;
+    }
+
+    @Override
+    public void visit(TripleExpressionVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(3, tripleExpression);
+        return Objects.hash(3, tripleExpressions);
     }
 
     @Override
@@ -59,24 +74,31 @@ public class TripleExpressionEachOf extends TripleExpression {
         if ( getClass() != obj.getClass() )
             return false;
         TripleExpressionEachOf other = (TripleExpressionEachOf)obj;
-        return Objects.equals(tripleExpression, other.tripleExpression);
+        return Objects.equals(tripleExpressions, other.tripleExpressions);
     }
 
     @Override
-    public void print(IndentedWriter iOut, NodeFormatter nFmt) {
-//        iOut.println("EachOf");
-//        iOut.incIndent();
-//        expressions().forEach(tExpr->tExpr.print(iOut, nFmt));
-//        iOut.decIndent();
-//        iOut.println("/EachOf");
+        public void print(IndentedWriter iOut, NodeFormatter nFmt) {
+    //        iOut.println("EachOf");
+    //        iOut.incIndent();
+    //        expressions().forEach(tExpr->tExpr.print(iOut, nFmt));
+    //        iOut.decIndent();
+    //        iOut.println("/EachOf");
 
-        iOut.println("EachOf");
-        int idx = 0;
-        for ( TripleExpression tExpr : tripleExpression ) {
-            idx++;
-            iOut.printf("%d - ", idx);
-            tExpr.print(iOut, nFmt);
+            iOut.println("EachOf");
+            iOut.incIndent();
+            int idx = 0;
+            for ( TripleExpression tExpr : tripleExpressions ) {
+                idx++;
+                iOut.printf("%d : ", idx);
+                tExpr.print(iOut, nFmt);
+            }
+            iOut.decIndent();
+            iOut.println("/EachOf");
         }
-        iOut.println("/EachOf");
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName()+"["+expressions()+"]";
     }
 }

@@ -44,14 +44,20 @@ public class ShexT {
 | sht:ValidationTest    |
 | sht:ValidationFailure |
 -------------------------
+
+Also class:
+    sht:RepresentationTest
+    and sx:
+
      */
 
     public static final String BASE_URI = "http://www.w3.org/ns/shacl/test-suite";
 
     public static final String NS = BASE_URI + "#";
 
-    public final static Resource cValidationTest    = ResourceFactory.createResource(NS + "ValidationTest");
-    public final static Resource cValidationFailure = ResourceFactory.createResource(NS + "ValidationFailure");
+    public final static Resource cValidationTest        = ResourceFactory.createResource(NS + "ValidationTest");
+    public final static Resource cValidationFailure     = ResourceFactory.createResource(NS + "ValidationFailure");
+    public final static Resource cRepresentationTest    = ResourceFactory.createResource(NS + "RepresentationTest");
 
     public final static Property shape = ResourceFactory.createProperty(NS + "shape");
     public final static Property data = ResourceFactory.createProperty(NS + "data");
@@ -62,4 +68,10 @@ public class ShexT {
     public final static Property map = ResourceFactory.createProperty(NS + "map");
     public final static Property shapeExterns = ResourceFactory.createProperty(NS + "shapeExterns");
     public final static Property semActs = ResourceFactory.createProperty(NS + "semActs");
+
+    public static final String NS_SX = "https://shexspec.github.io/shexTest/ns#";
+    public final static Property sx_shex = ResourceFactory.createProperty(NS_SX + "shex");
+    public final static Property sx_json = ResourceFactory.createProperty(NS_SX + "json");
+    public final static Property sx_ttl  = ResourceFactory.createProperty(NS_SX + "ttl");
+
 }

@@ -49,15 +49,10 @@ public class NotesShex {
     // [ ] Better print of ADD,OR print index?
 
     // [ ] Default cardinality of {1}
-    // [ ] Validation Context - current Triple constraint?
-    //     Clear going through a ref or inner shape.
-    //     Or path from start shape?
-    // [ ] Unclear cardinality - applies to triple or to triple and contraints (TripleConstraint)
     // [ ] ReportItem to include shape.
     // [ ] ShexValidationReport
     // [ ] ReportItem gathering.
     //     AND, tripleConstraint
-    // [ ] Print - {} at wrong point.
     // [x] Shapes -> getPrefixMap();
     // [x] TripleConstaint is a single ShapeExpressionAnd
 
@@ -72,7 +67,6 @@ public class NotesShex {
 
     // [ ] Unicode [\uD800-\uDB7F][\uDC00-\uDFFF]
 
-    // [ ] Print OR broken?
     // [x] Cardinality {0}
     // [x] ShapeAtom DOT
     // [x] ShapeExpressionEmpty() -- marker.

@@ -24,8 +24,6 @@ import static shex.parser.ShExCompactParser.Inline.NOT_INLINE;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.EscapeStr;
@@ -347,12 +345,14 @@ public class ShExCompactParser extends LangParserBase {
         start("ShapeDefinition");
     }
 
-    protected void finishShapeDefinition(TripleExpression tripleExpr, boolean closed) {
+    // [shex] Pass build in at startShapeDefinition.
+    protected void finishShapeDefinition(TripleExpression tripleExpr, List<Node> extras, boolean closed) {
         // XXX Empty.
         // XXX Other
         ShapeTripleExpression shape = ShapeTripleExpression.newBuilder()
                 //.label(???)
                 .closed(closed)
+                .extras(extras)
                 .shapeExpr(tripleExpr).build();
         push(shapeExprStack, shape);
         finish("ShapeDefinition");
@@ -392,6 +392,19 @@ public class ShExCompactParser extends LangParserBase {
         finish("UnaryTripleExpression");
     }
 
+    protected void startBracketedTripleExpr() {
+        // Builder?
+        start("BracketedTripleExpression");
+    }
+
+    protected void finishBracketedTripleExpr(TripleExpression tripleExpr, Cardinality cardinality) {
+        TripleExpression tripleExpr2 = tripleExpr;
+        if ( cardinality != null )
+            tripleExpr2 = new TripleExpressionDecoration(tripleExpr, cardinality);
+        push(tripleExprStack, tripleExpr2);
+        finish("BracketedTripleExpression");
+    }
+
     protected int startTripleConstraint() {
         start("TripleConstraint");
         // [shex] Now a flag now.
@@ -400,15 +413,21 @@ public class ShExCompactParser extends LangParserBase {
         return startShapeOp();
     }
 
-    protected void finishTripleConstraint(int idx, Node predicate, boolean reverse) {
+    protected void finishTripleConstraint(int idx, Node predicate, boolean reverse, Cardinality cardinality) {
         List<ShapeExpression> args = finishShapeOp(idx);
+        // [shex] Remove!
+        if ( args == null ) {
+            push(tripleExprStack, TripleExpressionNone.get());
+            return ;
+        }
+
         if ( args.size() != 1 )
             throw new InternalErrorException("TripleConstraint with multiple ShapeExpressions");
 
         ShapeExpression arg = args.get(0);
         if ( args != null ) {
             // Cardinality as argument.
-            TripleExpression shExpr = new TripleConstraint(predicate, reverse, arg);
+            TripleExpression shExpr = new TripleConstraint(predicate, reverse, arg, cardinality);
             push(tripleExprStack, shExpr);
         }
         finish("TripleConstraint");
@@ -558,39 +577,12 @@ public class ShExCompactParser extends LangParserBase {
     protected void seenExclusionLanguageTilde() {}
     protected void finishValueExclusion() { finish("valueExclusion"); }
 
-    static Pattern repeatRange = Pattern.compile(".(\\d+)(,(\\d+|\\*)?)?.");
-
-    /** micro-parse a cardinality range. */
-    protected void cardinalityRange(String image, int line, int column) {
+    protected Cardinality cardinalityRange(String image, int line, int column) {
         try {
-            int min = -1;
-            int max = -1;
-            String special;
-            switch(image) {
-                case "*": special = image; min = 0 ; max = -2 ; return;
-                case "?": special = image; min = 0 ; max = 1 ;  return;
-                case "+": special = image; min = 1 ; max = -2 ; return;
-                default: {
-                    special = null;
-                    Matcher matcher = repeatRange.matcher(image);
-                    if ( !matcher.matches() )
-                        throw new InternalErrorException("ShExC: Unexpected cardinality: '"+image+"'");
-                    min = integerRange(matcher.group(1), -3);
-                    if ( matcher.groupCount() != 3 )
-                        throw new InternalErrorException("ShExC: Unexpected cardinality: '"+image+"'");
-                    String g = matcher.group(3);
-                    max = integerRange(g, min);
-                }
-            }
-            generateCardinality(image, min, max);
-            //debug("Cardinality: %s min=%s, max=%d", image, min, max);
-        } catch ( Throwable th) {
+            return Cardinality.create(image);
+        } catch (Throwable th) {
             throw new ShexParseException("Bad cardinality: "+image, line, column);
         }
-    }
-
-    private void generateCardinality(String image, int min, int max) {
-        debug("Cardinality: %s min=%s, max=%d", image, min, max);
     }
 
     // Node Constraints.
@@ -667,16 +659,16 @@ public class ShExCompactParser extends LangParserBase {
 
     // ---- Node Constraints.
 
-    // DRY: In ShaclCompactParser as well - to LangParserBase
-    private int integerRange(String str, int i) {
-        if ( str == null || str.equals("*") )
-            return i;
-        try {
-            return Integer.parseInt(str);
-        } catch (NumberFormatException ex) {
-            throw new InternalErrorException("Number format exception");
-        }
-    }
+//    // DRY: In ShaclCompactParser as well - to LangParserBase
+//    private int integerRange(String str, int i) {
+//        if ( str == null || str.equals("*") )
+//            return i;
+//        try {
+//            return Integer.parseInt(str);
+//        } catch (NumberFormatException ex) {
+//            throw new InternalErrorException("Number format exception");
+//        }
+//    }
 
     private <T> T peek(Deque<T> stack) {
         return stack.peek();

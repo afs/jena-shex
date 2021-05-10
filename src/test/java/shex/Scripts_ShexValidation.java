@@ -29,6 +29,8 @@ import shex.runner.RunnerShex;
 @Label("Shex")
 @Manifests({
     "files/spec/validation/manifest.ttl"
+//    ,
+//    "files/spec/schemas/manifest.ttl"
 })
 public class Scripts_ShexValidation {
     private static boolean bVerboseWarnings;
@@ -47,5 +49,4 @@ public class Scripts_ShexValidation {
 //        NodeValue.VerboseWarnings = bVerboseWarnings;
 //        E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction;
     }
-
 }

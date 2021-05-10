@@ -23,6 +23,7 @@ import shex.parser.*;
 import shex.expressions.*;
 import org.apache.jena.graph.*;
 import static org.apache.jena.riot.lang.extra.LangParserLib.*;
+import java.util.*;
 
 /** Token Manager. */
 @SuppressWarnings("unused")public class ShExJavaccTokenManager implements ShExJavaccConstants {

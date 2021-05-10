@@ -18,16 +18,17 @@
 
 package shex.expressions;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
+import shex.ValidationContext;
 
 // Shape
 public class ShapeTripleExpression extends ShapeExpression {
     // [shex] This is the inlineShapeDefinition
+    // Can we combine with a top-level ShexShape?
 
     /*
     Shape {
@@ -40,6 +41,7 @@ public class ShapeTripleExpression extends ShapeExpression {
     */
 
     private Node label;
+    private Set<Node> extras;
     private boolean closed;
     //extra:[IRIREF]?
     private TripleExpression tripleExpr;
@@ -48,11 +50,20 @@ public class ShapeTripleExpression extends ShapeExpression {
 
     public static Builder newBuilder() { return new Builder(); }
 
-    ShapeTripleExpression(Node label, boolean closed, TripleExpression tripleExpr) {
+    private ShapeTripleExpression(Node label, Set<Node> extras, boolean closed, TripleExpression tripleExpr) {
         super();
         this.label = label;
+        if ( extras == null || extras.isEmpty() )
+            this.extras = null;
+        else
+            this.extras = extras;
         this.closed = closed;
         this.tripleExpr = tripleExpr;
+    }
+
+    @Override
+    public boolean validate(ValidationContext vCxt, Node node) {
+        return ShapeEval.matchesShape(vCxt, node, tripleExpr, closed);
     }
 
     @Override
@@ -97,6 +108,7 @@ public class ShapeTripleExpression extends ShapeExpression {
 
     public static class Builder {
         private Node label;
+        private Set<Node> extras = null;
         private Optional<Boolean> closed = null;
         //extra:[IRIREF]?
         private TripleExpression tripleExpr = null;
@@ -107,13 +119,20 @@ public class ShapeTripleExpression extends ShapeExpression {
 
         public Builder label(Node label) { this.label = label ; return this; }
 
+        public Builder extras(List<Node> extrasList) {
+            if ( extras == null )
+                extras = new HashSet<>();
+            this.extras.addAll(extrasList);
+            return this;
+        }
+
         public Builder closed(boolean value) { this.closed = Optional.of(value); return this; }
 
         public Builder shapeExpr(TripleExpression tripleExpr) { this.tripleExpr = tripleExpr; return this; }
 
         public ShapeTripleExpression build() {
             boolean isClosed = (closed == null) ? false : closed.get();
-            return new ShapeTripleExpression(label, isClosed, tripleExpr);
+            return new ShapeTripleExpression(label, extras, isClosed, tripleExpr);
         }
     }
 }

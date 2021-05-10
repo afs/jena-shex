@@ -20,10 +20,14 @@ package shex.expressions;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.out.NodeFormatter;
+import shex.ValidationContext;
 
 public class TripleExpressionOneOf extends TripleExpression {
 
@@ -35,19 +39,30 @@ public class TripleExpressionOneOf extends TripleExpression {
         return new TripleExpressionOneOf(acc);
     }
 
-    private List<TripleExpression> tripleExpression;
+    private List<TripleExpression> tripleExpressions;
 
     private TripleExpressionOneOf(List<TripleExpression> expressions) {
-        this.tripleExpression = expressions;
+        super(null);
+        this.tripleExpressions = expressions;
     }
 
     public List<TripleExpression> expressions() {
-        return tripleExpression;
+        return tripleExpressions;
+    }
+
+    @Override
+    public Set<Triple> matches(ValidationContext vCxt, Node data) {
+        return null;
+    }
+
+    @Override
+    public void visit(TripleExpressionVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(4, tripleExpression);
+        return Objects.hash(4, tripleExpressions);
     }
 
     @Override
@@ -59,7 +74,7 @@ public class TripleExpressionOneOf extends TripleExpression {
         if ( getClass() != obj.getClass() )
             return false;
         TripleExpressionOneOf other = (TripleExpressionOneOf)obj;
-        return Objects.equals(tripleExpression, other.tripleExpression);
+        return Objects.equals(tripleExpressions, other.tripleExpressions);
     }
 
     @Override
@@ -71,12 +86,19 @@ public class TripleExpressionOneOf extends TripleExpression {
 //        iOut.println("/OneOf");
 
         iOut.println("OneOf");
+        iOut.incIndent();
         int idx = 0;
-        for ( TripleExpression tExpr : tripleExpression ) {
+        for ( TripleExpression tExpr : tripleExpressions ) {
             idx++;
             iOut.printf("%d - ", idx);
             tExpr.print(iOut, nFmt);
         }
+        iOut.decIndent();
         iOut.println("/OneOf");
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName()+"["+tripleExpressions+"]";
     }
 }
