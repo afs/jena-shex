@@ -1,20 +1,20 @@
 /*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 options
 {
@@ -27,23 +27,23 @@ options
 }
 
 PARSER_BEGIN(ShExJavacc)
-/**
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package shex.parser.javacc;
 
@@ -487,7 +487,9 @@ boolean senseFlags() : {}
 
 void valueSet() : {}
 {
+    { startValueSet(); }
   	<LBRACKET> (valueSetValue())* <RBRACKET>
+    { finishValueSet(); }
 }
 
 // in https://github.com/shexSpec/grammar/blob/master/ShExDoc.g4
@@ -512,25 +514,26 @@ void valueSet() : {}
 
 void valueSetValue() : {}
 {
-    { cValueSet(); }
+    { startValueSetValue(); }
     ( iriRange()
     | literalRange()
     | languageRange() 
-    | <DOT> (valueExclusion())+
+    | ( <DOT> { startValueSetValueDot(); } (valueExclusion())+ { finishValueSetValueDot(); } )
     )
+    { finishValueSetValue(); }
 }
 
-void valueExclusion() : { String iriStr; Node lit; }
+void valueExclusion() : { String iriStr = null; String lang = null; Node lit = null; boolean isStem = false; }
 {
     <MINUS>
     { startValueExclusion(); }
-    ( iriStr = iri()  {seenExclusionIri(iriStr); }   (<TILDE> { seenExclusionIriTilde(); } )?
-    | lit = literal() {seenExclusionLiteral(lit); }  (<TILDE> { seenExclusionLiteralTilde() ; } )?
-    | <LANGTAG> { seenExclusionLanguage(token.image); } (<TILDE>{ seenExclusionLanguageTilde(); } )?
-    )    
-    { finishValueExclusion(); }
+    ( iriStr = iri()
+    | lit = literal()
+    | <LANGTAG> { lang = token.image; }
+    )
+    (<TILDE> { isStem = true ;})?
+    { finishValueExclusion(iriStr, lang, lit, isStem); }
 }
-
 
 // void iriRange() : {}
 // {
@@ -542,17 +545,22 @@ void valueExclusion() : { String iriStr; Node lit; }
 //     <MINUS> iri() (<TILDE>)?
 // }
 
-void iriRange() : { String iriStr; }
+void iriRange() : { String iriStr; boolean seenTilde = false; boolean haveSet = false; }
 {
     // iri() (<TILDE> ( <MINUS> iri() (<TILDE>)? )* )?
     { startIriRange(); }
-    iriStr = iri() { seenIri(iriStr); }
-    ( <TILDE> { seenIriTilde(); }
-        ( <MINUS> iriStr = iri() { seenMinusIri(iriStr); }
-          (<TILDE> { seenMinusIriTilde(); })?
-        )*
+    iriStr = iri()
+    ( <TILDE> { seenTilde = true; }
+      { valueSetIriRange(iriStr, seenTilde); haveSet = true; }
+      ( <MINUS> 
+        { iriStr = null; seenTilde = false; }
+        iriStr = iri()
+        (<TILDE> { seenTilde = true; })?
+        { exclusionIriRange(iriStr, seenTilde); }
+      )*
     )?
-    { finishIriRange(); }
+    { if ( ! haveSet ) { valueSetIriRange(iriStr, false); }
+      finishIriRange(); }
 }
 
 // void literalRange() : {}
@@ -565,17 +573,23 @@ void iriRange() : { String iriStr; }
 //     <MINUS> literal() (<TILDE>)?
 // }
 
-void literalRange() : { Node lit; }
+void literalRange() : { Node lit; boolean seenTilde = false; boolean haveSet = false; }
 {
     // literal() (<TILDE> ( <MINUS> literal() (<TILDE>)? )* )?
     { startLiteralRange(); }
-    lit = literal() { seenLiteral(lit); }
-    ( <TILDE> { seenLiteralTilde(); }
-        ( <MINUS> lit = literal() { seenMinusLiteral(lit); }
-          (<TILDE> { seenMinusLiteralTilde(); })?
-        )*
+    lit = literal()
+    ( <TILDE> { seenTilde = true; }
+      { valueSetLiteralRange(lit, seenTilde); haveSet = true; }
+      ( <MINUS> 
+        { lit = null; seenTilde = false; }
+        lit = literal()
+        (<TILDE> { seenTilde = true; })?
+        { exclusionLiteralRange(lit, seenTilde); }
+      )*
     )?
-    { finishLiteralRange(); }
+    { if ( ! haveSet ) { valueSetLiteralRange(lit, false); }
+      finishLiteralRange();
+    }    
 }
 
 // void languageRange() : {}
@@ -592,24 +606,40 @@ void literalRange() : { Node lit; }
 //     <MINUS> <LANGTAG> (<TILDE>)?
 // }
 
-// Better as original
-void languageRange() : { }
+// Better as original?
+void languageRange() : { } 
 {
    { startLanguageRange(); }
-   ( <LANGTAG> { seenLanguage(token.image); }
-     ( <TILDE> { seenLanguageTilde(); }
-        ( <MINUS> <LANGTAG>  { seenMinusLanguage(token.image); }
-            (<TILDE> { seenMinusLanguageTilde(); })?
-        )*
-     )?
-   |
-     <AT>  { seenLanguage(token.image); }
-     <TILDE> { seenLanguageTilde(); }
-     ( <MINUS> <LANGTAG>  { seenMinusLanguage(token.image); }
-          (<TILDE> { seenMinusLanguageTilde(); })?
-     )*
-   )
+   (langRangeLANGTAG() | langRangeAT() )
    { finishLanguageRange(); }
+}
+
+void langRangeLANGTAG() : { String lang = null; boolean seenTilde = false; boolean haveSet = false; }
+{
+   <LANGTAG> { lang = token.image; }
+   ( <TILDE> { seenTilde = true; }
+     { valueSetLanguageRange(lang, seenTilde); haveSet = true; }
+     ( <MINUS>
+       { lang = null; seenTilde = false; }
+       <LANGTAG> { lang = token.image; }
+       (<TILDE> { seenTilde = true; })?
+       { exclusionLanguageRange(lang, seenTilde); }
+     )*
+   )?
+   { if ( ! haveSet ) valueSetLanguageRange(lang, false);
+   }    
+}
+
+void langRangeAT() : { boolean haveSet = false; String lang = null; boolean seenTilde = false;}
+{
+   <AT>
+   <TILDE>
+   { valueSetLanguageRange("@", true); }
+   ( <MINUS>
+     <LANGTAG>  { lang = token.image; }
+     (<TILDE> { seenTilde = true; })?
+     { exclusionLanguageRange(lang, seenTilde); }
+   )*
 }
 
 void include() : {}
@@ -640,7 +670,7 @@ Node literal() : { Node n ; }
 
 Node predicate() : { String s; }
 {
-    ( s = iri() { return createNodeIRI(s, token.beginLine, token.beginColumn); }
+    ( s = iri() { return createURI(s, token.beginLine, token.beginColumn); }
     | <RDF_TYPE> { return nRDFtype; }
     )
 }
@@ -660,7 +690,7 @@ Node tripleExprLabel() : { Node n; }
 Node _label() : { String n; }
 {
     ( n = iri()
-      { return createNodeIRI(n, token.beginLine, token.beginColumn); }
+      { return createURI(n, token.beginLine, token.beginColumn); }
     | n = blankNode()
       { return createBNode(n, token.beginLine, token.beginColumn); }
     )
@@ -672,7 +702,7 @@ Node booleanLiteral():{}
 {
     <TRUE> { return XSD_TRUE; }
   |
-    <FALSE> { return XSD_TRUE; }
+    <FALSE> { return XSD_FALSE; }
 }
 
 Node numericLiteral():{ Token t; }

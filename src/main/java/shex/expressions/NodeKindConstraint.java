@@ -70,11 +70,6 @@ public class NodeKindConstraint extends NodeConstraint {
     }
 
     @Override
-    public String toString() {
-        return "NodeKind: "+nodeKind.toString();
-    }
-
-    @Override
     public int hashCode() {
         return Objects.hash(nodeKind);
     }
@@ -89,5 +84,10 @@ public class NodeKindConstraint extends NodeConstraint {
             return false;
         NodeKindConstraint other = (NodeKindConstraint)obj;
         return nodeKind == other.nodeKind;
+    }
+
+    @Override
+    public String toString() {
+        return "NodeKind: "+nodeKind.toString();
     }
 }

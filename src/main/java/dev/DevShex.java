@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -39,24 +40,28 @@ public class DevShex {
     static String strValidateTest = StrUtils.strjoinNL
             (
              //"<http://example/s1> LITERAL"
-             "<http://example/s1> { rdfs:label /^z/ {3} ;"
-             ,"                   }"
+             //"<http://example/s1> { rdfs:label /^z/ {3} ; }",
+             //"<http://example/s2> { rdfs:label [ 'abc' ] }",
+
+             "<http://a.example/S1> {"
+             ,"  <http://a.example/p1> NOT [<http://a.example/v1> <http://a.example/v2> <http://a.example/v3>]"
+             ,"}"
+//
+//             "<http://example/s3> { :iri [ <http://example/x> ] }"
+//             ,""
             );
 
     static String strParserTest = StrUtils.strjoinNL
             (""
-            , "dev:testNum EXTRA :p {"
-            , "   ( :p xsd:decimal | :s xsd:string {3,4} ) {1,2} ;"
-            //, "   :p xsd:decimal+ | :s xsd:string {2};"
-//            , "   :d xsd:decimal MinExclusive -87 TotalDigits 6 FractionDigits 2 ;"
-            // Where is v?
-            //, "   :v [. - @en-US - 'abc' - <x>]"
-            //,"    :iri IRI"
-            ,"}"
+
+             ,"<http://a.example/S1> {"
+             ,"  <http://a.example/p1> NOT [<http://a.example/v1> <http://a.example/v2> <http://a.example/v3>]"
+             ,"}"
             );
 
     public static void main(String[] args) {
         parsePrint();
+        //parsePrintFile("file:///home/afs/ASF/shapes/jena-shex/files/spec/schemas/1NOTvs.shex");
         //validate();
     }
 
@@ -64,19 +69,20 @@ public class DevShex {
         String str = PREFIXES_DEV +"\n" + strValidateTest;
         ShexShapes shapes = Shex.shapesFromString(str);
         printShapes(shapes);
-        Node target = SSE.parseNode("<http://example/s1>");
         Node focus = SSE.parseNode("<http://example/f1>");
 
         Graph graph = GraphFactory.createDefaultGraph();
-        graph.add(SSE.parseTriple("(<http://example/s1> rdfs:label 'abc')"));
-        graph.add(SSE.parseTriple("(<http://example/f1> rdfs:label 'def')"));
-        graph.add(SSE.parseTriple("(<http://example/f1> :link _:b)"));
+        graph.add(SSE.parseTriple("(<http://example/f0> rdfs:label 'abc')"));
+        //graph.add(SSE.parseTriple("(<http://example/f1> rdfs:label 'def')"));
+        //graph.add(SSE.parseTriple("(<http://example/f1> :link _:b)"));
+        graph.add(SSE.parseTriple("(<http://example/f1> :iri <http://example/x>)"));
 
         shapes.getPrefixMap().forEach((p,u)->graph.getPrefixMapping().setNsPrefix(p, u));
         System.out.println("---- Data");
         RDFDataMgr.write(System.out, graph, RDFFormat.TURTLE_FLAT);
 
-        ShexShape shape = shapes.get(target);
+        Node testShape = SSE.parseNode("<http://example/s3>");
+        ShexShape shape = shapes.get(testShape);
         System.out.println("---- Validation");
         ValidationReport report = V.validate(graph, shapes, shape, focus);
         if ( report.conforms() )
@@ -87,13 +93,20 @@ public class DevShex {
     }
 
     public static void parsePrint() {
-        parsePrintFile("/home/afs/ASF/shapes/jena-shex/files/spec/schemas/1val1IRIREF.shex", true, true);
-        //parsePrintString(strParserTest, true, true);
+        //parsePrintFile("/home/afs/ASF/shapes/jena-shex/files/spec/schemas/1val1IRIREF.shex", true, true);
+        parsePrintString(strParserTest, true, true);
+    }
+
+    public static ShexShapes parsePrintFile(String filename) {
+        return parsePrintFile(filename, true, true);
     }
 
 
     public static ShexShapes parsePrintFile(String filename, boolean debug, boolean debugParse) {
-        String str = IO.readWholeFileAsUTF8(filename);
+        String filename_ = ( filename.startsWith("file:") )
+                ? IRILib.IRIToFilename(filename)
+                : filename ;
+        String str = IO.readWholeFileAsUTF8(filename_);
         System.out.println("----");
         System.out.println(str);
         System.out.println("----");

@@ -18,8 +18,11 @@
 
 package shex;
 
-import org.apache.jena.shacl.lib.ShLib;
-
 public class ShexLib {
-    ShLib x;
+    public static String fragment(String uri) {
+        int idx = uri.indexOf('#');
+        if ( idx < 0 )
+            return "";
+        return uri.substring(idx);
+    }
 }

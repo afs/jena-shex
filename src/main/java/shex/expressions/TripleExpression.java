@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import shex.ReportItem;
 import shex.ValidationContext;
 
 public abstract class TripleExpression implements ShexPrintable {
@@ -38,8 +39,8 @@ public abstract class TripleExpression implements ShexPrintable {
 
     protected TripleExpression(Cardinality cardinality) {
         this.cardinality = cardinality;
-        this.min = (cardinality==null) ? -1 : cardinality.min;
-        this.max = (cardinality==null) ? -1 : cardinality.max;
+        this.min = (cardinality==null) ? 1 : cardinality.min;
+        this.max = (cardinality==null) ? 1 : cardinality.max;
     }
 
     public String cardinalityString() {
@@ -56,12 +57,29 @@ public abstract class TripleExpression implements ShexPrintable {
         return max;
     }
 
-//    @Override
-//    public void validate(ValidationContext vCxt, Node data) {
-//        throw new NotImplemented(this.getClass().getSimpleName()+".validate");
-//    }
-
+    // Returns null on match failure.
     public abstract Set<Triple> matches(ValidationContext vCxt, Node data);
+
+    protected Set<Triple> cardinalityCheck(ValidationContext vCxt, Node node, Set<Triple> matched, int min, int max) {
+        if ( cardinality == null ) {
+            return (matched==null || matched.isEmpty()) ? null : matched;
+        }
+        ReportItem item = cardinalityCheck(node, matched, min, max);
+        if ( item != null ) {
+            vCxt.reportEntry(item);
+            return null;
+        }
+        return matched;
+    }
+
+    protected ReportItem cardinalityCheck(Node node, Set<Triple> matched, int min, int max) {
+        int N = matched.size();
+        if ( min >= 0 && N < min )
+            return new ReportItem("Cardinality violation (min="+min+"): "+N, node);
+        if ( max >= 0 && N > max )
+            return new ReportItem("Cardinality violation (max="+max+"): "+N, node);
+        return null;
+    }
 
     public abstract void visit(TripleExpressionVisitor visitor);
 

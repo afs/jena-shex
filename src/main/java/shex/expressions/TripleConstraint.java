@@ -28,6 +28,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.out.NodeFormatter;
+import shex.ReportItem;
 import shex.ValidationContext;
 
 // [shex] Not a ShapeExpression per se - part of a TripleExpression.
@@ -84,6 +85,16 @@ public class TripleConstraint extends TripleExpression {
         int countBad = 0;
         for ( Node n : values ) {
             shapeExpression.validate(vCxt, n);
+        }
+        int N = values.size();
+
+        if ( min >= 0 && N < min ) {
+            ReportItem item = new ReportItem("Cardinality violation (min="+min+"): "+N, node);
+            vCxt.reportEntry(item);
+        }
+        if ( max >= 0 && N > max ) {
+            ReportItem item = new ReportItem("Cardinality violation (max="+max+"): "+N, node);
+            vCxt.reportEntry(item);
         }
 
         return null;

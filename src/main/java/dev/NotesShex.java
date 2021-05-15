@@ -19,61 +19,36 @@
 package dev;
 
 public class NotesShex {
-    // Grammar.
+    // Grammar. Check file for ToDo and other notes.
     // Test Suite
+
+    // [ ] Validation debug (includes only).
+    // [ ] Does ShapeAND reverse order due to stack? TripleExpressionEachOf?
+    // [ ] test for XSDFuncOp.isNumberic??
+    // [ ] test for ShexParserlib.unescapeShexRegex
 
     // *** Fix parser around TripleExpression.
     // [-]  Shape (inlineShapeDefinition) and ShexShape (shapeExprDecl)
     //      Shape -> TripleExpression;
     //      ShexShape -> ShapeExpression
+    // [ ] Values "Current shape"
+
+    // Convert TestShexBadSyntax and testShesSyntax to runners?
+    // "files/spec/negativeSyntax"
+    // "files/spec/syntax"
 
     // [ ] AST
     // [ ] Common triple expression - cardinality, semActs, annotation.
-    // [x] TripleExpression
-    // [x] EachOf (TripleExpressionEachOf)
-    // [x] OneOf (TripleExpressionOneOf)
     // [ ] TripleConstraint
-    // [x] tripleExprRef
-    // [x] Adjust shex.jj for TripleExpression.
-    // [ ] Whitespace: shacl/ValidationReport.java
 
     // **
-    // [x] TripleExpressionGroup -> TripleExpression.
-    // [ ] Create TripleExpression()
-    // [ ] TripleExpression.validate
-    // [ ] TripleConstraint is not a ShapeExpression.
-    //     NOT ShapeExperssions in the same way?
-    // [ ] Need different AND OR for TripleExpression? "OneOf" and "EachOf"
-    //     Probably not.
 
     // [ ] Better print of ADD,OR print index?
 
-    // [ ] Default cardinality of {1}
-    // [ ] ReportItem to include shape.
-    // [ ] ShexValidationReport
-    // [ ] ReportItem gathering.
-    //     AND, tripleConstraint
-    // [x] Shapes -> getPrefixMap();
-    // [x] TripleConstaint is a single ShapeExpressionAnd
-
 
     // [ ] ShapeMap
-    // [ ] 1literalPattern_with_all_punctuation -- escape bug? And then 1literalPattern_with_REGEXP_escapes_escaped
-
-    // [x] Grammar wrong for value sets.
-    // [x] Bad syntax tests
-    // [ ] Record start line/column of a value set or range.
-    // [x] Bad syntax: ["string"@1]
 
     // [ ] Unicode [\uD800-\uDB7F][\uDC00-\uDFFF]
-
-    // [x] Cardinality {0}
-    // [x] ShapeAtom DOT
-    // [x] ShapeExpressionEmpty() -- marker.
-    // [x] Facets
-    //     [x] FacetString
-    //     [x] FacetNumeric
-    // [x] RegexConstraint - regex escaping.
 
     // [ ] Value Sets
     // [ ] TripleConstraint printing.
@@ -91,8 +66,4 @@ public class NotesShex {
     // [ ] Semantic actions
     // [ ] ShapeExpression -> ShapeExpr
     // [ ] ShexConstraint-> ShexExpression
-
-    // [x] Unescaping. Support \U
-    //     [x] Strings, lexical
-    //     [x] IRIs
 }

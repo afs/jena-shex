@@ -40,6 +40,7 @@ public class TripleExpressionRef extends TripleExpression {
     @Override
     public Set<Triple> matches(ValidationContext vCxt, Node data) {
         throw new NotImplemented();
+        //vCxt.getShape(ref);
     }
 
 

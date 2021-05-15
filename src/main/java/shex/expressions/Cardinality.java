@@ -62,8 +62,10 @@ public class Cardinality {
     }
 
     private static int integerRange(String str, int i) {
-        if ( str == null || str.equals("*") )
+        if ( str == null )
             return i;
+        if ( str.equals("*") )
+            return UNBOUNDED;
         try {
             return Integer.parseInt(str);
         } catch (NumberFormatException ex) {

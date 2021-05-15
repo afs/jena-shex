@@ -33,7 +33,6 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.lang.extra.LangParserBase;
 import org.apache.jena.riot.lang.extra.LangParserLib;
-import org.apache.jena.riot.out.NodeFmtLib;
 import shex.ShexShape;
 import shex.ShexShapes;
 import shex.expressions.*;
@@ -74,12 +73,13 @@ public class ShExCompactParser extends LangParserBase {
         }
     }
 
-    // Points to rewrite exceptions.
-
-    // [shex] XXX Rename!
-    protected Node createNodeIRI(String iriStr, int line, int column) {
+    // [shex] adapter
+    //@Override
+    protected Node createURI(String iriStr, int line, int column) {
         return super.createNode(iriStr, line, column);
     }
+
+    // Convert exceptions, if necessary.
 
     protected String unescapeStr(String lex, int line, int column) {
         return convert(()->LangParserLib.unescapeStr(lex, line, column), line, column);
@@ -89,8 +89,6 @@ public class ShExCompactParser extends LangParserBase {
         try { return action.get(); }
         catch (RiotException ex) { throw new ShexParseException(ex.getMessage(), line, column); }
     }
-
-    //unescapeStr
 
     @Override
     protected String resolveQuotedIRI(String iriStr, int line, int column) {
@@ -345,7 +343,7 @@ public class ShExCompactParser extends LangParserBase {
         start("ShapeDefinition");
     }
 
-    // [shex] Pass build in at startShapeDefinition.
+    // [shex] Pass builder in at startShapeDefinition.
     protected void finishShapeDefinition(TripleExpression tripleExpr, List<Node> extras, boolean closed) {
         // XXX Empty.
         // XXX Other
@@ -471,111 +469,110 @@ public class ShExCompactParser extends LangParserBase {
         addNodeConstraint(nk);
     }
 
-    protected void cValueSet() {
-        debug("valueSet");
-    }
-
     // ----
     // Value Set build
 
-    static class VSentry<T> {
-        final T item;
-        boolean tilde = false;
-        VSentry(T item) { this.item = item; }
+    private List<ValueSetRange> valueSetRanges = new ArrayList<>();
+
+    private ValueSetRange valueSetRange = null;
+
+    protected void startValueSet() {
+        start("ValueSet");
     }
 
-    // [shex] better name.
-    static class VSB<T> {
-        final String label;
-        VSentry<T> item;
-        List<VSentry<T>> notItems = new ArrayList<>();
-        VSB(String label) { this.label= label; }
+    private void accumulateValueSetRange(ValueSetRange vsRange) {
+        valueSetRanges.add(vsRange);
     }
 
-    private <T> VSB<T> startValueSetValue(String kind) { return new VSB<>(kind); }
-
-    private <T> void seenValueItem(VSB<T> range, T item) {
-        if ( range.item != null )
-            throw new InternalErrorException("ValueSet range item already set null");
-        range.item = new VSentry<>(item);
+    protected void finishValueSet() {
+        List<ValueSetRange> x = valueSetRanges;
+        valueSetRanges = new ArrayList<>();
+        ValueConstraint vc = new ValueConstraint(x);
+        push(shapeExprStack, vc);
+        finish("ValueSet");
     }
 
-    private <T> void seenValueTilde(VSB<T> values, boolean tilde) { values.item.tilde = tilde; }
-    private <T> void seenMinusValue(VSB<T> values, T item) { values.notItems.add(new VSentry<>(item));}
-    private <T> void seenMinusValueTilde(VSB<T> values, boolean tilde) {
-        int x = values.notItems.size();
-        values.notItems.get(x-1).tilde = tilde;
+    protected void startValueSetValue() {
+        start("ValueSetValue");
     }
 
-    private <T> void finishValueSetValue(VSB<T> values, Function<T, String> str) {
-        if ( DEBUG ) {
-            out.printf("  [ %s", str.apply(values.item.item));
-            if ( values.item.tilde ) out.print("~");
-            out.print(" ");
-            values.notItems.forEach(ne->{
-                out.printf("- %s", str.apply(ne.item));
-                if ( ne.tilde ) out.print("~");
-                out.print(" ");
-            });
-            out.println("]");
-        }
-
-        //new ValueSetRangeIRI();
-
-
-    }
-    // ----
-    // -- ValueSet : IRI
-
-    private VSB<Node> vsIRI = null;
-
-    protected void startIriRange() { start("iriRange"); vsIRI = startValueSetValue("IRI"); }
-    protected void seenIri(String iriStr) { seenValueItem(vsIRI, createNodeIRI(iriStr, -1, -1)); }
-    protected void seenIriTilde() { seenValueTilde(vsIRI,  true); }
-    protected void seenMinusIri(String iriStr) { seenMinusValue(vsIRI, createNodeIRI(iriStr, -1, -1)); }
-    protected void seenMinusIriTilde() { seenMinusValueTilde(vsIRI,  true); }
-    protected void finishIriRange() {
-        finishValueSetValue(vsIRI, n->NodeFmtLib.displayStr(n));
-        vsIRI = null;
-        finish("iriRange");
+    protected void finishValueSetValue() {
+        finish("ValueSetValue");
     }
 
-    // -- ValueSet : Literal
-    private VSB<Node> vsLiteral = null;
-
-    protected void startLiteralRange() { start("literalRange"); vsLiteral = startValueSetValue("Literal");}
-    protected void seenLiteral(Node literal) { seenValueItem(vsLiteral, literal); }
-    protected void seenLiteralTilde() { seenValueTilde(vsLiteral,  true); }
-    protected void seenMinusLiteral(Node literal) {seenMinusValue(vsLiteral, literal);}
-    protected void seenMinusLiteralTilde() { seenMinusValueTilde(vsLiteral,  true); }
-    protected void finishLiteralRange() {
-        finishValueSetValue(vsLiteral, n -> NodeFmtLib.displayStr(n));
-        vsLiteral = null;
-        finish("literalRange");
+    protected void startValueSetValueDot() {
+        valueSetRange = new ValueSetRange(null, null, null, false);
     }
 
-    // -- ValueSet : Language
-    private VSB<String> vsLanguage = null;
-    protected void startLanguageRange() { start("languageRange"); vsLanguage = startValueSetValue("Language");}
-    protected void seenLanguage(String lang) { seenValueItem(vsLanguage, lang); }
-    protected void seenLanguageTilde() { seenValueTilde(vsLanguage,  true); }
-    protected void seenMinusLanguage(String lang) {seenMinusValue(vsLanguage, lang);}
-    protected void seenMinusLanguageTilde() { seenMinusValueTilde(vsLanguage,  true); }
-    protected void finishLanguageRange() {
-        finishValueSetValue(vsLanguage, s -> s);
-        vsLanguage = null;
-        finish("languageRange");
+    protected void finishValueSetValueDot() {
+        endValueSetValue();
+    }
+
+    protected void valueSetIriRange(String iriStr, boolean isStem) {
+        setValueSetValue(iriStr, null, null, isStem);
+    }
+
+    protected void valueSetLiteralRange(Node literal, boolean isStem) {
+        setValueSetValue(null, null, literal, isStem);
+    }
+
+    protected void valueSetLanguageRange(String lang, boolean isStem) {
+        setValueSetValue(null, lang, null, isStem);
+    }
+
+    private void setValueSetValue(String iriStr, String lang, Node literal, boolean isStem) {
+        if ( valueSetRange != null )
+          throw new InternalErrorException("ValueSet range item already set null");
+        valueSetRange = new ValueSetRange(iriStr, langtag(lang), literal, isStem);
+    }
+
+    protected void startIriRange() { start("iriRange"); }
+
+    protected void exclusionIriRange(String iriStr, boolean isStem) {
+        seenValueExclusion(iriStr, null, null, isStem);
+    }
+
+    protected void finishIriRange() { endValueSetValue(); finish("iriRange"); }
+
+    protected void startLiteralRange() { start("literalRange"); }
+
+    protected void exclusionLiteralRange(Node literal, boolean isStem) {
+        seenValueExclusion(null, null, literal, isStem);
+    }
+
+    protected void finishLiteralRange() { endValueSetValue(); finish("literalRange"); }
+
+    protected void startLanguageRange() { start("languageRange"); }
+
+    protected void exclusionLanguageRange(String lang, boolean isStem) {
+        seenValueExclusion(null, lang, null, isStem);
+    }
+
+    protected void finishLanguageRange() { endValueSetValue(); finish("languageRange"); }
+
+    protected void endValueSetValue() {
+        if ( valueSetRange == null )
+            throw new InternalErrorException("valueSetRange range is null");
+        accumulateValueSetRange(valueSetRange);
+        valueSetRange = null;
+    }
+
+    private static String langtag(String lang) {
+        if ( lang != null && lang.startsWith("@") )
+            lang = lang.substring(1);
+        return lang;
     }
 
     // -- ValueSet any exclusion
     protected void startValueExclusion() { start("valueExclusion"); }
-    protected void seenExclusionIri(String iriStr) {}
-    protected void seenExclusionIriTilde() {}
-    protected void seenExclusionLiteral(Node lit) {}
-    protected void seenExclusionLiteralTilde() {}
-    protected void seenExclusionLanguage(String lang) {}
-    protected void seenExclusionLanguageTilde() {}
-    protected void finishValueExclusion() { finish("valueExclusion"); }
+    protected void finishValueExclusion(String iriStr, String lang, Node lit, boolean isStem) {
+        seenValueExclusion(iriStr, lang, lit, isStem);
+        finish("valueExclusion");
+    }
+
+    private void seenValueExclusion(String iriStr, String lang, Node lit, boolean isStem) {
+        valueSetRange.exclusions.add(new ValueSetItem(iriStr, langtag(lang), lit, isStem));
+    }
 
     protected Cardinality cardinalityRange(String image, int line, int column) {
         try {
@@ -638,7 +635,7 @@ public class ShExCompactParser extends LangParserBase {
         String prefixedName = image.substring(1);
         String iriStr = resolvePName(prefixedName, line, column);
         // [shex] Rename as "createIRINode"
-        return super.createNode(iriStr, line, column);
+        return createURI(iriStr, line, column);
     }
 
     // ---- Stacks

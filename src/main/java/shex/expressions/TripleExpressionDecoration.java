@@ -45,7 +45,6 @@ public class TripleExpressionDecoration extends TripleExpression {
     @Override
     public Set<Triple> matches(ValidationContext vCxt, Node data) {
         Set<Triple> x = other.matches(vCxt, data);
-        // And check the added cardinality.
         return x;
     }
 

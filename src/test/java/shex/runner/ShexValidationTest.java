@@ -31,7 +31,8 @@ import org.apache.jena.riot.RDFDataMgr;
 import shex.*;
 import shex.expressions.PLib;
 
-public class RunShexValidation implements Runnable {
+/** A Shex validation test. Created by {@link RunnerShex}.  */
+public class ShexValidationTest implements Runnable {
 
     private final ManifestEntry entry;
     private final Resource schema;
@@ -40,8 +41,9 @@ public class RunShexValidation implements Runnable {
     private final Node focus;
     private final ShexShapes shapes;
     private final boolean positiveTest;
+    private final boolean verbose = false;
 
-    public RunShexValidation(ManifestEntry entry) {
+    public ShexValidationTest(ManifestEntry entry) {
         this.entry = entry;
         Resource action = entry.getAction();
         this.schema = action.getProperty(ShexT.schema).getResource();
@@ -60,28 +62,49 @@ public class RunShexValidation implements Runnable {
             ValidationReport report = V.validate(graph, shapes, shape, focus);
             boolean b = (positiveTest == report.conforms());
             if ( !b ) {
-                System.out.println("-- "+entry.getName());
-                System.out.println("Schema:   "+schema.getURI());
-                System.out.println("Shape:    "+PLib.displayStr(shape));
-                System.out.println("Focus:    "+PLib.displayStr(focus));
-                System.out.println("Positive: "+positiveTest);
-                String fn = IRILib.IRIToFilename(schema.getURI());
-                String s = IO.readWholeFileAsUTF8(fn);
-                System.out.print(s);
-                if ( ! s.endsWith("\n") )
-                    System.out.println();
+                describeTest();
                 report.getEntries().forEach(System.out::println);
                 System.out.println();
             }
-
             assertEquals(entry.getName(), positiveTest, report.conforms());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (java.lang.AssertionError ex) {
+            throw ex;
+        } catch (Throwable ex) {
+            describeTest();
+            System.out.println("Exception: "+ex.getMessage());
+            if ( ! ( ex instanceof Error ) )
+                ex.printStackTrace(System.out);
+            else
+                System.out.println(ex.getClass().getName());
             DevShex.printShapes(shapes);
-            System.err.println(entry.getEntry().getLocalName());
             throw ex;
         }
     }
 
-
+    private void describeTest() {
+        System.out.println("** "+ShexTests.fragment(entry));
+        System.out.println("Schema:   "+schema.getURI());
+        System.out.println("Shape:    "+PLib.displayStr(shape));
+        System.out.println("Focus:    "+PLib.displayStr(focus));
+        System.out.println("Positive: "+positiveTest);
+        {
+            String fn = IRILib.IRIToFilename(schema.getURI());
+            String s = IO.readWholeFileAsUTF8(fn);
+            System.out.println("-- Schema:");
+            System.out.print(s);
+            if ( ! s.endsWith("\n") )
+                System.out.println();
+        }
+        {
+            String dfn = IRILib.IRIToFilename(data.getURI());
+            String s = IO.readWholeFileAsUTF8(dfn);
+            System.out.println("-- Data:");
+            System.out.print(s);
+            if ( ! s.endsWith("\n") )
+                System.out.println();
+            System.out.println("-- --");
+        }
+        DevShex.printShapes(shapes);
+        System.out.println("-- --");
+    }
 }

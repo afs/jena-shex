@@ -86,987 +86,987 @@
         <#1nonliteral_pass-bnode>
         <#1nonliteral_fail-literal>
 
-## ## datatype
-##         <#1datatype_missing>
-##         <#1datatype_nonLiteral>
-##         <#1datatype_langString>
-##         <#1datatype_wrongDatatype>
-##         <#1datatype_pass>
-##         <#1datatypelangString_pass>
-## 
-## ### lexical form
-##         <#integer-n1_pass>
-##         <#integer-0_pass>
-##         <#integer-1_pass>
-##         <#integer-p1_pass>
-##         <#integer-empty_fail>
-##         <#integer-n1.0_fail>
-##         <#integer-p1.0_fail>
-##         <#integer-1E0_fail>
-##         <#integer-NaN_fail>
-##         <#integer-INF_fail>
-##         <#decimal-n1_pass>
-##         <#decimal-0_pass>
-##         <#decimal-1_pass>
-##         <#decimal-p1_pass>
-##         <#decimal-n1.0_pass>
-##         <#decimal-p1.0_pass>
-##         <#decimal-empty_fail>
-##         <#decimal-1E0_fail>
-##         <#decimal-NaN_fail>
-##         <#decimal-INF_fail>
-##         <#float-n1_pass>
-##         <#float-0_pass>
-##         <#float-1_pass>
-##         <#float-p1_pass>
-##         <#float-n1.0_pass>
-##         <#float-p1.0_pass>
-##         <#float-1elowercase0_pass>
-##         <#float-1E0_pass>
-##         <#float-NaN_pass>
-##         <#float-INF_pass>
-##         <#float-nINF_pass>
-##         <#float-empty_fail>
-##         <#float-pINF_fail>
-##         <#double-n1_pass>
-##         <#double-0_pass>
-##         <#double-1_pass>
-##         <#double-p1_pass>
-##         <#double-n1.0_pass>
-##         <#double-p1.0_pass>
-##         <#double-1E0_pass>
-##         <#double-1e0_pass>
-##         <#double-NaN_pass>
-##         <#double-INF_pass>
-##         <#double-nINF_pass>
-##         <#double-empty_fail>
-##         <#double-pINF_fail>
-##         <#nonPositiveInteger-n1_pass>
-##         <#nonPositiveInteger-0_pass>
-##         <#nonPositiveInteger-p0_pass>
-##         <#nonPositiveInteger-n0_pass>
-##         <#nonPositiveInteger-1_fail>
-##         <#nonPositiveInteger-p1_fail>
-##         <#nonPositiveInteger-1a_fail>
-##         <#nonPositiveInteger-a1_fail>
-##         <#negativeInteger-n1_pass>
-##         <#negativeInteger-0_fail>
-##         <#negativeInteger-p0_fail>
-##         <#negativeInteger-n0_fail>
-##         <#negativeInteger-1_fail>
-##         <#long-n1_pass>
-##         <#long-0_pass>
-##         <#long-1_pass>
-##         <#long-p1_pass>
-##         <#int-n1_pass>
-##         <#int-0_pass>
-##         <#int-1_pass>
-##         <#int-p1_pass>
-##         <#short-n32768_pass>
-##         <#short-0_pass>
-##         <#short-32767_pass>
-##         <#short-n32769_fail>
-##         <#short-32768_fail>
-##         <#byte-n128_pass>
-##         <#byte-0_pass>
-##         <#byte-127_pass>
-##         <#byte-empty_fail>
-##         <#byte-n129_fail>
-##         <#byte-128_fail>
-##         <#nonNegativeInteger-0_pass>
-##         <#nonNegativeInteger-n0_pass>
-##         <#nonNegativeInteger-p0_pass>
-##         <#nonNegativeInteger-1_pass>
-##         <#nonNegativeInteger-p1_pass>
-##         <#nonNegativeInteger-n1_fail>
-##         <#unsignedLong-0_pass>
-##         <#unsignedLong-1_pass>
-##         <#unsignedLong-n1_fail>
-##         <#unsignedInt-0_pass>
-##         <#unsignedInt-1_pass>
-##         <#unsignedInt-n1_fail>
-##         <#unsignedShort-0_pass>
-##         <#unsignedShort-65535_pass>
-##         <#unsignedShort-n1_fail>
-##         <#unsignedShort-65536_fail>
-##         <#unsignedByte-0_pass>
-##         <#unsignedByte-255_pass>
-##         <#unsignedByte-n1_fail>
-##         <#unsignedByte-256_fail>
-##         <#positiveInteger-1_pass>
-##         <#positiveInteger-n1_fail>
-##         <#positiveInteger-0_fail>
-##         <#string-empty_pass>
-##         <#string-a_pass>
-##         <#string-0_pass>
-##         <#boolean-true_pass>
-##         <#boolean-false_pass>
-##         <#boolean-0_pass>
-##         <#boolean-1_pass>
-##         <#boolean-empty_fail>
-##         <#boolean-TRUE_fail>
-##         <#boolean-FALSE_fail>
-##         <#boolean-tRuE_fail>
-##         <#boolean-fAlSe_fail>
-##         <#boolean-n1_fail>
-##         <#boolean-2_fail>
-##         <#boolean-10_fail>
-##         <#boolean-01_fail>
-##         <#dateTime-dt_pass>
-##         <#dateTime-empty_fail>
-##         <#dateTime-dT_fail>
-##         <#dateTime-d_fail>
-## 
-## ## cardinality
-## ###   dot cardinality
-##         <#1card2_fail0>
-##         <#1card2_fail1>
-##         <#1card2_pass2>
-##         <#1card2_fail3>
-##         <#1card25_fail0>
-##         <#1card25_fail1>
-##         <#1card25_pass2>
-##         <#1card25_pass3>
-##         <#1card25_pass4>
-##         <#1card25_pass5>
-##         <#1card25_fail6>
-##         <#1card2Star_fail0>
-##         <#1card2Star_fail1>
-##         <#1card2Star_pass2>
-##         <#1card2Star_pass3>
-##         <#1card2Star_pass6>
-##         # 1card2blank_... same as 1card2Star
-##         <#1cardOpt_pass0>
-##         <#1cardOpt_pass1>
-##         <#1cardOpt_fail2>
-##         <#1cardOpt_pass6>
-##         <#1cardPlus_fail0>
-##         <#1cardPlus_pass1>
-##         <#1cardPlus_pass2>
-##         <#1cardPlus_pass6>
-##         <#1cardStar_pass0>
-##         <#1cardStar_pass1>
-##         <#1cardStar_pass2>
-##         <#1cardStar_pass6>
-## 
-## ###   non-dot cardinality
-##         <#1literalPlus_Is1_Ip1_La,Io1>
-## 
-## ## shape reference
-##         <#1dotRef1_referent,referrer>
-##         <#1dotRef1_referrer,referent>
-##         <#1dotRef1_missingReferent>
-##         <#1dotRef1_selfReference>
-##         <#1dotRef1_missingSelfReference>
-##         <#1dotRef1_overReferrer>
-##         <#1dotRef1_overReferrer,overReferent>
-##         <#1dotRef1_overMatchesReferent>
-##         <#1refbnode1_pass>
-##         <#1refbnode1_fail-g1-arc>
-##         <#1refbnode1_fail-g2-arc>
-##         <#3circRefS123>
-##         <#3circRefPlus1_pass-open>
-##         <#3circRefPlus1_pass-recursiveData>
-##         <#1iriRef1_pass-iri>
-##         <#1iriRef1_fail-bnode>
-##         <#1bnodeRef1_fail-iri>
-##         <#1bnodeRef1_pass-bnode>
-## 
-## ## inline
-##         <#1dotInline1_referrer,referent>
-##         <#1dotInline1_missingReferent>
-##         <#1dotInline1_selfReference>
-##         <#1dotInline1_missingSelfReference>
-##         <#1dotInline1_overReferrer>
-##         <#1dotInline1_overReferrer,overReferent>
-##         <#1dotInline1_overMatchesReferent>
-## 
-## ## term equivalence
-## ###   iri equivalence
-##         <#1val1IRIREF_pass>             # <S> { <p1> [<v1>] }
-##         <#1val1IRIREF_v2>
-##         <#1val1IRIREF_v1v2>
-## 
-## ###   literal equivalence
-## ####     lexical form
-##         <#1val1STRING_LITERAL1_pass>
-##         <#1val1STRING_LITERAL1_fail>
-##         <#1val1STRING_LITERAL1_with_all_controls_pass>
-##         <#1val1STRING_LITERAL1_with_all_controls_fail>
-##         <#1val1STRING_LITERAL1_with_all_punctuation_pass>
-##         <#1val1STRING_LITERAL1_with_all_punctuation_fail>
-##         <#1val1STRING_LITERAL1_with_ascii_boundaries_pass>
-##         <#1val1STRING_LITERAL1_with_ascii_boundaries_fail>
-##         <#1val1STRING_LITERAL1_with_UTF8_boundaries_pass>
-##         <#1val1STRING_LITERAL1_with_UTF8_boundaries_fail>
-##         <#1val1STRING_LITERAL1_with_ECHAR_escapes_pass>
-##         <#1val1STRING_LITERAL1_with_ECHAR_escapes_fail>
-## 
-## ####     numeric equivalence
-##         <#1val1INTEGER_pass>            # <S> { <p1> [0] }
-##         <#1val1INTEGER_00>
-##         <#1val1DECIMAL_00>
-##         <#1val1DECIMAL_pass>
-##         <#1val1DECIMAL_Lab>
-##         <#1val1INTEGER_Lab>
-##         <#1val1DOUBLE_pass>             # <S> { <p1> [0E0] }
-##         <#1val1DOUBLE_0_0e0>
-##         # 1val1DOUBLElowercase_... same as 1val1DOUBLE
-##         # @@ eliminate as duplicate?
-##         <#1val1DOUBLElowercase_pass>    # <S> { <p1> [0e0] }
-##         <#1val1DOUBLElowercase_fail-0E0>
-##         <#1val1DOUBLElowercase_0_0e0>
-## 
-## ####     language tag equivalence
-##         <#1val1LANGTAG_pass>            # <S> { <p1> ['ab'@en-fr] }
-##         <#1val1LANGTAG_Lab>
-##         <#1val1LANGTAG_LabLTen>
-##         <#1val1LANGTAG_LabLTen-fr-jura>
-##         <#1val1LANGTAG_LaLTen-fr>
-## 
-## ####     datatyped literal equivalence
-##         <#1val1IRIREFDatatype_pass>    # <S> { <p1> ['ab'^^my:bloodType] }
-##         <#1val1IRIREFDatatype_Lab>
-##         <#1val1IRIREFDatatype_LabDTbloodType999>
-##         <#1val1IRIREFDatatype_LaDTbloodType>
-##         # 1val1LNDatatype_... same as 1val1IRIREFDatatype except prefixes
-## 
-## ####     boolean equivalence
-##         <#1val1true_pass>               # <S> { <p1> [true] }
-##         <#1val1true_false>
-##         <#1val1true_ab>
-##         <#1val1false_pass>              # <S> { <p1> [false] }
-##         <#1val1false_true>
-##         <#1val1false_ab>
-## 
-## ## facet
-## ###   length
-##         <#1datatypeLength_fail-missing>
-##         <#1datatypeLength_fail-wrongDatatype>
-##         <#1datatypeLength_fail-short>
-##         <#1datatypeLength_pass>
-##         <#1datatypeLength_fail-long>
-## ###   fractionDigits
-##         <#1literalFractiondigits_pass-decimal-short>
-##         # <#1literalFractiondigitsxsd-integer_fail-decimal-short> # for numericFacet ::= (numericFacet | numericLength) INTEGER (numericLiteral | string '^^' datatype )
-##         <#1literalFractiondigits_pass-decimal-equal>
-##         #  <#1literalFractiondigitsxsd-integer_pass-decimal-equal> # for numericFacet ::= (numericFacet | numericLength) INTEGER (numericLiteral | string '^^' datatype )
-##         <#1literalFractiondigits_fail-decimal-long>
-##         <#1literalFractiondigits_pass-decimal-equalLead>
-##         <#1literalFractiondigits_fail-decimal-longLead>
-##         <#1literalFractiondigits_pass-decimal-equalTrail>
-##         <#1literalFractiondigits_fail-decimal-longTrail>
-##         <#1literalFractiondigits_pass-decimal-equalLeadTrail>
-##         <#1literalFractiondigits_fail-decimal-longLeadTrail>
-##         <#1literalFractiondigits_pass-integer-short>
-##         <#1literalFractiondigits_pass-xsd_integer-short>
-##         <#1literalFractiondigits_fail-float-equal>
-##         <#1literalFractiondigits_fail-double-equal>
-##         <#1literalFractiondigits_fail-malformedxsd_decimal-1_23ab>
-##         <#1literalFractiondigits_fail-malformedxsd_decimal-1_2345ab>
-##         <#1literalFractiondigits_fail-malformedxsd_integer-1_2345>
-##         <#1literalFractiondigits_fail-iri>
-##         <#1literalFractiondigits_fail-bnode>
-## ###   totalDigits
-##         <#1literalTotaldigits_pass-decimal-short>
-##         # <#1literalTotaldigitsxsd-integer_fail-decimal-short> # for numericFacet ::= (numericFacet | numericLength) INTEGER (numericLiteral | string '^^' datatype )
-##         <#1literalTotaldigits_pass-decimal-equal>
-##         #  <#1literalTotaldigitsxsd-integer_pass-decimal-equal> # for numericFacet ::= (numericFacet | numericLength) INTEGER (numericLiteral | string '^^' datatype )
-##         <#1literalTotaldigits_fail-decimal-long>
-##         <#1literalTotaldigits_pass-decimal-equalLead>
-##         <#1literalTotaldigits_fail-decimal-longLead>
-##         <#1literalTotaldigits_pass-decimal-equalTrail>
-##         <#1literalTotaldigits_fail-decimal-longTrail>
-##         <#1literalTotaldigits_pass-decimal-equalLeadTrail>
-##         <#1literalTotaldigits_fail-decimal-longLeadTrail>
-##         <#1literalTotaldigits_pass-integer-equal>
-##         <#1literalTotaldigits_pass-xsd_integer-short>
-##         <#1literalTotaldigits_pass-integer-equalLead>
-##         <#1literalTotaldigits_fail-integer-longLead>
-##         <#1literalTotaldigits_pass-integer-equalTrail>
-##         <#1literalTotaldigits_fail-integer-longTrail>
-##         <#1literalTotaldigits_pass-integer-equalLeadTrail>
-##         <#1literalTotaldigits_fail-integer-longLeadTrail>
-##         <#1literalTotaldigits_pass-byte-short>
-##         <#1literalTotaldigits_pass-byte-equal>
-##         <#1literalTotaldigits_fail-byte-long>
-##         <#1literalTotaldigits_fail-float-equal>
-##         <#1literalTotaldigits_fail-double-equal>
-##         <#1literalTotaldigits_fail-malformedxsd_decimal-1_23ab>
-##         <#1literalTotaldigits_fail-malformedxsd_decimal-1_2345ab>
-##         <#1literalTotaldigits_fail-malformedxsd_integer-1_2345>
-##         <#1literalTotaldigits_fail-iri>
-##         <#1literalTotaldigits_fail-bnode>
-## ###   comparators
-## ####     manual
-##         <#1literalMinexclusiveINTEGER_fail-low>
-##         <#1literalMinexclusiveINTEGER_pass-equal>
-##         <#1literalMinexclusiveINTEGER_pass-high>
-##         <#1literalMininclusiveINTEGER_fail-low>
-##         <#1literalMininclusiveINTEGER_pass-equal>
-##         <#1literalMininclusiveINTEGER_pass-high>
-##         <#1literalMaxexclusiveINTEGER_pass-low>
-##         <#1literalMaxexclusiveINTEGER_fail-equal>
-##         <#1literalMaxexclusiveINTEGER_fail-high>
-##         <#1literalMaxinclusiveINTEGER_pass-low>
-##         <#1literalMaxinclusiveINTEGER_pass-equal>
-##         <#1literalMaxinclusiveINTEGER_fail-high>
-##         <#1floatMininclusiveINTEGER_fail-low>
-##         <#1floatMininclusiveINTEGER_pass-equalLead>
-##         <#1floatMininclusiveINTEGER_pass-equalTrail>
-##         <#1floatMininclusiveINTEGER_pass-high>
-##         <#1integerMininclusiveINTEGER_fail-low>
-##         <#1integerMininclusiveINTEGER_pass-equal>
-##         <#1integerMininclusiveINTEGER_pass-equalLead>
-##         <#1integerMininclusiveINTEGER_pass-high>
-##         <#1floatMininclusiveINTEGERLead_pass-equal>
-## ####     generated
-##         <#1integerMininclusiveINTEGER_fail-integer-low>
-##         <#1integerMininclusiveINTEGER_pass-integer-equal>
-##         <#1integerMininclusiveINTEGER_pass-integer-high>
-##         <#1integerMininclusiveINTEGERLead_fail-integer-low>
-##         <#1integerMininclusiveINTEGERLead_pass-integer-equal>
-##         <#1integerMininclusiveINTEGERLead_pass-integer-equalLead>
-##         <#1integerMininclusiveINTEGERLead_pass-integer-high>
-##         <#1integerMininclusiveDECIMAL_pass-integer-equal>
-##         <#1integerMininclusiveDECIMALLeadTrail_fail-integer-low>
-##         <#1integerMininclusiveDECIMALLeadTrail_pass-integer-equal>
-##         <#1integerMininclusiveDECIMALLeadTrail_pass-integer-equalLead>
-##         <#1integerMininclusiveDECIMALLeadTrail_pass-integer-high>
-##         <#1integerMininclusiveDECIMALint_fail-integer-low>
-##         <#1integerMininclusiveDECIMALint_pass-integer-equal>
-##         <#1integerMininclusiveDECIMALint_pass-integer-high>
-##         <#1integerMininclusiveDECIMALintLeadTrail_fail-integer-low>
-##         <#1integerMininclusiveDECIMALintLeadTrail_pass-integer-equal>
-##         <#1integerMininclusiveDECIMALintLeadTrail_pass-integer-equalLead>
-##         <#1integerMininclusiveDECIMALintLeadTrail_pass-integer-high>
-##         <#1integerMininclusiveDOUBLE_pass-integer-equal>
-##         <#1integerMininclusiveDOUBLELeadTrail_fail-integer-low>
-##         <#1integerMininclusiveDOUBLELeadTrail_pass-integer-equal>
-##         <#1integerMininclusiveDOUBLELeadTrail_pass-integer-equalLead>
-##         <#1integerMininclusiveDOUBLELeadTrail_pass-integer-high>
-##         <#1integerMininclusiveDOUBLEint_pass-integer-equal>
-##         <#1integerMininclusiveDOUBLEintLeadTrail_fail-integer-low>
-##         <#1integerMininclusiveDOUBLEintLeadTrail_pass-integer-equal>
-##         <#1integerMininclusiveDOUBLEintLeadTrail_pass-integer-equalLead>
-##         <#1integerMininclusiveDOUBLEintLeadTrail_pass-integer-high>
-##         <#1integerMininclusiveINTEGER_fail-decimal-equal>
-##         <#1integerMininclusiveINTEGER_fail-float-equal>
-##         <#1integerMininclusiveINTEGER_fail-double-equal>
-##         <#1integerMininclusiveINTEGER_fail-dateTime-equal>
-##         <#1integerMininclusiveINTEGER_fail-string-equal>
-##         <#1integerMininclusiveINTEGER_fail-byte-equal>
-##         <#1decimalMininclusiveINTEGER_fail-decimal-low>
-##         <#1decimalMininclusiveINTEGER_pass-decimal-high>
-##         <#1decimalMininclusiveINTEGERLead_fail-decimal-low>
-##         <#1decimalMininclusiveINTEGERLead_pass-decimal-high>
-##         <#1decimalMininclusiveDECIMAL_fail-decimal-low>
-##         <#1decimalMininclusiveDECIMAL_pass-decimal-equal>
-##         <#1decimalMininclusiveDECIMAL_pass-decimal-equalLeadTrail>
-##         <#1decimalMininclusiveDECIMAL_pass-decimal-high>
-##         <#1decimalMininclusiveDECIMALLeadTrail_fail-decimal-low>
-##         <#1decimalMininclusiveDECIMALLeadTrail_pass-decimal-equal>
-##         <#1decimalMininclusiveDECIMALLeadTrail_pass-decimal-equalLeadTrail>
-##         <#1decimalMininclusiveDECIMALLeadTrail_pass-decimal-high>
-##         <#1decimalMininclusiveDECIMALintLeadTrail_fail-decimal-low>
-##         <#1decimalMininclusiveDECIMALintLeadTrail_pass-decimal-high>
-##         <#1decimalMininclusiveDOUBLE_fail-decimal-low>
-##         <#1decimalMininclusiveDOUBLE_pass-decimal-equal>
-##         <#1decimalMininclusiveDOUBLE_pass-decimal-equalLeadTrail>
-##         <#1decimalMininclusiveDOUBLELeadTrail_fail-decimal-low>
-##         <#1decimalMininclusiveDOUBLELeadTrail_pass-decimal-equal>
-##         <#1decimalMininclusiveDOUBLELeadTrail_pass-decimal-equalLeadTrail>
-##         <#1decimalMininclusiveDOUBLELeadTrail_pass-decimal-high>
-##         <#1decimalMininclusiveDOUBLEintLeadTrail_fail-decimal-low>
-##         <#1decimalMininclusiveDOUBLEintLeadTrail_pass-decimal-high>
-##         <#1decimalMininclusiveDECIMAL_fail-float-equal>
-##         <#1decimalMininclusiveDECIMAL_fail-double-equal>
-##         <#1floatMininclusiveINTEGERLead_fail-float-low>
-##         <#1floatMininclusiveINTEGERLead_pass-float-high>
-##         <#1floatMininclusiveDECIMAL_pass-float-equal>
-##         <#1floatMininclusiveDECIMAL_pass-float-equalLeadTrail>
-##         <#1floatMininclusiveDECIMALLeadTrail_fail-float-low>
-##         <#1floatMininclusiveDECIMALLeadTrail_pass-float-equal>
-##         <#1floatMininclusiveDECIMALLeadTrail_pass-float-equalLeadTrail>
-##         <#1floatMininclusiveDECIMALLeadTrail_pass-float-high>
-##         <#1floatMininclusiveDECIMALintLeadTrail_fail-float-low>
-##         <#1floatMininclusiveDECIMALintLeadTrail_pass-float-high>
-##         <#1floatMininclusiveDOUBLE_pass-float-equal>
-##         <#1floatMininclusiveDOUBLE_pass-float-equalLeadTrail>
-##         <#1floatMininclusiveDOUBLELeadTrail_fail-float-low>
-##         <#1floatMininclusiveDOUBLELeadTrail_pass-float-equal>
-##         <#1floatMininclusiveDOUBLELeadTrail_pass-float-equalLeadTrail>
-##         <#1floatMininclusiveDOUBLELeadTrail_pass-float-high>
-##         <#1floatMininclusiveDOUBLEintLeadTrail_fail-float-low>
-##         <#1floatMininclusiveDOUBLEintLeadTrail_pass-float-high>
-##         <#1doubleMininclusiveINTEGERLead_fail-double-low>
-##         <#1doubleMininclusiveINTEGERLead_pass-double-high>
-##         <#1doubleMininclusiveDECIMAL_pass-double-equal>
-##         <#1doubleMininclusiveDECIMAL_pass-double-equalLeadTrail>
-##         <#1doubleMininclusiveDECIMALLeadTrail_fail-double-low>
-##         <#1doubleMininclusiveDECIMALLeadTrail_pass-double-equal>
-##         <#1doubleMininclusiveDECIMALLeadTrail_pass-double-equalLeadTrail>
-##         <#1doubleMininclusiveDECIMALLeadTrail_pass-double-high>
-##         <#1doubleMininclusiveDECIMALintLeadTrail_fail-double-low>
-##         <#1doubleMininclusiveDECIMALintLeadTrail_pass-double-high>
-##         <#1doubleMininclusiveDOUBLE_pass-double-equal>
-##         <#1doubleMininclusiveDOUBLE_pass-double-equalLeadTrail>
-##         <#1doubleMininclusiveDOUBLELeadTrail_fail-double-low>
-##         <#1doubleMininclusiveDOUBLELeadTrail_pass-double-equal>
-##         <#1doubleMininclusiveDOUBLELeadTrail_pass-double-equalLeadTrail>
-##         <#1doubleMininclusiveDOUBLELeadTrail_pass-double-high>
-##         <#1doubleMininclusiveDOUBLEintLeadTrail_fail-double-low>
-##         <#1doubleMininclusiveDOUBLEintLeadTrail_pass-double-high>
-##         <#1integerMinexclusiveINTEGER_fail-integer-low>
-##         <#1integerMinexclusiveINTEGER_fail-integer-equal>
-##         <#1integerMinexclusiveINTEGER_pass-integer-high>
-##         <#1integerMinexclusiveDECIMALint_fail-integer-low>
-##         <#1integerMinexclusiveDECIMALint_fail-integer-equal>
-##         <#1integerMinexclusiveDECIMALint_pass-integer-high>
-##         <#1integerMinexclusiveDOUBLEint_fail-integer-low>
-##         <#1integerMinexclusiveDOUBLEint_fail-integer-equal>
-##         <#1integerMinexclusiveDOUBLEint_pass-integer-high>
-##         <#1decimalMinexclusiveINTEGER_fail-decimal-low>
-##         <#1decimalMinexclusiveINTEGER_pass-decimal-high>
-##         <#1decimalMinexclusiveDECIMAL_fail-decimal-low>
-##         <#1decimalMinexclusiveDECIMAL_fail-decimal-equal>
-##         <#1decimalMinexclusiveDECIMAL_pass-decimal-high>
-##         <#1decimalMinexclusiveDOUBLE_fail-decimal-low>
-##         <#1decimalMinexclusiveDOUBLE_fail-decimal-equal>
-##         <#1decimalMinexclusiveDOUBLE_pass-decimal-high>
-##         <#1decimalMinexclusiveDECIMAL_fail-float-equal>
-##         <#1decimalMinexclusiveDECIMAL_fail-double-equal>
-##         <#1floatMinexclusiveINTEGER_fail-float-low>
-##         <#1floatMinexclusiveINTEGER_pass-float-high>
-##         <#1floatMinexclusiveDECIMAL_fail-float-low>
-##         <#1floatMinexclusiveDECIMAL_fail-float-equal>
-##         <#1floatMinexclusiveDECIMAL_pass-float-high>
-##         <#1floatMinexclusiveDOUBLE_fail-float-low>
-##         <#1floatMinexclusiveDOUBLE_fail-float-equal>
-##         <#1floatMinexclusiveDOUBLE_pass-float-high>
-##         <#1doubleMinexclusiveINTEGER_fail-double-low>
-##         <#1doubleMinexclusiveINTEGER_pass-double-high>
-##         <#1doubleMinexclusiveDECIMAL_fail-double-low>
-##         <#1doubleMinexclusiveDECIMAL_fail-double-equal>
-##         <#1doubleMinexclusiveDECIMAL_pass-double-high>
-##         <#1doubleMinexclusiveDOUBLE_fail-double-low>
-##         <#1doubleMinexclusiveDOUBLE_fail-double-equal>
-##         <#1doubleMinexclusiveDOUBLE_pass-double-high>
-##         <#1doubleMinexclusiveDECIMAL_fail-float-equal>
-##         <#1integerMaxinclusiveINTEGER_pass-integer-low>
-##         <#1integerMaxinclusiveINTEGER_pass-integer-equal>
-##         <#1integerMaxinclusiveINTEGER_fail-integer-high>
-##         <#1integerMaxinclusiveDECIMALint_pass-integer-low>
-##         <#1integerMaxinclusiveDECIMALint_pass-integer-equal>
-##         <#1integerMaxinclusiveDECIMALint_fail-integer-high>
-##         <#1integerMaxinclusiveDOUBLEint_pass-integer-low>
-##         <#1integerMaxinclusiveDOUBLEint_pass-integer-equal>
-##         <#1integerMaxinclusiveDOUBLEint_fail-integer-high>
-##         <#1decimalMaxinclusiveINTEGER_pass-decimal-low>
-##         <#1decimalMaxinclusiveINTEGER_fail-decimal-high>
-##         <#1decimalMaxinclusiveDECIMAL_pass-decimal-low>
-##         <#1decimalMaxinclusiveDECIMAL_pass-decimal-equal>
-##         <#1decimalMaxinclusiveDECIMAL_fail-decimal-high>
-##         <#1decimalMaxinclusiveDOUBLE_pass-decimal-low>
-##         <#1decimalMaxinclusiveDOUBLE_pass-decimal-equal>
-##         <#1decimalMaxinclusiveDOUBLE_fail-decimal-high>
-##         <#1decimalMaxinclusiveDECIMAL_fail-float-equal>
-##         <#1decimalMaxinclusiveDECIMAL_fail-double-equal>
-##         <#1floatMaxinclusiveINTEGER_pass-float-low>
-##         <#1floatMaxinclusiveINTEGER_fail-float-high>
-##         <#1floatMaxinclusiveDECIMAL_pass-float-low>
-##         <#1floatMaxinclusiveDECIMAL_pass-float-equal>
-##         <#1floatMaxinclusiveDECIMAL_fail-float-high>
-##         <#1floatMaxinclusiveDOUBLE_pass-float-low>
-##         <#1floatMaxinclusiveDOUBLE_pass-float-equal>
-##         <#1floatMaxinclusiveDOUBLE_fail-float-high>
-##         <#1doubleMaxinclusiveINTEGER_pass-double-low>
-##         <#1doubleMaxinclusiveINTEGER_fail-double-high>
-##         <#1doubleMaxinclusiveDECIMAL_pass-double-low>
-##         <#1doubleMaxinclusiveDECIMAL_pass-double-equal>
-##         <#1doubleMaxinclusiveDECIMAL_fail-double-high>
-##         <#1doubleMaxinclusiveDOUBLE_pass-double-low>
-##         <#1doubleMaxinclusiveDOUBLE_pass-double-equal>
-##         <#1doubleMaxinclusiveDOUBLE_fail-double-high>
-##         <#1doubleMaxinclusiveDECIMAL_fail-float-equal>
-##         <#1integerMaxexclusiveINTEGER_pass-integer-low>
-##         <#1integerMaxexclusiveINTEGER_fail-integer-equal>
-##         <#1integerMaxexclusiveINTEGER_fail-integer-high>
-##         <#1integerMaxexclusiveDECIMALint_pass-integer-low>
-##         <#1integerMaxexclusiveDECIMALint_fail-integer-equal>
-##         <#1integerMaxexclusiveDECIMALint_fail-integer-high>
-##         <#1integerMaxexclusiveDOUBLEint_pass-integer-low>
-##         <#1integerMaxexclusiveDOUBLEint_fail-integer-equal>
-##         <#1integerMaxexclusiveDOUBLEint_fail-integer-high>
-##         <#1decimalMaxexclusiveINTEGER_pass-decimal-low>
-##         <#1decimalMaxexclusiveINTEGER_fail-decimal-high>
-##         <#1decimalMaxexclusiveDECIMAL_pass-decimal-low>
-##         <#1decimalMaxexclusiveDECIMAL_fail-decimal-equal>
-##         <#1decimalMaxexclusiveDECIMAL_fail-decimal-high>
-##         <#1decimalMaxexclusiveDOUBLE_pass-decimal-low>
-##         <#1decimalMaxexclusiveDOUBLE_fail-decimal-equal>
-##         <#1decimalMaxexclusiveDOUBLE_fail-decimal-high>
-##         <#1decimalMaxexclusiveDECIMAL_fail-float-equal>
-##         <#1decimalMaxexclusiveDECIMAL_fail-double-equal>
-##         <#1decimalMaxexclusivexsd-byte_fail-byte-equal>
-##         <#1floatMaxexclusiveINTEGER_pass-float-low>
-##         <#1floatMaxexclusiveINTEGER_fail-float-high>
-##         <#1floatMaxexclusiveDECIMAL_pass-float-low>
-##         <#1floatMaxexclusiveDECIMAL_fail-float-high>
-##         <#1floatMaxexclusiveDOUBLE_pass-float-low>
-##         <#1floatMaxexclusiveDOUBLE_fail-float-high>
-##         <#1doubleMaxexclusiveINTEGER_pass-double-low>
-##         <#1doubleMaxexclusiveINTEGER_fail-double-equal>
-##         <#1doubleMaxexclusiveINTEGER_fail-double-high>
-##         <#1doubleMaxexclusiveINTEGERLead_fail-double-equal>
-##         <#1doubleMaxexclusiveDECIMAL_pass-double-low>
-##         <#1doubleMaxexclusiveDECIMAL_fail-double-equal>
-##         <#1doubleMaxexclusiveDECIMAL_fail-double-high>
-##         <#1doubleMaxexclusiveDECIMALLeadTrail_fail-double-equal>
-##         <#1doubleMaxexclusiveDECIMALint_fail-double-equal>
-##         <#1doubleMaxexclusiveDECIMALintLeadTrail_fail-double-equal>
-##         <#1doubleMaxexclusiveDOUBLE_pass-double-low>
-##         <#1doubleMaxexclusiveDOUBLE_fail-double-equal>
-##         <#1doubleMaxexclusiveDOUBLE_fail-double-high>
-##         <#1doubleMaxexclusiveDOUBLELeadTrail_fail-double-equal>
-##         <#1doubleMaxexclusiveDOUBLEint_fail-double-equal>
-##         <#1doubleMaxexclusiveDOUBLEintLeadTrail_fail-double-equal>
-## ###   lengths
-##         <#1Length_fail-lit-short>
-##         <#1Length_pass-lit-equal>
-##         <#1Length_fail-lit-long>
-##         <#1literalLength_fail-lit-short>
-##         <#1literalLength_pass-lit-equal>
-##         <#1literalLength_fail-lit-long>
-##         <#1literalLength_fail-iri-equal>
-##         <#1literalLength_fail-bnode-equal>
-##         <#1iriLength_fail-iri-short>
-##         <#1iriLength_pass-iri-equal>
-##         <#1iriLength_fail-iri-long>
-##         <#1iriLength_fail-lit-equal>
-##         <#1iriLength_fail-bnode-equal>
-##         <#1iriRefLength1_fail-iri-short>
-##         <#1iriRefLength1_pass-iri-equal>
-##         <#1iriRefLength1_fail-iri-long>
-##         <#1iriRefLength1_fail-lit-equal>
-##         <#1iriRefLength1_fail-bnode-equal>
-##         <#1bnodeLength_fail-bnode-short>
-##         <#1bnodeLength_pass-bnode-equal>
-##         <#1bnodeLength_fail-bnode-long>
-##         <#1bnodeLength_fail-lit-equal>
-##         <#1bnodeLength_fail-iri-equal>
-##         <#1nonliteralLength_fail-iri-short>
-##         <#1nonliteralLength_pass-iri-equal>
-##         <#1nonliteralLength_fail-iri-long>
-##         <#1nonliteralLength_fail-lit-equal>
-##         <#1nonliteralLength_fail-bnode-short>
-##         <#1nonliteralLength_pass-bnode-equal>
-##         <#1nonliteralLength_fail-bnode-long>
-##         <#1literalMinlength_fail-lit-short>
-##         <#1literalMinlength_pass-lit-equal>
-##         <#1literalMinlength_pass-lit-long>
-##         <#1iriMinlength_fail-iri-short>
-##         <#1iriMinlength_pass-iri-equal>
-##         <#1iriMinlength_pass-iri-long>
-##         <#1bnodeMinlength_fail-bnode-short>
-##         <#1bnodeMinlength_pass-bnode-equal>
-##         <#1bnodeMinlength_pass-bnode-long>
-##         <#1nonliteralMinlength_fail-iri-short>
-##         <#1nonliteralMinlength_pass-iri-equal>
-##         <#1nonliteralMinlength_pass-iri-long>
-##         <#1nonliteralMinlength_fail-bnode-short>
-##         <#1nonliteralMinlength_pass-bnode-equal>
-##         <#1nonliteralMinlength_pass-bnode-long>
-##         <#1literalMaxlength_pass-lit-short>
-##         <#1literalMaxlength_pass-lit-equal>
-##         <#1literalMaxlength_fail-lit-long>
-##         <#1iriMaxlength_pass-iri-short>
-##         <#1iriMaxlength_pass-iri-equal>
-##         <#1iriMaxlength_fail-iri-long>
-##         <#1bnodeMaxlength_pass-bnode-short>
-##         <#1bnodeMaxlength_pass-bnode-equal>
-##         <#1bnodeMaxlength_fail-bnode-long>
-##         <#1nonliteralMaxlength_pass-iri-short>
-##         <#1nonliteralMaxlength_pass-iri-equal>
-##         <#1nonliteralMaxlength_fail-iri-long>
-##         <#1nonliteralMaxlength_pass-bnode-short>
-##         <#1nonliteralMaxlength_pass-bnode-equal>
-##         <#1nonliteralMaxlength_fail-bnode-long>
-## ###   pattern
-##         <#1literalPattern_pass-lit-match>
-##         <#1literalPattern_fail-lit-short>
-##         <#1literalPattern_fail-ab>
-##         <#1literalPattern_fail-cd>
-##         <#1literalPatterni_pass-lit-match>
-##         <#1literalPatterni_pass-lit-BC>
-##         <#1literalPatterni_pass-lit-blowercaseC>
-##         <#1literalPattern_pass-lit-into>
-##         <#1literalPattern19_fail-iri-match>
-##         <#1literalPattern_fail-bnode-match>
-##         <#1literalPattern_with_all_controls_pass>
-##         <#1literalPattern_with_all_controls_fail>
-##         <#1literalPattern_with_all_punctuation_pass>
-##         <#1literalPattern_with_all_punctuation_fail>
-##         <#1literalPattern_with_ascii_boundaries_pass>
-##         <#1literalPattern_with_ascii_boundaries_fail>
-##         <#1literalPattern_with_UTF8_boundaries_pass>
-##         <#1literalPattern_with_UTF8_boundaries_fail>
-##         <#1literalPattern_with_REGEXP_escapes_pass>
-##         <#1literalPattern_with_REGEXP_escapes_fail>
-##         <#1literalPattern_with_REGEXP_escapes_fail_escaped>
-##         <#1literalPattern_with_REGEXP_escapes_escaped_pass>
-##         <#1literalPattern_with_REGEXP_escapes_escaped_fail_escapes>
-##         <#1literalPattern_with_REGEXP_escapes_escaped_fail_escapes_bare>
-##         <#1literalPattern_with_REGEXP_escapes_bare_pass>
-##         <#1literalPattern_with_REGEXP_escapes_bare_fail_escaped>
-##         <#1literalPattern_with_REGEXP_escapes_pass_bare>
-##         <#1literalPattern_with_REGEXP_escapes_bare_pass_escapes>
-##         <#1literalPatternEnd_fail-litEnd>
-##         <#1literalPatternDollar_pass-litDollar-match>
-##         <#1literalPattern_pass-StartlitEnd-match>
-##         <#1literalStartPatternEnd_CarrotbcDollar>
-##         <#1literalCarrotPatternDollar_pass-bc>
-##         <#1literalCarrotPatternDollar_pass-CarrotbcDollar>
-##         <#1literalPatternabEnd_fail-bnode-match>
-##         <#1literalStartPattern_pass-bc>
-##         <#1literalStartPattern_fail-CarrotbcDollar>
-##         <#1literalPatternEnd_pass-bc>
-##         <#1literalPatternEnd_pass-CarrotbcDollar>
-##         <#1literalPattern_pass-bcDollar>
-##         <#1literalStarPatternEnd_pass-bc>
-##         <#1literalPattern_pass-CarrotbcDollar>
-##         <#1literalPattern_with_all_meta_pass>
-##         <#1literalPattern_with_all_meta_pass-NA>
-##         <#1iriPattern_pass-iri-match>
-##         <#1iriPattern_fail-iri-short>
-##         <#1iriPattern_fail-iri-long>
-##         <#1iriPattern_fail-lit-match>
-##         <#1iriPattern_fail-bnode-match>
-##         <#1bnodePattern_pass-bnode-match>
-##         <#1bnodePattern_fail-bnode-short>
-##         <#1bnodePattern_fail-bnode-long>
-##         <#1bnodePattern_fail-lit-match>
-##         <#1bnodePattern_fail-iri-match>
-##         <#1nonliteralPattern_pass-iri-match>
-##         <#1nonliteralPattern_fail-iri-short>
-##         <#1nonliteralPattern_pass-iri-long>
-##         <#1nonliteralPattern_fail-lit-match>
-##         <#1nonliteralPattern_pass-bnode-match>
-##         <#1nonliteralPattern_fail-bnode-short>
-##         <#1nonliteralPattern_pass-bnode-long>
-## 
-## ## value sets
-##         <#1val1dotMinusiri3_pass>
-##         <#1val1dotMinusiri3_v1>
-##         <#1val1dotMinusiri3_v2>
-##         <#1val1dotMinusiri3_v3>
-##         <#1val1refvsMinusiri3_pass>
-##         <#1val1refvsMinusiri3_v1>
-##         <#1val1refvsMinusiri3_v2>
-##         <#1val1refvsMinusiri3_v3>
-##         <#1val1dotMinusiriStem3_pass>
-##         <#1val1dotMinusiriStem3_v1>
-##         <#1val1dotMinusiriStem3_v2>
-##         <#1val1dotMinusiriStem3_v3>
-##         <#1val1dotMinusiriStem3_v1a>
-##         <#1val1iri_passv1>
-##         <#1val1iri_failv1a>
-##         <#1val1iriStem_passv1>
-##         <#1val1iriStem_passv1a>
-##         <#1val1iriStem_fail>
-##         <#1val1iriStem_fail-literalIv1>
-##         <#1val1iriStemMinusiri3_passIv>
-##         <#1val1iriStemMinusiri3_passIv4>
-##         <#1val1iriStemMinusiri3_fail-literalIv4>
-##         <#1val1iriStemMinusiri3_v1>
-##         <#1val1iriStemMinusiri3_fail-literalIv1>
-##         <#1val1iriStemMinusiri3_v2>
-##         <#1val1iriStemMinusiri3_v3>
-##         <#1val1iriStemMinusiri3_passIv1a>
-##         <#1val1iriStemMinusiriStem3_passIv>
-##         <#1val1iriStemMinusiriStem3_passIv4>
-##         <#1val1iriStemMinusiriStem3_v1>
-##         <#1val1iriStemMinusiriStem3_v2>
-##         <#1val1iriStemMinusiriStem3_v3>
-##         <#1val1iriStemMinusiriStem3_v1a>
-##         <#1val1literal_passv>
-##         <#1val1literal_failv1>
-##         <#1val1literalStem_passv1>
-##         <#1val1literalStem_passv1a>
-##         <#1val1literalStem_fail>
-##         <#1val1literaliriStem_fail-Iv1>
-##         <#1val1literalStemMinusliteral3_passLv>
-##         <#1val1literalStemMinusliteral3_passLv4>
-##         <#1val1literaliriStemMinusliteraliri3_fail-Iv4>
-##         <#1val1literalStemMinusliteral3_v1>
-##         <#1val1literaliriStemMinusliteraliri3_fail-Iv1>
-##         <#1val1literalStemMinusliteral3_v2>
-##         <#1val1literalStemMinusliteral3_v3>
-##         <#1val1literalStemMinusliteral3_passLv1a>
-##         <#1val1literalStemMinusliteralStem3_passLv>
-##         <#1val1literalStemMinusliteralStem3_passLv4>
-##         <#1val1literalStemMinusliteralStem3_v1>
-##         <#1val1literalStemMinusliteralStem3_v2>
-##         <#1val1literalStemMinusliteralStem3_v3>
-##         <#1val1literalStemMinusliteralStem3_v1a>
-##         <#1val1language_passLAtfr>
-##         <#1val1language_failLAtfr-be>
-##         <#1val1emptylanguageStem_passLAtfr>
-##         <#1val1emptylanguageStem_fail-literal>
-##         <#1val1emptylanguageStem_fail-empty>
-##         <#1val1emptylanguageStem_fail-integer>
-##         <#1val1emptylanguageStemMinuslanguage3_passLAtfr>
-##         <#1val1emptylanguageStemMinuslanguage3_failLAtfr-be>
-##         <#1val1emptylanguageStemMinuslanguage3_passLAtfr-be-fbcl>
-##         <#1val1emptylanguageStemMinuslanguageStem3_LAtfr>
-##         <#1val1emptylanguageStemMinuslanguageStem3_failLAtfr-be>
-##         <#1val1emptylanguageStemMinuslanguageStem3_LAtfr-be-fbcl>
-##         <#1val1emptylanguageStemMinuslanguageStem3_LAtfrc>
-##         <#1val1languageStem_passLAtfr>
-##         <#1val1languageStem_failLAtfrc>
-##         <#1val1languageStem_passLAtfr-be>
-##         <#1val1languageStem_passLAtfr-be-fbcl>
-##         <#1val1languageStem_fail>
-##         <#1val1literallanguageStem_failLAtfr>
-##         <#1val1languageStemMinuslanguage3_passLAtfr>
-##         <#1val1languageStemMinuslanguage3_passLAtfr-FR>
-##         <#1val1literallanguageStemMinusliterallanguage3_failLAtfr-FR>
-##         <#1val1languageStemMinuslanguage3_failLAtfr-be>
-##         <#1val1literallanguageStemMinusliterallanguage3_failLAtfr-BE>
-##         <#1val1languageStemMinuslanguage3_failLAtfr-cd>
-##         <#1val1languageStemMinuslanguage3_failLAtfr-ch>
-##         <#1val1languageStemMinuslanguage3_passLAtfr-be-fbcl>
-##         <#1val1languageStemMinuslanguageStem3_passLAtfr>
-##         <#1val1languageStemMinuslanguageStem3_LAtfrc>
-##         <#1val1languageStemMinuslanguageStem3_passLAtfr-FR>
-##         <#1val1languageStemMinuslanguageStem3_LAtfr-be>
-##         <#1val1languageStemMinuslanguageStem3_LAtfr-cd>
-##         <#1val1languageStemMinuslanguageStem3_LAtfr-ch>
-##         <#1val1languageStemMinuslanguageStem3_passLAtfr-bel>
-##         <#1val1languageStemMinuslanguageStem3_LAtfr-be-fbcl>
-## 
-## ## triple expressions
-## ###   AND tripleExpr
-## 
-## ###   OR tripleExpr
-##         <#1dotOne2dot_pass_p1>
-##         <#1dotOne2dot_pass_p2p3>
-##         <#1dotOne2dot-oneOf_fail_p1p2p3>
-##         <#1dotOne2dot-someOf_fail_p1p2p3>
-##         #<#1dotOne2dot-firstOf_pass_p1p2p3>
-##         # open1dotOneopen2dotcloseclose_... same as 1dotOne2dot
-##         # @@ eliminate as duplicate?
-##         <#open1dotOneopen2dotcloseclose_pass_p1>
-##         <#open1dotOneopen2dotcloseclose_pass_p2p3>
-##         <#open1dotOneopen2dotcloseclose_fail_p1p2p3>
-##         # 1dotSemiOne2dotSemis ... same as 1dotOne2dot
-##         # open1dotSemiOne2dotsemisclose_... same as 1dotOne2dot
-##         # open1dotSemiOneopen2dotSemiscloseclose_... same as 1dotOne2dot
-##         # open1dotOne2dotclose_... same as 1dotOne2dot
-##         <#openopen1dotOne1dotclose1dotclose_pass_p1p3>
-##         <#openopen1dotOne1dotclose1dotclose_pass_p2p3>
-##         <#openopen1dotOne1dotclose1dotclose_fail_p1>
-##         <#openopen1dotOne1dotclose1dotclose_fail_p3>
-##         <#openopen1dotOne1dotclose1dotclose_fail_p1p2>
-##         # openopen1dotSemiOne1dotSemiclose1dotSemicloseSemi_... same as openopen1dotOne1dotclose1dotclose
-## 
-## ## value expressions
-## ###   value reference
-##         <#1val1vExprRefIRIREF1_fail-lit-short>
-##         <#1val1vExprRefIRIREF1_pass-lit-equal>
-##         <#1val1vExprRefbnode1_fail-lit-short>
-##         <#1val1vExprRefbnode1_pass-lit-equal>
-## 
-## ###   AND valueExpr
-##         <#1dotShapeAND1dot3X_pass>
-##         <#1dotShapeAND1dot3X_fail>
-##         <#1dotRefAND3_failAll>
-##         <#1dotRefAND3_failShape2Shape3>
-##         <#1dotRefAND3_failShape1Shape3>
-##         <#1dotRefAND3_failShape1Shape2>
-##         <#1dotRefAND3_passShape1Shape2Shape3>
-##         <#1val1vExpr1AND1AND1Ref3_pass>
-##         <#1val1vExpr1AND1AND1Ref3_failvc1>
-##         <#1val1vExpr1AND1AND1Ref3_failvc2>
-##         <#1val1vExpr1AND1AND1Ref3_failvc3>
-##         <#1val1vExprRefAND3_pass>
-##         <#1val1vExprRefAND3_failvc3>
-##         <#1val1vExprRefAND3_failvc2>
-##         <#1val1vExprRefAND3_failvc1>
-##         <#1val1vExprAND3_pass>
-##         <#1val1vExprAND3_failvc1>
-##         <#1val1vExprAND3_failvc2>
-##         <#1val1vExprAND3_failvc3>
-## 
-## ###   OR valueExpr
-##         <#refBNodeORrefIRI_ReflexiveIRI>
-##         <#refBNodeORrefIRI_ReflexiveShortIRI>
-##         <#refBNodeORrefIRI_IntoReflexiveIRI>
-##         <#refBNodeORrefIRI_IntoReflexiveBNode>
-##         <#refBNodeORrefIRI_CyclicIRI_IRI>
-##         <#refBNodeORrefIRI_CyclicIRI_BNode>
-##         <#refBNodeORrefIRI_CyclicIRI_ShortIRI>
-##         <#1dotRefOR3_fail>
-##         <#1dotRefOR3_passShape1>
-##         <#1dotRefOR3_passShape2>
-##         <#1dotRefOR3_passShape3>
-##         <#1dotRefOR3_passShape1Shape2Shape3>
-##         <#1val1vExpr1OR1OR1Ref3_fail>
-##         <#1val1vExpr1OR1OR1Ref3_passvc1>
-##         <#1val1vExpr1OR1OR1Ref3_passvc2>
-##         <#1val1vExpr1OR1OR1Ref3_passvc3>
-##         <#1val1vExpr1OR1OR1Ref3_passvc1vc2vc3>
-##         <#1val1vExprRefOR3_passvc1vc2vc3>
-##         <#1val1vExprRefOR3_passvc3>
-##         <#1val1vExprRefOR3_passvc2>
-##         <#1val1vExprRefOR3_passvc1>
-##         <#1val1vExprRefOR3_fail>
-##         <#1val1vExprOR3_fail>
-##         <#1val1vExprOR3_passvc1>
-##         <#1val1vExprOR3_passvc2>
-##         <#1val1vExprOR3_passvc3>
-##         <#1val1vExprOR3_passvc1vc2vc3>
-## 
-## ###   NOT valueExpr
-##         <#1NOTIRI_passLv>
-##         <#1NOTIRI_failIo1>
-##         <#1NOTIRI_failempty>
-##         <#1NOTNOTIRI_failLv>
-##         <#1NOTNOTIRI_passIo1>
-##         <#1NOTvs_failIv1>
-##         <#1NOTvs_passIo1>
-##         <#1NOTvs_failempty>
-##         <#1NOTNOTvs_passIv1>
-##         <#1NOTNOTvs_failIo1>
-##         <#1NOTdot_failIv1>
-##         <#1NOTdot_failIo1>
-##         <#1NOTdot_failempty>
-##         <#1NOTNOTdot_passIv1>
-##         <#1NOTNOTdot_passIo1>
-##         <#1_NOTliteral_ANDvs_passIv1>
-##         <#1_NOTliteral_ANDvs_failIo1>
-##         <#1_NOTliteral_ANDvs_failLv>
-##         <#1NOT_literalANDvs__passIv1>
-##         <#1NOT_literalANDvs__passLv>
-##         <#1NOTliteralANDvs_passIv1>
-##         <#1NOTliteralANDvs_failIo1>
-##         <#1NOTliteralANDvs_failLv>
-##         <#1_NOTvs_ANDvs_failIv1>
-##         <#1_NOTvs_ANDvs_passIv2>
-##         <#1_NOTvs_ANDvs_failIv3>
-##         <#1NOT_vsANDvs__passIv1>
-##         <#1NOT_vsANDvs__passIv2>
-##         <#1NOT_vsANDvs__passIv3>
-##         <#1NOTvsANDvs_failIv1>
-##         <#1NOTvsANDvs_passIv2>
-##         <#1NOTvsANDvs_failIv3>
-##         <#1_NOTliteral_ORvs_passIv1>
-##         <#1_NOTliteral_ORvs_passIo1>
-##         <#1_NOTliteral_ORvs_failLv>
-##         <#1NOT_literalORvs__failIv1>
-##         <#1NOT_literalORvs__passIo1>
-##         <#1NOT_literalORvs__failLv>
-##         <#1NOTliteralORvs_passIv1>
-##         <#1NOTliteralORvs_passIo1>
-##         <#1NOTliteralORvs_failLv>
-##         <#1_NOTvs_ORvs_failIv1>
-##         <#1_NOTvs_ORvs_passIv2>
-##         <#1_NOTvs_ORvs_passIv3>
-##         <#1NOT_vsORvs__failIv1>
-##         <#1NOT_vsORvs__failIv2>
-##         <#1NOT_vsORvs__passIv3>
-##         <#1NOTvsORvs_failIv1>
-##         <#1NOTvsORvs_passIv2>
-##         <#1NOTvsORvs_passIv3>
-##         <#NOT1NOTvs_passIv1>
-##         <#NOT1NOTvs_passIv2>
-##         <#NOT1NOTvs_failIv3>
-## 
-## ###   AND OR valueExpr
-##         <#1val1vExpr1AND1OR1Ref3_pass-vc1vc2>
-##         <#1val1vExpr1AND1OR1Ref3_pass-vc1vc2vc3>
-##         <#1val1vExpr1AND1OR1Ref3_pass-vc1vc3>
-##         <#1val1vExpr1AND1OR1Ref3_failvc1vc3>
-##         <#1val1vExpr1AND1OR1Ref3_failvc2vc3>
-##         <#1val1vExpr1AND1OR1Ref3_failvc1vc2vc3>
-##         <#1val1vExpr1OR1AND1Ref3_pass-vc1>
-##         <#1val1vExpr1OR1AND1Ref3_pass-vc1vc3>
-##         <#1val1vExpr1OR1AND1Ref3_pass-vc2vc3>
-##         <#1val1vExpr1OR1AND1Ref3_failvc1vc2>
-##         <#1val1vExpr1OR1AND1Ref3_failvc1vc3>
-##         <#1val1vExpr1OR1AND1Ref3_failvc1vc2vc3>
-## 
-## ## repetitions
-##         <#open3Onedotclosecard2_fail-p1>
-##         <#open3Onedotclosecard2_pass-p1X2> #
-##         <#open3Onedotclosecard2_fail-p1X3>
-##         <#open3Onedotclosecard2_fail-p1X4>
-##         <#open3Onedotclosecard2_pass-p1p2>
-##         <#open3Onedotclosecard2_pass-p1p3>
-##         <#open3Onedotclosecard2_pass-p2p3>
-##         <#open3Onedotclosecard2_fail-p1p2p3> #
-## 
-##         <#open3Onedotclosecard23_fail-p1>
-##         <#open3Onedotclosecard23_pass-p1X2> #
-##         <#open3Onedotclosecard23_pass-p1X3> #
-##         <#open3Onedotclosecard23_fail-p1X4>
-##         <#open3Onedotclosecard23_pass-p1p2>
-##         <#open3Onedotclosecard23_pass-p1p3>
-##         <#open3Onedotclosecard23_pass-p2p3>
-##         <#open3Onedotclosecard23_pass-p1p2p3>
-##         <#open4Onedotclosecard23_fail-p1p2p3p4> #
-##         <#open3Eachdotclosecard23_pass-p1p2p3X3>
-## 
-## ## shape expressions
-## ###   AND shapeExpr
-##         <#1val1vShapeANDRef3_pass>
-## 
-## ## closed
-##         <#1dotClosed_pass>
-##         <#1dotClosed_fail_lower>
-##         <#1dotClosed_fail_higher>
-##         <#FocusIRI2EachBnodeNested2EachIRIRef_pass>
-##         <#FocusIRI2EachBnodeNested2EachIRIRef_fail>
-## 
-## ## extra
-##         <#1val1IRIREFExtra1_pass-iri1>
-##         <#1val1IRIREFExtra1_pass-iri2>
-##         <#1val1IRIREFExtra1Closed_pass-iri1>
-##         <#1val1IRIREFExtra1Closed_pass-iri2>
-##         <#1val1IRIREFExtra1Closed_fail-iri2_higher>
-##         <#1val1IRIREFClosedExtra1_pass-iri1>
-##         <#1val1IRIREFClosedExtra1_pass-iri2>
-##         <#1val1IRIREFClosedExtra1_fail-iri2_higher>
-##         <#1val2IRIREFExtra1_fail-iri2>
-##         <#1val2IRIREFPlusExtra1_pass-iri2>
-##         <#1val2IRIREFExtra1_pass-iri-bnode>
-##         <#1val1IRIREFExtra1p2_pass-iri1>
-##         <#1val1IRIREFExtra1p2_fail-iri2>
-##         <#1dotOne2dotExtra-someOf_pass_p1p2p3>
-##         <#1val1IRIREFExtra1One_pass-iri1>
-##         <#1val1IRIREFExtra1One_pass-iri2>
-##         <#1dotExtra1_pass-iri1>
-##         <#1dotExtra1_fail-iri2>
-##         <#3EachdotExtra3_pass-iri1> <#3Eachdot3Extra_pass-iri1> <#3EachdotExtra3NLex_pass-iri1>
-##         <#3EachdotExtra3_pass-iri2> <#3Eachdot3Extra_pass-iri2> <#3EachdotExtra3NLex_pass-iri2>
-## 
-## ## start
-##         <#startRefIRIREF_pass-noOthers>
-##         <#startRefIRIREF_pass-others_lexicallyEarlier>
-##         <#startRefIRIREF_fail-missing>
-##         <#startRefbnode_pass-noOthers>
-##         <#startRefbnode_fail-missing>
-##         <#startInline_pass-noOthers>
-##         <#startEqualSpaceInline_pass-noOthers>
-##         <#startSpaceEqualInline_pass-noOthers>
-##         <#startInline_fail-missing>
-## 
-## ## include
-##         <#2EachInclude1_pass>
-##         <#2EachInclude1-after_pass>
-##         <#2OneInclude1_pass>
-##         <#2OneInclude1-after_pass>
-## 
+## datatype
+        <#1datatype_missing>
+        <#1datatype_nonLiteral>
+        <#1datatype_langString>
+        <#1datatype_wrongDatatype>
+        <#1datatype_pass>
+        <#1datatypelangString_pass>
+
+### lexical form
+        <#integer-n1_pass>
+        <#integer-0_pass>
+        <#integer-1_pass>
+        <#integer-p1_pass>
+        <#integer-empty_fail>
+        <#integer-n1.0_fail>
+        <#integer-p1.0_fail>
+        <#integer-1E0_fail>
+        <#integer-NaN_fail>
+        <#integer-INF_fail>
+        <#decimal-n1_pass>
+        <#decimal-0_pass>
+        <#decimal-1_pass>
+        <#decimal-p1_pass>
+        <#decimal-n1.0_pass>
+        <#decimal-p1.0_pass>
+        <#decimal-empty_fail>
+        <#decimal-1E0_fail>
+        <#decimal-NaN_fail>
+        <#decimal-INF_fail>
+        <#float-n1_pass>
+        <#float-0_pass>
+        <#float-1_pass>
+        <#float-p1_pass>
+        <#float-n1.0_pass>
+        <#float-p1.0_pass>
+        <#float-1elowercase0_pass>
+        <#float-1E0_pass>
+        <#float-NaN_pass>
+        <#float-INF_pass>
+        <#float-nINF_pass>
+        <#float-empty_fail>
+        <#float-pINF_fail>
+        <#double-n1_pass>
+        <#double-0_pass>
+        <#double-1_pass>
+        <#double-p1_pass>
+        <#double-n1.0_pass>
+        <#double-p1.0_pass>
+        <#double-1E0_pass>
+        <#double-1e0_pass>
+        <#double-NaN_pass>
+        <#double-INF_pass>
+        <#double-nINF_pass>
+        <#double-empty_fail>
+        <#double-pINF_fail>
+        <#nonPositiveInteger-n1_pass>
+        <#nonPositiveInteger-0_pass>
+        <#nonPositiveInteger-p0_pass>
+        <#nonPositiveInteger-n0_pass>
+        <#nonPositiveInteger-1_fail>
+        <#nonPositiveInteger-p1_fail>
+        <#nonPositiveInteger-1a_fail>
+        <#nonPositiveInteger-a1_fail>
+        <#negativeInteger-n1_pass>
+        <#negativeInteger-0_fail>
+        <#negativeInteger-p0_fail>
+        <#negativeInteger-n0_fail>
+        <#negativeInteger-1_fail>
+        <#long-n1_pass>
+        <#long-0_pass>
+        <#long-1_pass>
+        <#long-p1_pass>
+        <#int-n1_pass>
+        <#int-0_pass>
+        <#int-1_pass>
+        <#int-p1_pass>
+        <#short-n32768_pass>
+        <#short-0_pass>
+        <#short-32767_pass>
+        <#short-n32769_fail>
+        <#short-32768_fail>
+        <#byte-n128_pass>
+        <#byte-0_pass>
+        <#byte-127_pass>
+        <#byte-empty_fail>
+        <#byte-n129_fail>
+        <#byte-128_fail>
+        <#nonNegativeInteger-0_pass>
+        <#nonNegativeInteger-n0_pass>
+        <#nonNegativeInteger-p0_pass>
+        <#nonNegativeInteger-1_pass>
+        <#nonNegativeInteger-p1_pass>
+        <#nonNegativeInteger-n1_fail>
+        <#unsignedLong-0_pass>
+        <#unsignedLong-1_pass>
+        <#unsignedLong-n1_fail>
+        <#unsignedInt-0_pass>
+        <#unsignedInt-1_pass>
+        <#unsignedInt-n1_fail>
+        <#unsignedShort-0_pass>
+        <#unsignedShort-65535_pass>
+        <#unsignedShort-n1_fail>
+        <#unsignedShort-65536_fail>
+        <#unsignedByte-0_pass>
+        <#unsignedByte-255_pass>
+        <#unsignedByte-n1_fail>
+        <#unsignedByte-256_fail>
+        <#positiveInteger-1_pass>
+        <#positiveInteger-n1_fail>
+        <#positiveInteger-0_fail>
+        <#string-empty_pass>
+        <#string-a_pass>
+        <#string-0_pass>
+        <#boolean-true_pass>
+        <#boolean-false_pass>
+        <#boolean-0_pass>
+        <#boolean-1_pass>
+        <#boolean-empty_fail>
+        <#boolean-TRUE_fail>
+        <#boolean-FALSE_fail>
+        <#boolean-tRuE_fail>
+        <#boolean-fAlSe_fail>
+        <#boolean-n1_fail>
+        <#boolean-2_fail>
+        <#boolean-10_fail>
+        <#boolean-01_fail>
+        <#dateTime-dt_pass>
+        <#dateTime-empty_fail>
+        <#dateTime-dT_fail>
+        <#dateTime-d_fail>
+
+## cardinality
+###   dot cardinality
+        <#1card2_fail0>
+        <#1card2_fail1>
+        <#1card2_pass2>
+        <#1card2_fail3>
+        <#1card25_fail0>
+        <#1card25_fail1>
+        <#1card25_pass2>
+        <#1card25_pass3>
+        <#1card25_pass4>
+        <#1card25_pass5>
+        <#1card25_fail6>
+        <#1card2Star_fail0>
+        <#1card2Star_fail1>
+        <#1card2Star_pass2>
+        <#1card2Star_pass3>
+        <#1card2Star_pass6>
+        # 1card2blank_... same as 1card2Star
+        <#1cardOpt_pass0>
+        <#1cardOpt_pass1>
+        <#1cardOpt_fail2>
+        <#1cardOpt_pass6>
+        <#1cardPlus_fail0>
+        <#1cardPlus_pass1>
+        <#1cardPlus_pass2>
+        <#1cardPlus_pass6>
+        <#1cardStar_pass0>
+        <#1cardStar_pass1>
+        <#1cardStar_pass2>
+        <#1cardStar_pass6>
+
+###   non-dot cardinality
+        <#1literalPlus_Is1_Ip1_La,Io1>
+
+## shape reference
+        <#1dotRef1_referent,referrer>
+        <#1dotRef1_referrer,referent>
+        <#1dotRef1_missingReferent>
+        <#1dotRef1_selfReference>
+        <#1dotRef1_missingSelfReference>
+        <#1dotRef1_overReferrer>
+        <#1dotRef1_overReferrer,overReferent>
+        <#1dotRef1_overMatchesReferent>
+        <#1refbnode1_pass>
+        <#1refbnode1_fail-g1-arc>
+        <#1refbnode1_fail-g2-arc>
+        <#3circRefS123>
+        <#3circRefPlus1_pass-open>
+        <#3circRefPlus1_pass-recursiveData>
+        <#1iriRef1_pass-iri>
+        <#1iriRef1_fail-bnode>
+        <#1bnodeRef1_fail-iri>
+        <#1bnodeRef1_pass-bnode>
+
+## inline
+        <#1dotInline1_referrer,referent>
+        <#1dotInline1_missingReferent>
+        <#1dotInline1_selfReference>
+        <#1dotInline1_missingSelfReference>
+        <#1dotInline1_overReferrer>
+        <#1dotInline1_overReferrer,overReferent>
+        <#1dotInline1_overMatchesReferent>
+
+## term equivalence
+###   iri equivalence
+        <#1val1IRIREF_pass>             # <S> { <p1> [<v1>] }
+        <#1val1IRIREF_v2>
+        <#1val1IRIREF_v1v2>
+
+###   literal equivalence
+####     lexical form
+        <#1val1STRING_LITERAL1_pass>
+        <#1val1STRING_LITERAL1_fail>
+        <#1val1STRING_LITERAL1_with_all_controls_pass>
+        <#1val1STRING_LITERAL1_with_all_controls_fail>
+        <#1val1STRING_LITERAL1_with_all_punctuation_pass>
+        <#1val1STRING_LITERAL1_with_all_punctuation_fail>
+        <#1val1STRING_LITERAL1_with_ascii_boundaries_pass>
+        <#1val1STRING_LITERAL1_with_ascii_boundaries_fail>
+        <#1val1STRING_LITERAL1_with_UTF8_boundaries_pass>
+        <#1val1STRING_LITERAL1_with_UTF8_boundaries_fail>
+        <#1val1STRING_LITERAL1_with_ECHAR_escapes_pass>
+        <#1val1STRING_LITERAL1_with_ECHAR_escapes_fail>
+
+####     numeric equivalence
+        <#1val1INTEGER_pass>            # <S> { <p1> [0] }
+        <#1val1INTEGER_00>
+        <#1val1DECIMAL_00>
+        <#1val1DECIMAL_pass>
+        <#1val1DECIMAL_Lab>
+        <#1val1INTEGER_Lab>
+        <#1val1DOUBLE_pass>             # <S> { <p1> [0E0] }
+        <#1val1DOUBLE_0_0e0>
+        # 1val1DOUBLElowercase_... same as 1val1DOUBLE
+        # @@ eliminate as duplicate?
+        <#1val1DOUBLElowercase_pass>    # <S> { <p1> [0e0] }
+        <#1val1DOUBLElowercase_fail-0E0>
+        <#1val1DOUBLElowercase_0_0e0>
+
+####     language tag equivalence
+        <#1val1LANGTAG_pass>            # <S> { <p1> ['ab'@en-fr] }
+        <#1val1LANGTAG_Lab>
+        <#1val1LANGTAG_LabLTen>
+        <#1val1LANGTAG_LabLTen-fr-jura>
+        <#1val1LANGTAG_LaLTen-fr>
+
+####     datatyped literal equivalence
+        <#1val1IRIREFDatatype_pass>    # <S> { <p1> ['ab'^^my:bloodType] }
+        <#1val1IRIREFDatatype_Lab>
+        <#1val1IRIREFDatatype_LabDTbloodType999>
+        <#1val1IRIREFDatatype_LaDTbloodType>
+        # 1val1LNDatatype_... same as 1val1IRIREFDatatype except prefixes
+
+####     boolean equivalence
+        <#1val1true_pass>               # <S> { <p1> [true] }
+        <#1val1true_false>
+        <#1val1true_ab>
+        <#1val1false_pass>              # <S> { <p1> [false] }
+        <#1val1false_true>
+        <#1val1false_ab>
+
+## facet
+###   length
+        <#1datatypeLength_fail-missing>
+        <#1datatypeLength_fail-wrongDatatype>
+        <#1datatypeLength_fail-short>
+        <#1datatypeLength_pass>
+        <#1datatypeLength_fail-long>
+###   fractionDigits
+        <#1literalFractiondigits_pass-decimal-short>
+        # <#1literalFractiondigitsxsd-integer_fail-decimal-short> # for numericFacet ::= (numericFacet | numericLength) INTEGER (numericLiteral | string '^^' datatype )
+        <#1literalFractiondigits_pass-decimal-equal>
+        #  <#1literalFractiondigitsxsd-integer_pass-decimal-equal> # for numericFacet ::= (numericFacet | numericLength) INTEGER (numericLiteral | string '^^' datatype )
+        <#1literalFractiondigits_fail-decimal-long>
+        <#1literalFractiondigits_pass-decimal-equalLead>
+        <#1literalFractiondigits_fail-decimal-longLead>
+        <#1literalFractiondigits_pass-decimal-equalTrail>
+        <#1literalFractiondigits_fail-decimal-longTrail>
+        <#1literalFractiondigits_pass-decimal-equalLeadTrail>
+        <#1literalFractiondigits_fail-decimal-longLeadTrail>
+        <#1literalFractiondigits_pass-integer-short>
+        <#1literalFractiondigits_pass-xsd_integer-short>
+        <#1literalFractiondigits_fail-float-equal>
+        <#1literalFractiondigits_fail-double-equal>
+        <#1literalFractiondigits_fail-malformedxsd_decimal-1_23ab>
+        <#1literalFractiondigits_fail-malformedxsd_decimal-1_2345ab>
+        <#1literalFractiondigits_fail-malformedxsd_integer-1_2345>
+        <#1literalFractiondigits_fail-iri>
+        <#1literalFractiondigits_fail-bnode>
+###   totalDigits
+        <#1literalTotaldigits_pass-decimal-short>
+        # <#1literalTotaldigitsxsd-integer_fail-decimal-short> # for numericFacet ::= (numericFacet | numericLength) INTEGER (numericLiteral | string '^^' datatype )
+        <#1literalTotaldigits_pass-decimal-equal>
+        #  <#1literalTotaldigitsxsd-integer_pass-decimal-equal> # for numericFacet ::= (numericFacet | numericLength) INTEGER (numericLiteral | string '^^' datatype )
+        <#1literalTotaldigits_fail-decimal-long>
+        <#1literalTotaldigits_pass-decimal-equalLead>
+        <#1literalTotaldigits_fail-decimal-longLead>
+        <#1literalTotaldigits_pass-decimal-equalTrail>
+        <#1literalTotaldigits_fail-decimal-longTrail>
+        <#1literalTotaldigits_pass-decimal-equalLeadTrail>
+        <#1literalTotaldigits_fail-decimal-longLeadTrail>
+        <#1literalTotaldigits_pass-integer-equal>
+        <#1literalTotaldigits_pass-xsd_integer-short>
+        <#1literalTotaldigits_pass-integer-equalLead>
+        <#1literalTotaldigits_fail-integer-longLead>
+        <#1literalTotaldigits_pass-integer-equalTrail>
+        <#1literalTotaldigits_fail-integer-longTrail>
+        <#1literalTotaldigits_pass-integer-equalLeadTrail>
+        <#1literalTotaldigits_fail-integer-longLeadTrail>
+        <#1literalTotaldigits_pass-byte-short>
+        <#1literalTotaldigits_pass-byte-equal>
+        <#1literalTotaldigits_fail-byte-long>
+        <#1literalTotaldigits_fail-float-equal>
+        <#1literalTotaldigits_fail-double-equal>
+        <#1literalTotaldigits_fail-malformedxsd_decimal-1_23ab>
+        <#1literalTotaldigits_fail-malformedxsd_decimal-1_2345ab>
+        <#1literalTotaldigits_fail-malformedxsd_integer-1_2345>
+        <#1literalTotaldigits_fail-iri>
+        <#1literalTotaldigits_fail-bnode>
+###   comparators
+####     manual
+        <#1literalMinexclusiveINTEGER_fail-low>
+        <#1literalMinexclusiveINTEGER_pass-equal>
+        <#1literalMinexclusiveINTEGER_pass-high>
+        <#1literalMininclusiveINTEGER_fail-low>
+        <#1literalMininclusiveINTEGER_pass-equal>
+        <#1literalMininclusiveINTEGER_pass-high>
+        <#1literalMaxexclusiveINTEGER_pass-low>
+        <#1literalMaxexclusiveINTEGER_fail-equal>
+        <#1literalMaxexclusiveINTEGER_fail-high>
+        <#1literalMaxinclusiveINTEGER_pass-low>
+        <#1literalMaxinclusiveINTEGER_pass-equal>
+        <#1literalMaxinclusiveINTEGER_fail-high>
+        <#1floatMininclusiveINTEGER_fail-low>
+        <#1floatMininclusiveINTEGER_pass-equalLead>
+        <#1floatMininclusiveINTEGER_pass-equalTrail>
+        <#1floatMininclusiveINTEGER_pass-high>
+        <#1integerMininclusiveINTEGER_fail-low>
+        <#1integerMininclusiveINTEGER_pass-equal>
+        <#1integerMininclusiveINTEGER_pass-equalLead>
+        <#1integerMininclusiveINTEGER_pass-high>
+        <#1floatMininclusiveINTEGERLead_pass-equal>
+####     generated
+        <#1integerMininclusiveINTEGER_fail-integer-low>
+        <#1integerMininclusiveINTEGER_pass-integer-equal>
+        <#1integerMininclusiveINTEGER_pass-integer-high>
+        <#1integerMininclusiveINTEGERLead_fail-integer-low>
+        <#1integerMininclusiveINTEGERLead_pass-integer-equal>
+        <#1integerMininclusiveINTEGERLead_pass-integer-equalLead>
+        <#1integerMininclusiveINTEGERLead_pass-integer-high>
+        <#1integerMininclusiveDECIMAL_pass-integer-equal>
+        <#1integerMininclusiveDECIMALLeadTrail_fail-integer-low>
+        <#1integerMininclusiveDECIMALLeadTrail_pass-integer-equal>
+        <#1integerMininclusiveDECIMALLeadTrail_pass-integer-equalLead>
+        <#1integerMininclusiveDECIMALLeadTrail_pass-integer-high>
+        <#1integerMininclusiveDECIMALint_fail-integer-low>
+        <#1integerMininclusiveDECIMALint_pass-integer-equal>
+        <#1integerMininclusiveDECIMALint_pass-integer-high>
+        <#1integerMininclusiveDECIMALintLeadTrail_fail-integer-low>
+        <#1integerMininclusiveDECIMALintLeadTrail_pass-integer-equal>
+        <#1integerMininclusiveDECIMALintLeadTrail_pass-integer-equalLead>
+        <#1integerMininclusiveDECIMALintLeadTrail_pass-integer-high>
+        <#1integerMininclusiveDOUBLE_pass-integer-equal>
+        <#1integerMininclusiveDOUBLELeadTrail_fail-integer-low>
+        <#1integerMininclusiveDOUBLELeadTrail_pass-integer-equal>
+        <#1integerMininclusiveDOUBLELeadTrail_pass-integer-equalLead>
+        <#1integerMininclusiveDOUBLELeadTrail_pass-integer-high>
+        <#1integerMininclusiveDOUBLEint_pass-integer-equal>
+        <#1integerMininclusiveDOUBLEintLeadTrail_fail-integer-low>
+        <#1integerMininclusiveDOUBLEintLeadTrail_pass-integer-equal>
+        <#1integerMininclusiveDOUBLEintLeadTrail_pass-integer-equalLead>
+        <#1integerMininclusiveDOUBLEintLeadTrail_pass-integer-high>
+        <#1integerMininclusiveINTEGER_fail-decimal-equal>
+        <#1integerMininclusiveINTEGER_fail-float-equal>
+        <#1integerMininclusiveINTEGER_fail-double-equal>
+        <#1integerMininclusiveINTEGER_fail-dateTime-equal>
+        <#1integerMininclusiveINTEGER_fail-string-equal>
+        <#1integerMininclusiveINTEGER_fail-byte-equal>
+        <#1decimalMininclusiveINTEGER_fail-decimal-low>
+        <#1decimalMininclusiveINTEGER_pass-decimal-high>
+        <#1decimalMininclusiveINTEGERLead_fail-decimal-low>
+        <#1decimalMininclusiveINTEGERLead_pass-decimal-high>
+        <#1decimalMininclusiveDECIMAL_fail-decimal-low>
+        <#1decimalMininclusiveDECIMAL_pass-decimal-equal>
+        <#1decimalMininclusiveDECIMAL_pass-decimal-equalLeadTrail>
+        <#1decimalMininclusiveDECIMAL_pass-decimal-high>
+        <#1decimalMininclusiveDECIMALLeadTrail_fail-decimal-low>
+        <#1decimalMininclusiveDECIMALLeadTrail_pass-decimal-equal>
+        <#1decimalMininclusiveDECIMALLeadTrail_pass-decimal-equalLeadTrail>
+        <#1decimalMininclusiveDECIMALLeadTrail_pass-decimal-high>
+        <#1decimalMininclusiveDECIMALintLeadTrail_fail-decimal-low>
+        <#1decimalMininclusiveDECIMALintLeadTrail_pass-decimal-high>
+        <#1decimalMininclusiveDOUBLE_fail-decimal-low>
+        <#1decimalMininclusiveDOUBLE_pass-decimal-equal>
+        <#1decimalMininclusiveDOUBLE_pass-decimal-equalLeadTrail>
+        <#1decimalMininclusiveDOUBLELeadTrail_fail-decimal-low>
+        <#1decimalMininclusiveDOUBLELeadTrail_pass-decimal-equal>
+        <#1decimalMininclusiveDOUBLELeadTrail_pass-decimal-equalLeadTrail>
+        <#1decimalMininclusiveDOUBLELeadTrail_pass-decimal-high>
+        <#1decimalMininclusiveDOUBLEintLeadTrail_fail-decimal-low>
+        <#1decimalMininclusiveDOUBLEintLeadTrail_pass-decimal-high>
+        <#1decimalMininclusiveDECIMAL_fail-float-equal>
+        <#1decimalMininclusiveDECIMAL_fail-double-equal>
+        <#1floatMininclusiveINTEGERLead_fail-float-low>
+        <#1floatMininclusiveINTEGERLead_pass-float-high>
+        <#1floatMininclusiveDECIMAL_pass-float-equal>
+        <#1floatMininclusiveDECIMAL_pass-float-equalLeadTrail>
+        <#1floatMininclusiveDECIMALLeadTrail_fail-float-low>
+        <#1floatMininclusiveDECIMALLeadTrail_pass-float-equal>
+        <#1floatMininclusiveDECIMALLeadTrail_pass-float-equalLeadTrail>
+        <#1floatMininclusiveDECIMALLeadTrail_pass-float-high>
+        <#1floatMininclusiveDECIMALintLeadTrail_fail-float-low>
+        <#1floatMininclusiveDECIMALintLeadTrail_pass-float-high>
+        <#1floatMininclusiveDOUBLE_pass-float-equal>
+        <#1floatMininclusiveDOUBLE_pass-float-equalLeadTrail>
+        <#1floatMininclusiveDOUBLELeadTrail_fail-float-low>
+        <#1floatMininclusiveDOUBLELeadTrail_pass-float-equal>
+        <#1floatMininclusiveDOUBLELeadTrail_pass-float-equalLeadTrail>
+        <#1floatMininclusiveDOUBLELeadTrail_pass-float-high>
+        <#1floatMininclusiveDOUBLEintLeadTrail_fail-float-low>
+        <#1floatMininclusiveDOUBLEintLeadTrail_pass-float-high>
+        <#1doubleMininclusiveINTEGERLead_fail-double-low>
+        <#1doubleMininclusiveINTEGERLead_pass-double-high>
+        <#1doubleMininclusiveDECIMAL_pass-double-equal>
+        <#1doubleMininclusiveDECIMAL_pass-double-equalLeadTrail>
+        <#1doubleMininclusiveDECIMALLeadTrail_fail-double-low>
+        <#1doubleMininclusiveDECIMALLeadTrail_pass-double-equal>
+        <#1doubleMininclusiveDECIMALLeadTrail_pass-double-equalLeadTrail>
+        <#1doubleMininclusiveDECIMALLeadTrail_pass-double-high>
+        <#1doubleMininclusiveDECIMALintLeadTrail_fail-double-low>
+        <#1doubleMininclusiveDECIMALintLeadTrail_pass-double-high>
+        <#1doubleMininclusiveDOUBLE_pass-double-equal>
+        <#1doubleMininclusiveDOUBLE_pass-double-equalLeadTrail>
+        <#1doubleMininclusiveDOUBLELeadTrail_fail-double-low>
+        <#1doubleMininclusiveDOUBLELeadTrail_pass-double-equal>
+        <#1doubleMininclusiveDOUBLELeadTrail_pass-double-equalLeadTrail>
+        <#1doubleMininclusiveDOUBLELeadTrail_pass-double-high>
+        <#1doubleMininclusiveDOUBLEintLeadTrail_fail-double-low>
+        <#1doubleMininclusiveDOUBLEintLeadTrail_pass-double-high>
+        <#1integerMinexclusiveINTEGER_fail-integer-low>
+        <#1integerMinexclusiveINTEGER_fail-integer-equal>
+        <#1integerMinexclusiveINTEGER_pass-integer-high>
+        <#1integerMinexclusiveDECIMALint_fail-integer-low>
+        <#1integerMinexclusiveDECIMALint_fail-integer-equal>
+        <#1integerMinexclusiveDECIMALint_pass-integer-high>
+        <#1integerMinexclusiveDOUBLEint_fail-integer-low>
+        <#1integerMinexclusiveDOUBLEint_fail-integer-equal>
+        <#1integerMinexclusiveDOUBLEint_pass-integer-high>
+        <#1decimalMinexclusiveINTEGER_fail-decimal-low>
+        <#1decimalMinexclusiveINTEGER_pass-decimal-high>
+        <#1decimalMinexclusiveDECIMAL_fail-decimal-low>
+        <#1decimalMinexclusiveDECIMAL_fail-decimal-equal>
+        <#1decimalMinexclusiveDECIMAL_pass-decimal-high>
+        <#1decimalMinexclusiveDOUBLE_fail-decimal-low>
+        <#1decimalMinexclusiveDOUBLE_fail-decimal-equal>
+        <#1decimalMinexclusiveDOUBLE_pass-decimal-high>
+        <#1decimalMinexclusiveDECIMAL_fail-float-equal>
+        <#1decimalMinexclusiveDECIMAL_fail-double-equal>
+        <#1floatMinexclusiveINTEGER_fail-float-low>
+        <#1floatMinexclusiveINTEGER_pass-float-high>
+        <#1floatMinexclusiveDECIMAL_fail-float-low>
+        <#1floatMinexclusiveDECIMAL_fail-float-equal>
+        <#1floatMinexclusiveDECIMAL_pass-float-high>
+        <#1floatMinexclusiveDOUBLE_fail-float-low>
+        <#1floatMinexclusiveDOUBLE_fail-float-equal>
+        <#1floatMinexclusiveDOUBLE_pass-float-high>
+        <#1doubleMinexclusiveINTEGER_fail-double-low>
+        <#1doubleMinexclusiveINTEGER_pass-double-high>
+        <#1doubleMinexclusiveDECIMAL_fail-double-low>
+        <#1doubleMinexclusiveDECIMAL_fail-double-equal>
+        <#1doubleMinexclusiveDECIMAL_pass-double-high>
+        <#1doubleMinexclusiveDOUBLE_fail-double-low>
+        <#1doubleMinexclusiveDOUBLE_fail-double-equal>
+        <#1doubleMinexclusiveDOUBLE_pass-double-high>
+        <#1doubleMinexclusiveDECIMAL_fail-float-equal>
+        <#1integerMaxinclusiveINTEGER_pass-integer-low>
+        <#1integerMaxinclusiveINTEGER_pass-integer-equal>
+        <#1integerMaxinclusiveINTEGER_fail-integer-high>
+        <#1integerMaxinclusiveDECIMALint_pass-integer-low>
+        <#1integerMaxinclusiveDECIMALint_pass-integer-equal>
+        <#1integerMaxinclusiveDECIMALint_fail-integer-high>
+        <#1integerMaxinclusiveDOUBLEint_pass-integer-low>
+        <#1integerMaxinclusiveDOUBLEint_pass-integer-equal>
+        <#1integerMaxinclusiveDOUBLEint_fail-integer-high>
+        <#1decimalMaxinclusiveINTEGER_pass-decimal-low>
+        <#1decimalMaxinclusiveINTEGER_fail-decimal-high>
+        <#1decimalMaxinclusiveDECIMAL_pass-decimal-low>
+        <#1decimalMaxinclusiveDECIMAL_pass-decimal-equal>
+        <#1decimalMaxinclusiveDECIMAL_fail-decimal-high>
+        <#1decimalMaxinclusiveDOUBLE_pass-decimal-low>
+        <#1decimalMaxinclusiveDOUBLE_pass-decimal-equal>
+        <#1decimalMaxinclusiveDOUBLE_fail-decimal-high>
+        <#1decimalMaxinclusiveDECIMAL_fail-float-equal>
+        <#1decimalMaxinclusiveDECIMAL_fail-double-equal>
+        <#1floatMaxinclusiveINTEGER_pass-float-low>
+        <#1floatMaxinclusiveINTEGER_fail-float-high>
+        <#1floatMaxinclusiveDECIMAL_pass-float-low>
+        <#1floatMaxinclusiveDECIMAL_pass-float-equal>
+        <#1floatMaxinclusiveDECIMAL_fail-float-high>
+        <#1floatMaxinclusiveDOUBLE_pass-float-low>
+        <#1floatMaxinclusiveDOUBLE_pass-float-equal>
+        <#1floatMaxinclusiveDOUBLE_fail-float-high>
+        <#1doubleMaxinclusiveINTEGER_pass-double-low>
+        <#1doubleMaxinclusiveINTEGER_fail-double-high>
+        <#1doubleMaxinclusiveDECIMAL_pass-double-low>
+        <#1doubleMaxinclusiveDECIMAL_pass-double-equal>
+        <#1doubleMaxinclusiveDECIMAL_fail-double-high>
+        <#1doubleMaxinclusiveDOUBLE_pass-double-low>
+        <#1doubleMaxinclusiveDOUBLE_pass-double-equal>
+        <#1doubleMaxinclusiveDOUBLE_fail-double-high>
+        <#1doubleMaxinclusiveDECIMAL_fail-float-equal>
+        <#1integerMaxexclusiveINTEGER_pass-integer-low>
+        <#1integerMaxexclusiveINTEGER_fail-integer-equal>
+        <#1integerMaxexclusiveINTEGER_fail-integer-high>
+        <#1integerMaxexclusiveDECIMALint_pass-integer-low>
+        <#1integerMaxexclusiveDECIMALint_fail-integer-equal>
+        <#1integerMaxexclusiveDECIMALint_fail-integer-high>
+        <#1integerMaxexclusiveDOUBLEint_pass-integer-low>
+        <#1integerMaxexclusiveDOUBLEint_fail-integer-equal>
+        <#1integerMaxexclusiveDOUBLEint_fail-integer-high>
+        <#1decimalMaxexclusiveINTEGER_pass-decimal-low>
+        <#1decimalMaxexclusiveINTEGER_fail-decimal-high>
+        <#1decimalMaxexclusiveDECIMAL_pass-decimal-low>
+        <#1decimalMaxexclusiveDECIMAL_fail-decimal-equal>
+        <#1decimalMaxexclusiveDECIMAL_fail-decimal-high>
+        <#1decimalMaxexclusiveDOUBLE_pass-decimal-low>
+        <#1decimalMaxexclusiveDOUBLE_fail-decimal-equal>
+        <#1decimalMaxexclusiveDOUBLE_fail-decimal-high>
+        <#1decimalMaxexclusiveDECIMAL_fail-float-equal>
+        <#1decimalMaxexclusiveDECIMAL_fail-double-equal>
+        <#1decimalMaxexclusivexsd-byte_fail-byte-equal>
+        <#1floatMaxexclusiveINTEGER_pass-float-low>
+        <#1floatMaxexclusiveINTEGER_fail-float-high>
+        <#1floatMaxexclusiveDECIMAL_pass-float-low>
+        <#1floatMaxexclusiveDECIMAL_fail-float-high>
+        <#1floatMaxexclusiveDOUBLE_pass-float-low>
+        <#1floatMaxexclusiveDOUBLE_fail-float-high>
+        <#1doubleMaxexclusiveINTEGER_pass-double-low>
+        <#1doubleMaxexclusiveINTEGER_fail-double-equal>
+        <#1doubleMaxexclusiveINTEGER_fail-double-high>
+        <#1doubleMaxexclusiveINTEGERLead_fail-double-equal>
+        <#1doubleMaxexclusiveDECIMAL_pass-double-low>
+        <#1doubleMaxexclusiveDECIMAL_fail-double-equal>
+        <#1doubleMaxexclusiveDECIMAL_fail-double-high>
+        <#1doubleMaxexclusiveDECIMALLeadTrail_fail-double-equal>
+        <#1doubleMaxexclusiveDECIMALint_fail-double-equal>
+        <#1doubleMaxexclusiveDECIMALintLeadTrail_fail-double-equal>
+        <#1doubleMaxexclusiveDOUBLE_pass-double-low>
+        <#1doubleMaxexclusiveDOUBLE_fail-double-equal>
+        <#1doubleMaxexclusiveDOUBLE_fail-double-high>
+        <#1doubleMaxexclusiveDOUBLELeadTrail_fail-double-equal>
+        <#1doubleMaxexclusiveDOUBLEint_fail-double-equal>
+        <#1doubleMaxexclusiveDOUBLEintLeadTrail_fail-double-equal>
+###   lengths
+        <#1Length_fail-lit-short>
+        <#1Length_pass-lit-equal>
+        <#1Length_fail-lit-long>
+        <#1literalLength_fail-lit-short>
+        <#1literalLength_pass-lit-equal>
+        <#1literalLength_fail-lit-long>
+        <#1literalLength_fail-iri-equal>
+        <#1literalLength_fail-bnode-equal>
+        <#1iriLength_fail-iri-short>
+        <#1iriLength_pass-iri-equal>
+        <#1iriLength_fail-iri-long>
+        <#1iriLength_fail-lit-equal>
+        <#1iriLength_fail-bnode-equal>
+        <#1iriRefLength1_fail-iri-short>
+        <#1iriRefLength1_pass-iri-equal>
+        <#1iriRefLength1_fail-iri-long>
+        <#1iriRefLength1_fail-lit-equal>
+        <#1iriRefLength1_fail-bnode-equal>
+        <#1bnodeLength_fail-bnode-short>
+        <#1bnodeLength_pass-bnode-equal>
+        <#1bnodeLength_fail-bnode-long>
+        <#1bnodeLength_fail-lit-equal>
+        <#1bnodeLength_fail-iri-equal>
+        <#1nonliteralLength_fail-iri-short>
+        <#1nonliteralLength_pass-iri-equal>
+        <#1nonliteralLength_fail-iri-long>
+        <#1nonliteralLength_fail-lit-equal>
+        <#1nonliteralLength_fail-bnode-short>
+        <#1nonliteralLength_pass-bnode-equal>
+        <#1nonliteralLength_fail-bnode-long>
+        <#1literalMinlength_fail-lit-short>
+        <#1literalMinlength_pass-lit-equal>
+        <#1literalMinlength_pass-lit-long>
+        <#1iriMinlength_fail-iri-short>
+        <#1iriMinlength_pass-iri-equal>
+        <#1iriMinlength_pass-iri-long>
+        <#1bnodeMinlength_fail-bnode-short>
+        <#1bnodeMinlength_pass-bnode-equal>
+        <#1bnodeMinlength_pass-bnode-long>
+        <#1nonliteralMinlength_fail-iri-short>
+        <#1nonliteralMinlength_pass-iri-equal>
+        <#1nonliteralMinlength_pass-iri-long>
+        <#1nonliteralMinlength_fail-bnode-short>
+        <#1nonliteralMinlength_pass-bnode-equal>
+        <#1nonliteralMinlength_pass-bnode-long>
+        <#1literalMaxlength_pass-lit-short>
+        <#1literalMaxlength_pass-lit-equal>
+        <#1literalMaxlength_fail-lit-long>
+        <#1iriMaxlength_pass-iri-short>
+        <#1iriMaxlength_pass-iri-equal>
+        <#1iriMaxlength_fail-iri-long>
+        <#1bnodeMaxlength_pass-bnode-short>
+        <#1bnodeMaxlength_pass-bnode-equal>
+        <#1bnodeMaxlength_fail-bnode-long>
+        <#1nonliteralMaxlength_pass-iri-short>
+        <#1nonliteralMaxlength_pass-iri-equal>
+        <#1nonliteralMaxlength_fail-iri-long>
+        <#1nonliteralMaxlength_pass-bnode-short>
+        <#1nonliteralMaxlength_pass-bnode-equal>
+        <#1nonliteralMaxlength_fail-bnode-long>
+###   pattern
+        <#1literalPattern_pass-lit-match>
+        <#1literalPattern_fail-lit-short>
+        <#1literalPattern_fail-ab>
+        <#1literalPattern_fail-cd>
+        <#1literalPatterni_pass-lit-match>
+        <#1literalPatterni_pass-lit-BC>
+        <#1literalPatterni_pass-lit-blowercaseC>
+        <#1literalPattern_pass-lit-into>
+        <#1literalPattern19_fail-iri-match>
+        <#1literalPattern_fail-bnode-match>
+        <#1literalPattern_with_all_controls_pass>
+        <#1literalPattern_with_all_controls_fail>
+        <#1literalPattern_with_all_punctuation_pass>
+        <#1literalPattern_with_all_punctuation_fail>
+        <#1literalPattern_with_ascii_boundaries_pass>
+        <#1literalPattern_with_ascii_boundaries_fail>
+        <#1literalPattern_with_UTF8_boundaries_pass>
+        <#1literalPattern_with_UTF8_boundaries_fail>
+        <#1literalPattern_with_REGEXP_escapes_pass>
+        <#1literalPattern_with_REGEXP_escapes_fail>
+        <#1literalPattern_with_REGEXP_escapes_fail_escaped>
+        <#1literalPattern_with_REGEXP_escapes_escaped_pass>
+        <#1literalPattern_with_REGEXP_escapes_escaped_fail_escapes>
+        <#1literalPattern_with_REGEXP_escapes_escaped_fail_escapes_bare>
+        <#1literalPattern_with_REGEXP_escapes_bare_pass>
+        <#1literalPattern_with_REGEXP_escapes_bare_fail_escaped>
+        <#1literalPattern_with_REGEXP_escapes_pass_bare>
+        <#1literalPattern_with_REGEXP_escapes_bare_pass_escapes>
+        <#1literalPatternEnd_fail-litEnd>
+        <#1literalPatternDollar_pass-litDollar-match>
+        <#1literalPattern_pass-StartlitEnd-match>
+        <#1literalStartPatternEnd_CarrotbcDollar>
+        <#1literalCarrotPatternDollar_pass-bc>
+        <#1literalCarrotPatternDollar_pass-CarrotbcDollar>
+        <#1literalPatternabEnd_fail-bnode-match>
+        <#1literalStartPattern_pass-bc>
+        <#1literalStartPattern_fail-CarrotbcDollar>
+        <#1literalPatternEnd_pass-bc>
+        <#1literalPatternEnd_pass-CarrotbcDollar>
+        <#1literalPattern_pass-bcDollar>
+        <#1literalStarPatternEnd_pass-bc>
+        <#1literalPattern_pass-CarrotbcDollar>
+        <#1literalPattern_with_all_meta_pass>
+        <#1literalPattern_with_all_meta_pass-NA>
+        <#1iriPattern_pass-iri-match>
+        <#1iriPattern_fail-iri-short>
+        <#1iriPattern_fail-iri-long>
+        <#1iriPattern_fail-lit-match>
+        <#1iriPattern_fail-bnode-match>
+        <#1bnodePattern_pass-bnode-match>
+        <#1bnodePattern_fail-bnode-short>
+        <#1bnodePattern_fail-bnode-long>
+        <#1bnodePattern_fail-lit-match>
+        <#1bnodePattern_fail-iri-match>
+        <#1nonliteralPattern_pass-iri-match>
+        <#1nonliteralPattern_fail-iri-short>
+        <#1nonliteralPattern_pass-iri-long>
+        <#1nonliteralPattern_fail-lit-match>
+        <#1nonliteralPattern_pass-bnode-match>
+        <#1nonliteralPattern_fail-bnode-short>
+        <#1nonliteralPattern_pass-bnode-long>
+
+## value sets
+        <#1val1dotMinusiri3_pass>
+        <#1val1dotMinusiri3_v1>
+        <#1val1dotMinusiri3_v2>
+        <#1val1dotMinusiri3_v3>
+        <#1val1refvsMinusiri3_pass>
+        <#1val1refvsMinusiri3_v1>
+        <#1val1refvsMinusiri3_v2>
+        <#1val1refvsMinusiri3_v3>
+        <#1val1dotMinusiriStem3_pass>
+        <#1val1dotMinusiriStem3_v1>
+        <#1val1dotMinusiriStem3_v2>
+        <#1val1dotMinusiriStem3_v3>
+        <#1val1dotMinusiriStem3_v1a>
+        <#1val1iri_passv1>
+        <#1val1iri_failv1a>
+        <#1val1iriStem_passv1>
+        <#1val1iriStem_passv1a>
+        <#1val1iriStem_fail>
+        <#1val1iriStem_fail-literalIv1>
+        <#1val1iriStemMinusiri3_passIv>
+        <#1val1iriStemMinusiri3_passIv4>
+        <#1val1iriStemMinusiri3_fail-literalIv4>
+        <#1val1iriStemMinusiri3_v1>
+        <#1val1iriStemMinusiri3_fail-literalIv1>
+        <#1val1iriStemMinusiri3_v2>
+        <#1val1iriStemMinusiri3_v3>
+        <#1val1iriStemMinusiri3_passIv1a>
+        <#1val1iriStemMinusiriStem3_passIv>
+        <#1val1iriStemMinusiriStem3_passIv4>
+        <#1val1iriStemMinusiriStem3_v1>
+        <#1val1iriStemMinusiriStem3_v2>
+        <#1val1iriStemMinusiriStem3_v3>
+        <#1val1iriStemMinusiriStem3_v1a>
+        <#1val1literal_passv>
+        <#1val1literal_failv1>
+        <#1val1literalStem_passv1>
+        <#1val1literalStem_passv1a>
+        <#1val1literalStem_fail>
+        <#1val1literaliriStem_fail-Iv1>
+        <#1val1literalStemMinusliteral3_passLv>
+        <#1val1literalStemMinusliteral3_passLv4>
+        <#1val1literaliriStemMinusliteraliri3_fail-Iv4>
+        <#1val1literalStemMinusliteral3_v1>
+        <#1val1literaliriStemMinusliteraliri3_fail-Iv1>
+        <#1val1literalStemMinusliteral3_v2>
+        <#1val1literalStemMinusliteral3_v3>
+        <#1val1literalStemMinusliteral3_passLv1a>
+        <#1val1literalStemMinusliteralStem3_passLv>
+        <#1val1literalStemMinusliteralStem3_passLv4>
+        <#1val1literalStemMinusliteralStem3_v1>
+        <#1val1literalStemMinusliteralStem3_v2>
+        <#1val1literalStemMinusliteralStem3_v3>
+        <#1val1literalStemMinusliteralStem3_v1a>
+        <#1val1language_passLAtfr>
+        <#1val1language_failLAtfr-be>
+        <#1val1emptylanguageStem_passLAtfr>
+        <#1val1emptylanguageStem_fail-literal>
+        <#1val1emptylanguageStem_fail-empty>
+        <#1val1emptylanguageStem_fail-integer>
+        <#1val1emptylanguageStemMinuslanguage3_passLAtfr>
+        <#1val1emptylanguageStemMinuslanguage3_failLAtfr-be>
+        <#1val1emptylanguageStemMinuslanguage3_passLAtfr-be-fbcl>
+        <#1val1emptylanguageStemMinuslanguageStem3_LAtfr>
+        <#1val1emptylanguageStemMinuslanguageStem3_failLAtfr-be>
+        <#1val1emptylanguageStemMinuslanguageStem3_LAtfr-be-fbcl>
+        <#1val1emptylanguageStemMinuslanguageStem3_LAtfrc>
+        <#1val1languageStem_passLAtfr>
+        <#1val1languageStem_failLAtfrc>
+        <#1val1languageStem_passLAtfr-be>
+        <#1val1languageStem_passLAtfr-be-fbcl>
+        <#1val1languageStem_fail>
+        <#1val1literallanguageStem_failLAtfr>
+        <#1val1languageStemMinuslanguage3_passLAtfr>
+        <#1val1languageStemMinuslanguage3_passLAtfr-FR>
+        <#1val1literallanguageStemMinusliterallanguage3_failLAtfr-FR>
+        <#1val1languageStemMinuslanguage3_failLAtfr-be>
+        <#1val1literallanguageStemMinusliterallanguage3_failLAtfr-BE>
+        <#1val1languageStemMinuslanguage3_failLAtfr-cd>
+        <#1val1languageStemMinuslanguage3_failLAtfr-ch>
+        <#1val1languageStemMinuslanguage3_passLAtfr-be-fbcl>
+        <#1val1languageStemMinuslanguageStem3_passLAtfr>
+        <#1val1languageStemMinuslanguageStem3_LAtfrc>
+        <#1val1languageStemMinuslanguageStem3_passLAtfr-FR>
+        <#1val1languageStemMinuslanguageStem3_LAtfr-be>
+        <#1val1languageStemMinuslanguageStem3_LAtfr-cd>
+        <#1val1languageStemMinuslanguageStem3_LAtfr-ch>
+        <#1val1languageStemMinuslanguageStem3_passLAtfr-bel>
+        <#1val1languageStemMinuslanguageStem3_LAtfr-be-fbcl>
+
+## triple expressions
+###   AND tripleExpr
+
+###   OR tripleExpr
+        <#1dotOne2dot_pass_p1>
+        <#1dotOne2dot_pass_p2p3>
+        <#1dotOne2dot-oneOf_fail_p1p2p3>
+        <#1dotOne2dot-someOf_fail_p1p2p3>
+        #<#1dotOne2dot-firstOf_pass_p1p2p3>
+        # open1dotOneopen2dotcloseclose_... same as 1dotOne2dot
+        # @@ eliminate as duplicate?
+        <#open1dotOneopen2dotcloseclose_pass_p1>
+        <#open1dotOneopen2dotcloseclose_pass_p2p3>
+        <#open1dotOneopen2dotcloseclose_fail_p1p2p3>
+        # 1dotSemiOne2dotSemis ... same as 1dotOne2dot
+        # open1dotSemiOne2dotsemisclose_... same as 1dotOne2dot
+        # open1dotSemiOneopen2dotSemiscloseclose_... same as 1dotOne2dot
+        # open1dotOne2dotclose_... same as 1dotOne2dot
+        <#openopen1dotOne1dotclose1dotclose_pass_p1p3>
+        <#openopen1dotOne1dotclose1dotclose_pass_p2p3>
+        <#openopen1dotOne1dotclose1dotclose_fail_p1>
+        <#openopen1dotOne1dotclose1dotclose_fail_p3>
+        <#openopen1dotOne1dotclose1dotclose_fail_p1p2>
+        # openopen1dotSemiOne1dotSemiclose1dotSemicloseSemi_... same as openopen1dotOne1dotclose1dotclose
+
+## value expressions
+###   value reference
+        <#1val1vExprRefIRIREF1_fail-lit-short>
+        <#1val1vExprRefIRIREF1_pass-lit-equal>
+        <#1val1vExprRefbnode1_fail-lit-short>
+        <#1val1vExprRefbnode1_pass-lit-equal>
+
+###   AND valueExpr
+        <#1dotShapeAND1dot3X_pass>
+        <#1dotShapeAND1dot3X_fail>
+        <#1dotRefAND3_failAll>
+        <#1dotRefAND3_failShape2Shape3>
+        <#1dotRefAND3_failShape1Shape3>
+        <#1dotRefAND3_failShape1Shape2>
+        <#1dotRefAND3_passShape1Shape2Shape3>
+        <#1val1vExpr1AND1AND1Ref3_pass>
+        <#1val1vExpr1AND1AND1Ref3_failvc1>
+        <#1val1vExpr1AND1AND1Ref3_failvc2>
+        <#1val1vExpr1AND1AND1Ref3_failvc3>
+        <#1val1vExprRefAND3_pass>
+        <#1val1vExprRefAND3_failvc3>
+        <#1val1vExprRefAND3_failvc2>
+        <#1val1vExprRefAND3_failvc1>
+        <#1val1vExprAND3_pass>
+        <#1val1vExprAND3_failvc1>
+        <#1val1vExprAND3_failvc2>
+        <#1val1vExprAND3_failvc3>
+
+###   OR valueExpr
+        <#refBNodeORrefIRI_ReflexiveIRI>
+        <#refBNodeORrefIRI_ReflexiveShortIRI>
+        <#refBNodeORrefIRI_IntoReflexiveIRI>
+        <#refBNodeORrefIRI_IntoReflexiveBNode>
+        <#refBNodeORrefIRI_CyclicIRI_IRI>
+        <#refBNodeORrefIRI_CyclicIRI_BNode>
+        <#refBNodeORrefIRI_CyclicIRI_ShortIRI>
+        <#1dotRefOR3_fail>
+        <#1dotRefOR3_passShape1>
+        <#1dotRefOR3_passShape2>
+        <#1dotRefOR3_passShape3>
+        <#1dotRefOR3_passShape1Shape2Shape3>
+        <#1val1vExpr1OR1OR1Ref3_fail>
+        <#1val1vExpr1OR1OR1Ref3_passvc1>
+        <#1val1vExpr1OR1OR1Ref3_passvc2>
+        <#1val1vExpr1OR1OR1Ref3_passvc3>
+        <#1val1vExpr1OR1OR1Ref3_passvc1vc2vc3>
+        <#1val1vExprRefOR3_passvc1vc2vc3>
+        <#1val1vExprRefOR3_passvc3>
+        <#1val1vExprRefOR3_passvc2>
+        <#1val1vExprRefOR3_passvc1>
+        <#1val1vExprRefOR3_fail>
+        <#1val1vExprOR3_fail>
+        <#1val1vExprOR3_passvc1>
+        <#1val1vExprOR3_passvc2>
+        <#1val1vExprOR3_passvc3>
+        <#1val1vExprOR3_passvc1vc2vc3>
+
+###   NOT valueExpr
+        <#1NOTIRI_passLv>
+        <#1NOTIRI_failIo1>
+        <#1NOTIRI_failempty>
+        <#1NOTNOTIRI_failLv>
+        <#1NOTNOTIRI_passIo1>
+        <#1NOTvs_failIv1>
+        <#1NOTvs_passIo1>
+        <#1NOTvs_failempty>
+        <#1NOTNOTvs_passIv1>
+        <#1NOTNOTvs_failIo1>
+        <#1NOTdot_failIv1>
+        <#1NOTdot_failIo1>
+        <#1NOTdot_failempty>
+        <#1NOTNOTdot_passIv1>
+        <#1NOTNOTdot_passIo1>
+        <#1_NOTliteral_ANDvs_passIv1>
+        <#1_NOTliteral_ANDvs_failIo1>
+        <#1_NOTliteral_ANDvs_failLv>
+        <#1NOT_literalANDvs__passIv1>
+        <#1NOT_literalANDvs__passLv>
+        <#1NOTliteralANDvs_passIv1>
+        <#1NOTliteralANDvs_failIo1>
+        <#1NOTliteralANDvs_failLv>
+        <#1_NOTvs_ANDvs_failIv1>
+        <#1_NOTvs_ANDvs_passIv2>
+        <#1_NOTvs_ANDvs_failIv3>
+        <#1NOT_vsANDvs__passIv1>
+        <#1NOT_vsANDvs__passIv2>
+        <#1NOT_vsANDvs__passIv3>
+        <#1NOTvsANDvs_failIv1>
+        <#1NOTvsANDvs_passIv2>
+        <#1NOTvsANDvs_failIv3>
+        <#1_NOTliteral_ORvs_passIv1>
+        <#1_NOTliteral_ORvs_passIo1>
+        <#1_NOTliteral_ORvs_failLv>
+        <#1NOT_literalORvs__failIv1>
+        <#1NOT_literalORvs__passIo1>
+        <#1NOT_literalORvs__failLv>
+        <#1NOTliteralORvs_passIv1>
+        <#1NOTliteralORvs_passIo1>
+        <#1NOTliteralORvs_failLv>
+        <#1_NOTvs_ORvs_failIv1>
+        <#1_NOTvs_ORvs_passIv2>
+        <#1_NOTvs_ORvs_passIv3>
+        <#1NOT_vsORvs__failIv1>
+        <#1NOT_vsORvs__failIv2>
+        <#1NOT_vsORvs__passIv3>
+        <#1NOTvsORvs_failIv1>
+        <#1NOTvsORvs_passIv2>
+        <#1NOTvsORvs_passIv3>
+        <#NOT1NOTvs_passIv1>
+        <#NOT1NOTvs_passIv2>
+        <#NOT1NOTvs_failIv3>
+
+###   AND OR valueExpr
+        <#1val1vExpr1AND1OR1Ref3_pass-vc1vc2>
+        <#1val1vExpr1AND1OR1Ref3_pass-vc1vc2vc3>
+        <#1val1vExpr1AND1OR1Ref3_pass-vc1vc3>
+        <#1val1vExpr1AND1OR1Ref3_failvc1vc3>
+        <#1val1vExpr1AND1OR1Ref3_failvc2vc3>
+        <#1val1vExpr1AND1OR1Ref3_failvc1vc2vc3>
+        <#1val1vExpr1OR1AND1Ref3_pass-vc1>
+        <#1val1vExpr1OR1AND1Ref3_pass-vc1vc3>
+        <#1val1vExpr1OR1AND1Ref3_pass-vc2vc3>
+        <#1val1vExpr1OR1AND1Ref3_failvc1vc2>
+        <#1val1vExpr1OR1AND1Ref3_failvc1vc3>
+        <#1val1vExpr1OR1AND1Ref3_failvc1vc2vc3>
+
+## repetitions
+        <#open3Onedotclosecard2_fail-p1>
+        <#open3Onedotclosecard2_pass-p1X2> #
+        <#open3Onedotclosecard2_fail-p1X3>
+        <#open3Onedotclosecard2_fail-p1X4>
+        <#open3Onedotclosecard2_pass-p1p2>
+        <#open3Onedotclosecard2_pass-p1p3>
+        <#open3Onedotclosecard2_pass-p2p3>
+        <#open3Onedotclosecard2_fail-p1p2p3> #
+
+        <#open3Onedotclosecard23_fail-p1>
+        <#open3Onedotclosecard23_pass-p1X2> #
+        <#open3Onedotclosecard23_pass-p1X3> #
+        <#open3Onedotclosecard23_fail-p1X4>
+        <#open3Onedotclosecard23_pass-p1p2>
+        <#open3Onedotclosecard23_pass-p1p3>
+        <#open3Onedotclosecard23_pass-p2p3>
+        <#open3Onedotclosecard23_pass-p1p2p3>
+        <#open4Onedotclosecard23_fail-p1p2p3p4> #
+        <#open3Eachdotclosecard23_pass-p1p2p3X3>
+
+## shape expressions
+###   AND shapeExpr
+        <#1val1vShapeANDRef3_pass>
+
+## closed
+        <#1dotClosed_pass>
+        <#1dotClosed_fail_lower>
+        <#1dotClosed_fail_higher>
+        <#FocusIRI2EachBnodeNested2EachIRIRef_pass>
+        <#FocusIRI2EachBnodeNested2EachIRIRef_fail>
+
+## extra
+        <#1val1IRIREFExtra1_pass-iri1>
+        <#1val1IRIREFExtra1_pass-iri2>
+        <#1val1IRIREFExtra1Closed_pass-iri1>
+        <#1val1IRIREFExtra1Closed_pass-iri2>
+        <#1val1IRIREFExtra1Closed_fail-iri2_higher>
+        <#1val1IRIREFClosedExtra1_pass-iri1>
+        <#1val1IRIREFClosedExtra1_pass-iri2>
+        <#1val1IRIREFClosedExtra1_fail-iri2_higher>
+        <#1val2IRIREFExtra1_fail-iri2>
+        <#1val2IRIREFPlusExtra1_pass-iri2>
+        <#1val2IRIREFExtra1_pass-iri-bnode>
+        <#1val1IRIREFExtra1p2_pass-iri1>
+        <#1val1IRIREFExtra1p2_fail-iri2>
+        <#1dotOne2dotExtra-someOf_pass_p1p2p3>
+        <#1val1IRIREFExtra1One_pass-iri1>
+        <#1val1IRIREFExtra1One_pass-iri2>
+        <#1dotExtra1_pass-iri1>
+        <#1dotExtra1_fail-iri2>
+        <#3EachdotExtra3_pass-iri1> <#3Eachdot3Extra_pass-iri1> <#3EachdotExtra3NLex_pass-iri1>
+        <#3EachdotExtra3_pass-iri2> <#3Eachdot3Extra_pass-iri2> <#3EachdotExtra3NLex_pass-iri2>
+
+## start
+        <#startRefIRIREF_pass-noOthers>
+        <#startRefIRIREF_pass-others_lexicallyEarlier>
+        <#startRefIRIREF_fail-missing>
+        <#startRefbnode_pass-noOthers>
+        <#startRefbnode_fail-missing>
+        <#startInline_pass-noOthers>
+        <#startEqualSpaceInline_pass-noOthers>
+        <#startSpaceEqualInline_pass-noOthers>
+        <#startInline_fail-missing>
+
+## include
+        <#2EachInclude1_pass>
+        <#2EachInclude1-after_pass>
+        <#2OneInclude1_pass>
+        <#2OneInclude1-after_pass>
+
 ## ## annotations
 ##         <#1dotAnnotIRIREF_pass>
 ##         <#1dotAnnotIRIREF_missing>
@@ -1101,126 +1101,126 @@
 ##         <#startCode1startReffail_abort>
 ##         <#startCode3_pass>
 ##         <#startCode3fail_abort>
-## 
-## ## annotations + semantic actions
+
+## annotations + semantic actions
 ##         <#open3Eachdotclosecard23Annot3Code2-p1p2p3X3>
-## 
-## ## focus constraint
-## ### kind
-##         <#0focusIRI_other>
-##         <#0focusIRI_other_fail-bnodeFocusLabel>
-##         <#0focusIRI_empty>
-##         <#0focusIRI_empty_fail-bnodeFocusLabel>
-##         <#0focusBNODE_empty_fail-iriFocusLabel>
-##         <#0focusBNODE_empty>
-##         <#0focusBNODE_other_fail-iriFocusLabel>
-##         <#0focusBNODE_other>
-##         <#1focusIRI_dot_fail-bnodeFocusLabel>
-##         <#1focusIRI_dot_pass>
-##         <#1focusBNODE_dot_fail-iriFocusLabel-equal>
-##         <#1focusBNODE_dot_pass>
-##         <#1focusnonLiteral-dot_pass-iri-equal>
-## 
-## 
-## ###  datatype
-##         <#focusdatatype_pass>
-##         <#focusdatatype_fail>
-##         <#focusdatatype_pass-empty>
-##         <#focusdatatype_fail-empty>
-## 
-## ###  value sets
-##         <#focusvs_pass>
-##         <#focusvs_fail>
-## 
-## ### AND focus
-##         <#1focusvsANDdatatype_fail>
-##         <#1focusvsANDIRI_pass>
-##         <#1focusvsANDIRI_fail>
-## 
-## ### OR focus
-##         <#1focusvsORdatatype_pass-val>
-##         <#1focusvsORdatatype_fail-val>
-##         <#1focusvsORdatatype_pass-dt>
-##         <#1focusvsORdatatype_fail-dt>
-##         <#focusNOTRefOR1dot_pass-inOR>
-##         <#focusNOTRefOR1dot_fail-inNOT>
-##         <#focusNOTRefOR1dot_pass-other>
-## 
-## ### NOT focus
-## 
-## 
-## ### facet
-## #### length
-##         <#1focusLength-dot_fail-iri-short>
-##         <#1focusLength-dot_pass-iri-equal>
-##         <#1focusLength-dot_fail-iri-long>
-##         <#1focusLength-dot_fail-bnode-short>
-##         <#1focusLength-dot_pass-bnode-equal>
-##         <#1focusLength-dot_fail-bnode-long>
-## 
-##         <#1focusMinLength-dot_fail-iri-short>
-##         <#1focusMinLength-dot_pass-iri-equal>
-##         <#1focusMinLength-dot_pass-iri-long>
-##         <#1focusMinLength-dot_fail-bnode-short>
-##         <#1focusMinLength-dot_pass-bnode-equal>
-##         <#1focusMinLength-dot_pass-bnode-long>
-## 
-##         <#1focusMaxLength-dot_pass-iri-short>
-##         <#1focusMaxLength-dot_pass-iri-equal>
-##         <#1focusMaxLength-dot_fail-iri-long>
-##         <#1focusMaxLength-dot_pass-bnode-short>
-##         <#1focusMaxLength-dot_pass-bnode-equal>
-##         <#1focusMaxLength-dot_fail-bnode-long>
-## 
-## #### pattern
-##         <#1focusPattern-dot_fail-iri-match>
-##         <#1focusPattern-dot_fail-iri-short>
-##         <#1focusPattern-dot_pass-iri-match>
-##         <#1focusPattern-dot_fail-iri-long>
-##         <#1focusPatternB-dot_fail-iri-match>
-##         <#1focusPatternB-dot_fail-bnode-short>
-##         <#1focusPatternB-dot_pass-bnode-match>
-##         <#1focusPatternB-dot_pass-bnode-long>
-## 
-## ### kind + length facet
-##         <#1focusIRILength_dot_fail-bnodeFocusLabel-equal>
-##         <#1focusIRILength_dot_fail-short>
-##         <#1focusIRILength_dot_pass>
-##         <#1focusIRILength_dot_fail-long>
-##         <#1focusBNODELength_dot_fail-iriFocusLabel-equal>
-##         <#1focusBNODELength_dot_fail-short>
-##         <#1focusBNODELength_dot_pass>
-##         <#1focusBNODELength_dot_fail-long>
-##         <#1focusnonLiteralLength-dot_pass-iri-equal>
-## 
-## ### AND OR NOT
-##         <#NOT1dotOR2dot_pass-empty>
-##         <#NOT1dotOR2dot_pass-NoShape1>
-##         <#NOT1dotOR2dot_pass-Shape2>
-##         <#NOT1dotOR2dot_fail-Shape2>
-##         <#NOT1dotOR2dotX3_pass-empty>
-##         <#NOT1dotOR2dotX3_pass-NoShape1>
-##         <#NOT1dotOR2dotX3_pass-Shape2>
-##         <#NOT1dotOR2dotX3_fail-Shape2>
-##         <#NOT1dotOR2dotX3AND1_fail-empty>
-##         <#NOT1dotOR2dotX3AND1_fail-NoShape1>
-##         <#NOT1dotOR2dotX3AND1_pass-Shape2>
-##         <#NOT1dotOR2dotX3AND1_fail-Shape2>
-##         <#1NOTRefOR1dot_pass-inOR>
-##         <#1NOTRefOR1dot_fail-inNOT>
-##         <#1NOTRefOR1dot_pass-other>
-## 
-## ## shape extern
+
+## focus constraint
+### kind
+        <#0focusIRI_other>
+        <#0focusIRI_other_fail-bnodeFocusLabel>
+        <#0focusIRI_empty>
+        <#0focusIRI_empty_fail-bnodeFocusLabel>
+        <#0focusBNODE_empty_fail-iriFocusLabel>
+        <#0focusBNODE_empty>
+        <#0focusBNODE_other_fail-iriFocusLabel>
+        <#0focusBNODE_other>
+        <#1focusIRI_dot_fail-bnodeFocusLabel>
+        <#1focusIRI_dot_pass>
+        <#1focusBNODE_dot_fail-iriFocusLabel-equal>
+        <#1focusBNODE_dot_pass>
+        <#1focusnonLiteral-dot_pass-iri-equal>
+
+
+###  datatype
+        <#focusdatatype_pass>
+        <#focusdatatype_fail>
+        <#focusdatatype_pass-empty>
+        <#focusdatatype_fail-empty>
+
+###  value sets
+        <#focusvs_pass>
+        <#focusvs_fail>
+
+### AND focus
+        <#1focusvsANDdatatype_fail>
+        <#1focusvsANDIRI_pass>
+        <#1focusvsANDIRI_fail>
+
+### OR focus
+        <#1focusvsORdatatype_pass-val>
+        <#1focusvsORdatatype_fail-val>
+        <#1focusvsORdatatype_pass-dt>
+        <#1focusvsORdatatype_fail-dt>
+        <#focusNOTRefOR1dot_pass-inOR>
+        <#focusNOTRefOR1dot_fail-inNOT>
+        <#focusNOTRefOR1dot_pass-other>
+
+### NOT focus
+
+
+### facet
+#### length
+        <#1focusLength-dot_fail-iri-short>
+        <#1focusLength-dot_pass-iri-equal>
+        <#1focusLength-dot_fail-iri-long>
+        <#1focusLength-dot_fail-bnode-short>
+        <#1focusLength-dot_pass-bnode-equal>
+        <#1focusLength-dot_fail-bnode-long>
+
+        <#1focusMinLength-dot_fail-iri-short>
+        <#1focusMinLength-dot_pass-iri-equal>
+        <#1focusMinLength-dot_pass-iri-long>
+        <#1focusMinLength-dot_fail-bnode-short>
+        <#1focusMinLength-dot_pass-bnode-equal>
+        <#1focusMinLength-dot_pass-bnode-long>
+
+        <#1focusMaxLength-dot_pass-iri-short>
+        <#1focusMaxLength-dot_pass-iri-equal>
+        <#1focusMaxLength-dot_fail-iri-long>
+        <#1focusMaxLength-dot_pass-bnode-short>
+        <#1focusMaxLength-dot_pass-bnode-equal>
+        <#1focusMaxLength-dot_fail-bnode-long>
+
+#### pattern
+        <#1focusPattern-dot_fail-iri-match>
+        <#1focusPattern-dot_fail-iri-short>
+        <#1focusPattern-dot_pass-iri-match>
+        <#1focusPattern-dot_fail-iri-long>
+        <#1focusPatternB-dot_fail-iri-match>
+        <#1focusPatternB-dot_fail-bnode-short>
+        <#1focusPatternB-dot_pass-bnode-match>
+        <#1focusPatternB-dot_pass-bnode-long>
+
+### kind + length facet
+        <#1focusIRILength_dot_fail-bnodeFocusLabel-equal>
+        <#1focusIRILength_dot_fail-short>
+        <#1focusIRILength_dot_pass>
+        <#1focusIRILength_dot_fail-long>
+        <#1focusBNODELength_dot_fail-iriFocusLabel-equal>
+        <#1focusBNODELength_dot_fail-short>
+        <#1focusBNODELength_dot_pass>
+        <#1focusBNODELength_dot_fail-long>
+        <#1focusnonLiteralLength-dot_pass-iri-equal>
+
+### AND OR NOT
+        <#NOT1dotOR2dot_pass-empty>
+        <#NOT1dotOR2dot_pass-NoShape1>
+        <#NOT1dotOR2dot_pass-Shape2>
+        <#NOT1dotOR2dot_fail-Shape2>
+        <#NOT1dotOR2dotX3_pass-empty>
+        <#NOT1dotOR2dotX3_pass-NoShape1>
+        <#NOT1dotOR2dotX3_pass-Shape2>
+        <#NOT1dotOR2dotX3_fail-Shape2>
+        <#NOT1dotOR2dotX3AND1_fail-empty>
+        <#NOT1dotOR2dotX3AND1_fail-NoShape1>
+        <#NOT1dotOR2dotX3AND1_pass-Shape2>
+        <#NOT1dotOR2dotX3AND1_fail-Shape2>
+        <#1NOTRefOR1dot_pass-inOR>
+        <#1NOTRefOR1dot_fail-inNOT>
+        <#1NOTRefOR1dot_pass-other>
+
+## shape extern
 ## 
 ##         <#shapeExtern_pass>
 ##         <#shapeExtern_fail>
 ##         <#shapeExternRef_pass>
 ##         <#shapeExternRef_fail>
 ## 
-## ## relative IRIs
-## 
-##         <#1dot-relative_pass-short-shape>
-##         <#1dot-relative_pass-relative-shape>
+## relative IRIs
+
+        <#1dot-relative_pass-short-shape>
+        <#1dot-relative_pass-relative-shape>
 ## 
 ## ## manual schemas
 ##         <#false-lead-excluding-value-shape>
@@ -1256,37 +1256,37 @@
 ##         <#3circRefS123-Icirc>
 ##         <#3circRefS1-Icirc>
 ##         <#3circRefS1-IS2-IS3-IS3>
-## 
-## ### start shape reference
-##         <#start2RefS1-IstartS2>
-##         <#start2RefS2-IstartS1>
-## 
-## ###  value reference
-##         <#1valExprRef-IV1_fail-lit-short>
-##         <#1valExprRef-IV1_pass-lit-equal>
-##         <#1valExprRefbnode-IV1_fail-lit-short>
-##         <#1valExprRefbnode-IV1_pass-lit-equal>
+
+### start shape reference
+        <#start2RefS1-IstartS2>
+        <#start2RefS2-IstartS1>
+
+###  value reference
+        <#1valExprRef-IV1_fail-lit-short>
+        <#1valExprRef-IV1_pass-lit-equal>
+        <#1valExprRefbnode-IV1_fail-lit-short>
+        <#1valExprRefbnode-IV1_pass-lit-equal>
 ## 
 ## ###  include (ref to triple expression)
 ##         <#2EachInclude1-IS2_pass>
 ## 
 ##  # could steal from: <#2EachInclude1-after_pass> <#2OneInclude1_pass> <#2OneInclude1-after_pass>
-## 
-## ## lists
-## 
-##         <#1list0PlusDot-empty_pass>
-##         <#1list0PlusDot-list_Iv1,Iv2,Iv3_pass>
-##         <#1list0PlusDot-list_Iv1,Iv2,Lx_pass>
-##         <#1list0PlusDot-manualList_Iv1,Iv2,Iv3_pass>
-##         <#1list0PlusDot-manualList_extraArc_Iv1,Iv2,Iv3_fail>
-##         # <#1list0PlusDot-manualList_circular_Iv1,Iv2,Iv3_fail>
-##         <#1list0PlusDot-manualList_2firsts_Iv1,Iv2,Iv3_fail>
-##         <#1list0PlusIri-empty_pass>
-##         <#1list0PlusIri-list_Iv1,Iv2,Iv3_pass>
-##         <#1list0PlusIri-list_Iv1,Iv2,Lx_fail>
-##         <#1list1PlusIri-empty_pass>
-##         <#1list1PlusIri-list_Iv1,Iv2,Iv3_pass>
-##         <#1list1PlusIri-list_Iv1,Iv2,Lx_fail>
+
+## lists
+
+        <#1list0PlusDot-empty_pass>
+        <#1list0PlusDot-list_Iv1,Iv2,Iv3_pass>
+        <#1list0PlusDot-list_Iv1,Iv2,Lx_pass>
+        <#1list0PlusDot-manualList_Iv1,Iv2,Iv3_pass>
+        <#1list0PlusDot-manualList_extraArc_Iv1,Iv2,Iv3_fail>
+        # <#1list0PlusDot-manualList_circular_Iv1,Iv2,Iv3_fail>
+        <#1list0PlusDot-manualList_2firsts_Iv1,Iv2,Iv3_fail>
+        <#1list0PlusIri-empty_pass>
+        <#1list0PlusIri-list_Iv1,Iv2,Iv3_pass>
+        <#1list0PlusIri-list_Iv1,Iv2,Lx_fail>
+        <#1list1PlusIri-empty_pass>
+        <#1list1PlusIri-list_Iv1,Iv2,Iv3_pass>
+        <#1list1PlusIri-list_Iv1,Iv2,Lx_fail>
 ## 
 ## ## ShapeMaps
 ##         <#node_kind_example>

@@ -22,7 +22,6 @@ import java.util.Objects;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import shex.expressions.PLib;
 
 public class V {
 
@@ -37,7 +36,6 @@ public class V {
         }
         return validate(graphData, shapes, shape, focus);
     }
-
 
     public static ValidationReport validate(Graph graphData, ShexShapes shapes, ShexShape shape, Node focus) {
         Objects.requireNonNull(shape);

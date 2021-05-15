@@ -18,15 +18,63 @@
 
 package shex.expressions;
 
+import java.util.List;
+
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import shex.ReportItem;
 import shex.ValidationContext;
 
 public class ValueConstraint extends NodeConstraint {
 
-    @Override
-    public  ReportItem validateOne(ValidationContext vCxt, Node data) { return null; }
+    private final List<ValueSetRange> valueSetRanges;
 
+    public ValueConstraint(List<ValueSetRange> valueSetRanges) {
+        this.valueSetRanges = valueSetRanges;
+    }
+
+    @Override
+    public ReportItem validateOne(ValidationContext vCxt, Node data) {
+        boolean b = valueSetRanges.stream().anyMatch(valueSetRange->validateRange(vCxt, valueSetRange, data));
+        if ( !b )
+            return new ReportItem("Value not in range: "+asString(), data);
+        return null;
+    }
+
+    private boolean validateRange(ValidationContext vCxt, ValueSetRange valueSetRange, Node data) {
+        boolean b1 = valueSetRange.included(data);
+        if ( ! b1 )
+            return false;
+        boolean b2 = valueSetRange.excluded(data);
+        if ( b2 )
+            return false;
+        // OK
+        return true;
+    }
+
+    @Override
+    public void print(IndentedWriter out, NodeFormatter nFmt) {
+        if ( valueSetRanges.isEmpty() ) {
+            out.println("[ ]");
+            return;
+        }
+        out.print("[");
+        valueSetRanges.forEach(valueSetRange->{
+            out.print(" ");
+            valueSetRange.item.print(out, nFmt);
+            if ( ! valueSetRange.exclusions.isEmpty() ) {
+                out.print(" -");
+                valueSetRange.exclusions.forEach(ex->{
+                    out.print(" ");
+                    ex.print(out, nFmt);
+                });
+            }
+        });
+        out.println(" ]");
+    }
+
+    // [shex] hashCode and equals.
     @Override
     public int hashCode() {
         return 0;
@@ -37,4 +85,8 @@ public class ValueConstraint extends NodeConstraint {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "ValueConstraint"+asString();
+    }
 }

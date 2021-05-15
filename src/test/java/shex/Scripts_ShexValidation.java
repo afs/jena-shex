@@ -20,6 +20,8 @@ package shex;
 
 import org.apache.jena.arq.junit.manifest.Label;
 import org.apache.jena.arq.junit.manifest.Manifests;
+import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.riot.SysRIOT;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -29,15 +31,24 @@ import shex.runner.RunnerShex;
 @Label("Shex")
 @Manifests({
     "files/spec/validation/manifest.ttl"
-//    ,
-//    "files/spec/schemas/manifest.ttl"
+
+// Are these tests? (no mf:action)
+// Need special handling.
+//    ,"files/spec/schemas/manifest.ttl"
 })
+
+// Syntax are:
+// TestShexSyntax:    "files/spec/syntax"
+// TestShexBadSyntax: "files/spec/negativeSyntax"
+
 public class Scripts_ShexValidation {
     private static boolean bVerboseWarnings;
     private static boolean bWarnOnUnknownFunction;
-
+    private static String logLevel;
     @BeforeClass
     public static void beforeClass() {
+        logLevel = LogCtl.getLevel(SysRIOT.getLogger());
+        LogCtl.setLevel(SysRIOT.getLogger(), "ERROR");
 //        bVerboseWarnings = NodeValue.VerboseWarnings;
 //        bWarnOnUnknownFunction = E_Function.WarnOnUnknownFunction;
 //        NodeValue.VerboseWarnings = false;
@@ -48,5 +59,6 @@ public class Scripts_ShexValidation {
     public static void afterClass() {
 //        NodeValue.VerboseWarnings = bVerboseWarnings;
 //        E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction;
+        LogCtl.setLevel(SysRIOT.getLogger(), logLevel);
     }
 }

@@ -54,21 +54,21 @@ public class NumRangeConstraint extends NodeConstraint {
 
         switch(rangeKind) {
             case MAXEXCLUSIVE :
-                if ( r > 0 ) return null;
-                break;
-            case MAXINCLUSIVE :
-                if ( r >= 0 ) return null;
-                break;
-            case MINEXCLUSIVE :
                 if ( r < 0 ) return null;
                 break;
-            case MININCLUSIVE :
+            case MAXINCLUSIVE :
                 if ( r <= 0 ) return null;
+                break;
+            case MINEXCLUSIVE :
+                if ( r > 0 ) return null;
+                break;
+            case MININCLUSIVE :
+                if ( r >= 0 ) return null;
                 break;
             default :
                 break;
         }
-        String msg = format("Expected %s %s : got = %d", rangeKind.label(), NodeFmtLib.str(nv.getNode()), NodeFmtLib.str(n));
+        String msg = format("Expected %s %s : got = %s", rangeKind.label(), NodeFmtLib.str(nv.getNode()), NodeFmtLib.str(n));
         return new ReportItem(msg, n);
     }
 

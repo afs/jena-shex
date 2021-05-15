@@ -18,52 +18,44 @@
 
 package shex.expressions;
 
-import java.util.Objects;
-
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
-import shex.ShexShape;
-import shex.ValidationContext;
+import shex.ShexException;
 
-public class ShapeExpressionRef extends ShapeExpression {
-    private final Node ref;
-
-    public ShapeExpressionRef(Node ref) { this.ref = ref; }
-
-    @Override
-    public boolean validate(ValidationContext vCxt, Node data) {
-        ShexShape shape = vCxt.getShape(ref);
-        ShapeExpression shapeExpr = shape.getShapeExpression();
-        return shapeExpr.validate(vCxt, data);
+public class ValueSetItem {
+    String iriStr;
+    String langStr;
+    Node literal;
+    boolean isStem;
+    public ValueSetItem(String iriStr, String lang, Node literal, boolean isStem) {
+        this.iriStr = iriStr;
+        // [shex] In ValueSetRange :: ( item.langStr.isEmpty() ) ? "*" : item.langStr;
+        this.langStr = lang;
+        this.literal = literal;
+        this.isStem = isStem;
+        if ( literal != null && ! literal.isLiteral() )
+            throw new ShexException("Not literal: "+PLib.displayStr(literal));
     }
 
-    @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {
-        out.print("ShapeRef: ");
-        out.print(PLib.displayStr(ref));
-        out.println();
-    }
+        if ( iriStr != null ) out.printf("<%s>", iriStr);
+        else if ( langStr != null ) out.printf("@%s", langStr);
+        else if ( literal != null ) nFmt.format(out, literal);
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(ref);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if ( this == obj )
-            return true;
-        if ( obj == null )
-            return false;
-        if ( getClass() != obj.getClass() )
-            return false;
-        ShapeExpressionRef other = (ShapeExpressionRef)obj;
-        return Objects.equals(ref, other.ref);
+        if ( isStem )
+            out.print("~");
     }
 
     @Override
     public String toString() {
-        return "ShapeExpressionRef [ref="+ref+"]";
+        String str = "invalid";
+        if ( iriStr != null ) str = "<"+iriStr+">";
+        else if ( langStr != null ) str = "@"+langStr;
+        else if ( literal != null ) str = PLib.displayDT(literal);
+
+        if ( isStem )
+            str = str+"~";
+        return str;
     }
 }

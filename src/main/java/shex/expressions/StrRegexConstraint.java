@@ -41,6 +41,7 @@ public class StrRegexConstraint extends NodeConstraint {
 
     public StrRegexConstraint(String pattern, String flagsStr) {
         this.flagsStr = flagsStr;
+        // Special quotes
         // Adds "q"
         int flags = RegexJava.makeMask(flagsStr);
         if ( flagsStr != null && flagsStr.contains("q") )

@@ -18,9 +18,17 @@
 
 package shex.expressions;
 
+import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.riot.out.NodeFormatterTTL;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.XSD;
 import shex.ValidationContext;
 
 public abstract class ShapeExpression {
@@ -31,7 +39,23 @@ public abstract class ShapeExpression {
     // Is this satisfies?
     public abstract boolean validate(ValidationContext vCxt, Node data);
 
+    private static PrefixMap displayPrefixMap = PrefixMapFactory.createForOutput();
+    static {
+        displayPrefixMap.add("owl",  OWL.getURI());
+        displayPrefixMap.add("rdf",  RDF.getURI());
+        displayPrefixMap.add("rdfs", RDFS.getURI());
+        displayPrefixMap.add("xsd",  XSD.getURI());
+    }
+
+    public static NodeFormatter nodeFmtAbbrev = new NodeFormatterTTL(null, displayPrefixMap);
+
     public abstract void print(IndentedWriter out, NodeFormatter nFmt);
+
+    public String asString() {
+        IndentedLineBuffer x = new IndentedLineBuffer();
+        print(x, nodeFmtAbbrev);
+        return x.asString();
+    }
 
     @Override
     public abstract int hashCode();

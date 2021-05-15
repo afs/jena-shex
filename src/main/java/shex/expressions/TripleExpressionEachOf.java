@@ -27,6 +27,7 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.out.NodeFormatter;
+import shex.ReportItem;
 import shex.ValidationContext;
 
 public class TripleExpressionEachOf extends TripleExpression {
@@ -52,6 +53,16 @@ public class TripleExpressionEachOf extends TripleExpression {
 
     @Override
     public Set<Triple> matches(ValidationContext vCxt, Node data) {
+        // [shex] Partition.
+        for ( TripleExpression ex : tripleExpressions ) {
+            ValidationContext vCxt2 = ValidationContext.create(vCxt);
+            ex.matches(vCxt2, data);
+            if ( ! vCxt2.conforms() ) {
+                ReportItem r = new ReportItem("Failed in EachOf["+tripleExpressions.size()+"]", data);
+                vCxt.reportEntry(r);
+                return null;
+            }
+        }
         return null;
     }
 

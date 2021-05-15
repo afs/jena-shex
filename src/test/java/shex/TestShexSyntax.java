@@ -114,7 +114,10 @@ public class TestShexSyntax {
         } catch (RuntimeException ex) {
             System.out.print("-- ");
             System.out.println(FileOps.basename(filename));
-            System.out.println(ex.getMessage());
+            if ( ex.getMessage() != null )
+                System.out.println(ex.getMessage());
+            else
+                System.out.println(ex.getClass().getSimpleName());
             System.out.println(str);
             throw ex;
         }
