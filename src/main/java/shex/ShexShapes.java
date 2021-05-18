@@ -18,24 +18,34 @@
 
 package shex;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.system.PrefixMap;
 
 public class ShexShapes {
 
-
     private final List<ShexShape> shapes = new ArrayList<>();
-    private final Map<Node, ShexShape> shapesMap = new HashMap<>();
-    private final PrefixMap prefixes;
+    private final Map<Node, ShexShape> shapesMap = new LinkedHashMap<>();
 
-    public ShexShapes(PrefixMap prefixes, List<ShexShape> shapes) {
+    private ShexShapes shapesWithImports = null;
+
+    private final PrefixMap prefixes;
+    private final List<String> imports;
+
+    public ShexShapes(PrefixMap prefixes, List<ShexShape> shapes, List<String> imports) {
         this.prefixes = prefixes;
         shapes.forEach(this::addShape);
+        this.imports = imports;
+    }
+
+    // Import - no start.
+    // [shex] Better way?
+    public ShexShapes asImport() {
+        ShexShape x = shapesMap.remove(SysShex.startNode);
+        shapes.remove(x);
+        return this;
     }
 
     private void addShape(ShexShape shape) {
@@ -50,11 +60,54 @@ public class ShexShapes {
         return shapes;
     }
 
+    public boolean hasImports() {
+        return imports != null && ! imports.isEmpty();
+    }
+
+    public List<String> getImports() {
+        return imports;
+    }
+
+
+    public ShexShapes withImports() {
+        if ( shapesWithImports != null )
+            return shapesWithImports;
+
+        if ( imports == null || imports.isEmpty() )
+            return this;
+        // Insert self (if known).
+        Set<String> importsVisited = new HashSet<>();
+        List<ShexShapes> others = new ArrayList<>();
+        others.add(this);
+
+        closure(imports, importsVisited, others);
+
+        List<ShexShape> allShapes =
+                others.stream().flatMap(ss->ss.getShapes().stream()).collect(Collectors.toList());
+        shapesWithImports = new ShexShapes(prefixes, allShapes, null);
+        return shapesWithImports;
+    }
+
+    private static void closure(List<String> imports, Set<String> importsVisited, List<ShexShapes> visited) {
+        if ( imports == null || imports.isEmpty() )
+            return;
+        for ( String imp : imports ) {
+            if ( importsVisited.contains(imp) )
+                continue;
+            importsVisited.add(imp);
+            ShexShapes others = Shex.readShapes(imp).asImport();
+            visited.add(others);
+            closure(others.imports, importsVisited, visited);
+        }
+    }
+
     public ShexShape get(Node n) {
         return shapesMap.get(n);
     }
 
+    public boolean hasShape(Node n) {
+        return shapesMap.containsKey(n);
+    }
+
     public PrefixMap getPrefixMap() { return prefixes; }
-
-
 }

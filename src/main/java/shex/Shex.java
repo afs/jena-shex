@@ -18,24 +18,43 @@
 
 package shex;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.riot.RDFDataMgr;
 import shex.parser.ShexParser;
 
 public class Shex {
     public static ShexShapes shapesFromFile(String filename) {
+        return shapesFromFile(filename, null);
+    }
+
+    public static ShexShapes shapesFromFile(String filename, String base) {
         InputStream input = IO.openFileBuffered(filename);
-        ShexShapes shapes = ShexParser.parse(input, null);
+        ShexShapes shapes = ShexParser.parse(input, base);
         return shapes;
     }
 
     public static ShexShapes shapesFromString(String inputStr) {
         InputStream input = new ByteArrayInputStream(inputStr.getBytes(StandardCharsets.UTF_8));
-        //ShexShapes shapes = shapesFromFile(null);
         ShexShapes shapes = ShexParser.parse(input, null);
+        return shapes;
+    }
+
+    public static ShexShapes readShapes(String filenameOrURL) {
+        return readShapes(filenameOrURL, null);
+    }
+
+    public static ShexShapes readShapes(String filenameOrURL, String base) {
+        InputStream input = RDFDataMgr.open(filenameOrURL);
+        if ( ! ( input instanceof BufferedInputStream ) )
+            input = new BufferedInputStream(input, 128*1024);
+        String parserBase = (base != null) ? base : IRILib.filenameToIRI(filenameOrURL);
+        ShexShapes shapes = ShexParser.parse(input, parserBase);
         return shapes;
     }
 }

@@ -20,7 +20,6 @@ package shex.runner;
 
 import static org.junit.Assert.assertEquals;
 
-import dev.DevShex;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
@@ -47,11 +46,27 @@ public class ShexValidationTest implements Runnable {
         this.entry = entry;
         Resource action = entry.getAction();
         this.schema = action.getProperty(ShexT.schema).getResource();
-        this.shape  = action.getProperty(ShexT.shape).getResource().asNode();
+        this.shape = action.hasProperty(ShexT.shape)
+                ? action.getProperty(ShexT.shape).getResource().asNode()
+                : SysShex.startNode;
         this.data   = action.getProperty(ShexT.data).getResource();
-        // URI or literal.
+
+        // URI or literal or null.
         this.focus = action.getProperty(ShexT.focus).getObject().asNode();
-        this.shapes = Shex.shapesFromFile(schema.getURI());
+
+        String base = null;
+        // Read schema relative to this directory.
+        // Test #1dot-relative_pass-short-shape");
+        // Test #1dot-relative_pass-relative-shape");
+
+        // For reading data and schema with the same base
+        if ( entry.getEntry().isURIResource() ) {
+            String fn = IRILib.IRIToFilename(entry.getEntry().getURI());
+            int idx = fn.lastIndexOf('/');
+            if ( idx > 0 )
+                base = fn.substring(0,idx+1);
+        }
+        this.shapes = Shex.readShapes(schema.getURI(), base);
         this.positiveTest = entry.getTestType().equals(ShexT.cValidationTest);
     }
 
@@ -59,10 +74,14 @@ public class ShexValidationTest implements Runnable {
     public void run() {
         Graph graph = RDFDataMgr.loadGraph(data.getURI());
         try {
+            if ( ShexTests.dumpTest )
+                describeTest();
+
             ValidationReport report = V.validate(graph, shapes, shape, focus);
             boolean b = (positiveTest == report.conforms());
             if ( !b ) {
-                describeTest();
+                if ( ! ShexTests.dumpTest )
+                    describeTest();
                 report.getEntries().forEach(System.out::println);
                 System.out.println();
             }
@@ -76,7 +95,7 @@ public class ShexValidationTest implements Runnable {
                 ex.printStackTrace(System.out);
             else
                 System.out.println(ex.getClass().getName());
-            DevShex.printShapes(shapes);
+            PLib.printShapes(shapes);
             throw ex;
         }
     }
@@ -104,7 +123,7 @@ public class ShexValidationTest implements Runnable {
                 System.out.println();
             System.out.println("-- --");
         }
-        DevShex.printShapes(shapes);
+        PLib.printShapes(shapes);
         System.out.println("-- --");
     }
 }

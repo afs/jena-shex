@@ -18,136 +18,42 @@
 
 package shex.runner;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.system.stream.Locator;
+import org.apache.jena.riot.system.stream.LocatorFile;
+import org.apache.jena.riot.system.stream.StreamManager;
+import shex.expressions.Sx;
 
 public class ShexTests {
     // Test filtering.
     static Set<String> excludes = new HashSet<>();
-    static Set<String> includes = new HashSet<>();
+    static Set<String> includes = new LinkedHashSet<>();
+    static boolean dumpTest = false;
+    static StreamManager streamMgr = StreamManager.get().clone();
+
+
     static {
+        setup();
+        //Sx.TRACE : true if there are inclusions
 
-        // Development focus.
-        // CLOSED
+        // --- Exclusions - development
 
-        includes.add("#1dotRef1_overReferrer,overReferent");
-
-//        includes.add("#open3Onedotclosecard2_fail-p1");
-//        includes.add("#open3Onedotclosecard2_pass-p1X2");
-//
-//        // ## repetitions
-//
-//        excludes.add("#open3Onedotclosecard2_fail-p1");
-//        excludes.add("#open3Onedotclosecard2_pass-p1X2");
-//        excludes.add("#open3Onedotclosecard2_pass-p1p2");
-//        excludes.add("#open3Onedotclosecard2_pass-p1p3");
-//        excludes.add("#open3Onedotclosecard2_pass-p2p3");
-//
-//        excludes.add("#open3Onedotclosecard23_fail-p1");
-//        excludes.add("#open3Onedotclosecard23_pass-p1X2");
-//        excludes.add("#open3Onedotclosecard23_pass-p1X3");
-//        excludes.add("#open3Onedotclosecard23_pass-p1p2");
-//        excludes.add("#open3Onedotclosecard23_pass-p1p3");
-//        excludes.add("#open3Onedotclosecard23_pass-p2p3");
-//        excludes.add("#open3Onedotclosecard23_pass-p1p2p3");
-//        excludes.add("#open3Eachdotclosecard23_pass-p1p2p3X3");
-
-        // ## closed
-        excludes.add("#1dotClosed_fail_lower");
-
-        excludes.add("#1dotClosed_fail_higher");
-        excludes.add("#FocusIRI2EachBnodeNested2EachIRIRef_pass");
-        excludes.add("#FocusIRI2EachBnodeNested2EachIRIRef_fail");
-
-        // ## extra
-        excludes.add("#1val1IRIREFExtra1_pass-iri2");
-        excludes.add("#1val1IRIREFExtra1Closed_pass-iri2");
-        excludes.add("#1val1IRIREFClosedExtra1_pass-iri2");
-        excludes.add("#1val2IRIREFPlusExtra1_pass-iri2");
-        excludes.add("#1val2IRIREFExtra1_pass-iri-bnode");
-        excludes.add("#1val1IRIREFExtra1One_pass-iri2");
-        excludes.add("#3EachdotExtra3_pass-iri2");
-        excludes.add("#3Eachdot3Extra_pass-iri2");
-        excludes.add("#3EachdotExtra3NLex_pass-iri2");
-
-        // ### kind
-        excludes.add("#1focusBNODE_dot_pass");
-        // ###  value sets
-        excludes.add("#focusvs_pass");
-        // ### AND focus
-        excludes.add("#1focusvsANDIRI_pass");
-        // ### OR focus
-        excludes.add("#1focusvsORdatatype_pass-val");
-
-        // ### facet (bnodes)
-        excludes.add("#1focusLength-dot_pass-bnode-equal");
-
-        excludes.add("#1focusMinLength-dot_pass-bnode-equal");
-        excludes.add("#1focusMinLength-dot_pass-bnode-long");
-        excludes.add("#1focusMaxLength-dot_pass-bnode-short");
-        excludes.add("#1focusMaxLength-dot_pass-bnode-equal");
-        excludes.add("#1focusPatternB-dot_pass-bnode-match");
-        excludes.add("#1focusPatternB-dot_pass-bnode-long");
-        excludes.add("#1focusBNODELength_dot_pass");
-
-        // ###  value reference
-        excludes.add("#1valExprRef-IV1_fail-lit-short");
-        excludes.add("#1valExprRef-IV1_pass-lit-equal");
-        excludes.add("#1valExprRefbnode-IV1_fail-lit-short");
-        excludes.add("#1valExprRefbnode-IV1_pass-lit-equal");
-
-        // ## lists
-        excludes.add("#1list0PlusDot-manualList_extraArc_Iv1,Iv2,Iv3_fail");
-
-        // ----------
-        // [shex] Cyclic.
-        excludes.add("#3circRefPlus1_pass-recursiveData");
-        excludes.add("#refBNodeORrefIRI_ReflexiveIRI");
-        excludes.add("#refBNodeORrefIRI_CyclicIRI_BNode");
-        excludes.add("#refBNodeORrefIRI_IntoReflexiveIRI");
-        excludes.add("#refBNodeORrefIRI_IntoReflexiveBNode");
-        excludes.add("#refBNodeORrefIRI_CyclicIRI_IRI");
-        excludes.add("#refBNodeORrefIRI_CyclicIRI_BNode");
-
-        // ----------
-        // [shex] Convert to JUnit "ignore" tests
-        // Language stem issues and startsWith
-//        includes.add("#1val1languageStem_failLAtfrc");
-//        includes.add("#1val1languageStemMinuslanguageStem3_passLAtfr-bel");
-//        includes.add("#1val1languageStemMinuslanguageStem3_LAtfrc");
-
-        // Come back to:
-        // Regexp escape are weird.
+        // ---- Exclusions - check
+        // [shex] Check these again later.
         excludes.add("#1literalPattern_with_REGEXP_escapes_pass");
         excludes.add("#1literalPattern_with_REGEXP_escapes_bare_pass");
         excludes.add("#1literalPattern_with_REGEXP_escapes_pass_bare");
         excludes.add("#1literalPattern_with_REGEXP_escapes_bare_pass_escapes");
-
-        // Label preserving blank node tests
-        // Others in this block "accidentally" pass.
-        // [shex] exclude this as well.
-        excludes.add("#1bnodeLength_pass-bnode-equal");
-        excludes.add("#1nonliteralLength_pass-bnode-equal");
-        excludes.add("#1bnodeMinlength_pass-bnode-equal");
-        excludes.add("#1bnodeMinlength_pass-bnode-long");
-        excludes.add("#1nonliteralMinlength_pass-bnode-equal");
-        excludes.add("#1nonliteralMinlength_pass-bnode-long");
-        excludes.add("#1bnodeMaxlength_pass-bnode-short");
-        excludes.add("#1bnodeMaxlength_pass-bnode-equal");
-        excludes.add("#1nonliteralMaxlength_pass-bnode-short");
-        excludes.add("#1nonliteralMaxlength_pass-bnode-equal");
-
-        excludes.add("#1bnodePattern_pass-bnode-match");
-        excludes.add("#1bnodePattern_fail-bnode-long");
-        excludes.add("#1nonliteralPattern_pass-bnode-match");
-        excludes.add("#1nonliteralPattern_pass-bnode-long");
-
-        // [shex] Check these again later.
 
         // Unclear. Breaks when fix for unicode escapes is applied.
         // Is this because of the incompatible REGEX language choice?
@@ -159,39 +65,119 @@ public class ShexTests {
         excludes.add("#1literalPattern_with_all_meta_pass");
         excludes.add("#1literalPattern_with_all_meta_pass-NA");
 
-        // Assumes the _S: bnode in the manifest is the same bnode as the .shex file.
-        excludes.add("#bnode1dot_fail-missing");
+        // ---- Exclusions - never
+        excludes.addAll(bNodeLabeltests());
+        // Focus bnode - assumes same-label data and manifest.
 
-
-
-        // [shex]
-        // Validation exclusions - may be needed here.
-    //    //---- Exclusions
-    //    // java does to support character classes \N (all numbers)
-    //    excludes.add("1literalPattern_with_all_meta.shex");
-    //
-    //    // Unclear. Breaks when fix for unicode escapes is applied.
-    //    // Is this because of the incompatible REGEX language choice?
-    //    excludes.add("1literalPattern_with_REGEXP_escapes_escaped.shex");
-    //
-    //    // Regex has a null (unicode codepoint 0000) which is illegal.
-    //    excludes.add("1literalPattern_with_ascii_boundaries.shex");
-    //
-    //    // Contains \ud800 (ill-formed surrogate pair)
-    //    excludes.add("1refbnode_with_spanning_PN_CHARS_BASE1.shex");
-    //
-    //    // Contains \u0d00 (ill-formed surrogate pair)
-    //    excludes.add("_all.shex");
-    //---- Exclusions
-
-    // -- Explicit inclusions
-    // If there are inclusions, only these are executed.
+        // Syntax exclusions - may be needed here.
+        //    //---- Exclusions
+        //    // java does to support character classes \N (all numbers)
+        //    excludes.add("1literalPattern_with_all_meta.shex");
+        //
+        //    // Unclear. Breaks when fix for unicode escapes is applied.
+        //    // Is this because of the incompatible REGEX language choice?
+        //    excludes.add("1literalPattern_with_REGEXP_escapes_escaped.shex");
+        //
+        //    // Regex has a null (unicode codepoint 0000) which is illegal.
+        //    excludes.add("1literalPattern_with_ascii_boundaries.shex");
+        //
+        //    // Contains \ud800 (ill-formed surrogate pair)
+        //    excludes.add("1refbnode_with_spanning_PN_CHARS_BASE1.shex");
+        //
+        //    // Contains \u0d00 (ill-formed surrogate pair)
+        //    excludes.add("_all.shex");
+        //---- Exclusions
 
         if ( ! includes.isEmpty() || ! excludes.isEmpty() ) {
-            System.err.println("Inclusions = "+includes.size());
-            System.err.println("Exclusions = "+excludes.size());
+            System.err.println("Inclusions    = "+includes.size());
+            System.err.println("Exclusions    = "+(excludes.size()-bNodeLabeltests().size()));
+            System.err.println("BNode labels  = "+bNodeLabeltests().size());
             System.err.println();
+            dumpTest = ! includes.isEmpty();
         }
+
+        if ( ! includes.isEmpty() )
+            Sx.TRACE = true;
+    }
+
+    private static Collection<String> bNodeLabeltests() {
+        // jena-shex operates on post-parsing files.
+        //
+        // Tests that assume that
+        // + blank node labels are preserved after parsing.
+        // + the same label in different files is the same blank node.
+        // which is not true. In Jena, blank nodes are global.
+        // and different between parsing two files. (this is required by RDF).
+
+        Set<String> bNodeLabelTests = new HashSet<>();
+
+        // ### facet (bnodes)
+        bNodeLabelTests.add("#1focusLength-dot_fail-bnode-short");
+        bNodeLabelTests.add("#1focusLength-dot_pass-bnode-equal");
+        bNodeLabelTests.add("#1focusLength-dot_fail-bnode-long");
+
+        bNodeLabelTests.add("#1focusMinLength-dot_pass-bnode-equal");
+        bNodeLabelTests.add("#1focusMinLength-dot_pass-bnode-long");
+        bNodeLabelTests.add("#1focusMaxLength-dot_pass-bnode-short");
+        bNodeLabelTests.add("#1focusMaxLength-dot_pass-bnode-equal");
+        bNodeLabelTests.add("#1focusPatternB-dot_pass-bnode-match");
+        bNodeLabelTests.add("#1focusPatternB-dot_pass-bnode-long");
+        bNodeLabelTests.add("#1focusBNODELength_dot_pass");
+
+        bNodeLabelTests.add("#1bnodeLength_pass-bnode-equal");
+        bNodeLabelTests.add("#1bnodeLength_fail-bnode-short");
+        bNodeLabelTests.add("#1bnodeLength_pass-bnode-equal");
+        bNodeLabelTests.add("#1bnodeLength_fail-bnode-long");
+        bNodeLabelTests.add("#1bnodeLength_fail-lit-equal");
+        bNodeLabelTests.add("#1bnodeLength_fail-iri-equal");
+
+        bNodeLabelTests.add("#1nonliteralLength_fail-bnode-short");
+        bNodeLabelTests.add("#1nonliteralLength_pass-bnode-equal");
+        bNodeLabelTests.add("#1nonliteralLength_fail-bnode-long");
+
+        bNodeLabelTests.add("#1bnodeMinlength_pass-bnode-equal");
+        bNodeLabelTests.add("#1bnodeMinlength_pass-bnode-long");
+        bNodeLabelTests.add("#1nonliteralMinlength_pass-bnode-equal");
+        bNodeLabelTests.add("#1nonliteralMinlength_pass-bnode-long");
+        bNodeLabelTests.add("#1bnodeMaxlength_pass-bnode-short");
+        bNodeLabelTests.add("#1bnodeMaxlength_pass-bnode-equal");
+        bNodeLabelTests.add("#1nonliteralMaxlength_pass-bnode-short");
+        bNodeLabelTests.add("#1nonliteralMaxlength_pass-bnode-equal");
+
+        bNodeLabelTests.add("#1bnodePattern_pass-bnode-match");
+        bNodeLabelTests.add("#1bnodePattern_fail-bnode-short");
+        bNodeLabelTests.add("#1bnodePattern_fail-bnode-long");
+
+        bNodeLabelTests.add("#1bnodeMinlength_fail-bnode-short");
+        bNodeLabelTests.add("#1bnodeMinlength_pass-bnode-equal");
+        bNodeLabelTests.add("#1bnodeMinlength_pass-bnode-long");
+
+        bNodeLabelTests.add("#1bnodePattern_pass-bnode-match");
+        bNodeLabelTests.add("#1bnodePattern_fail-bnode-long");
+
+        bNodeLabelTests.add("#1nonliteralPattern_pass-bnode-match");
+        bNodeLabelTests.add("#1nonliteralPattern_pass-bnode-long");
+
+        bNodeLabelTests.add("#1nonliteralMinlength_fail-bnode-short");
+        bNodeLabelTests.add("#1nonliteralMinlength_pass-bnode-equal");
+        bNodeLabelTests.add("#1nonliteralMinlength_pass-bnode-long");
+
+        bNodeLabelTests.add("#1bnodeMaxlength_pass-bnode-short");
+        bNodeLabelTests.add("#1bnodeMaxlength_pass-bnode-equal");
+        bNodeLabelTests.add("#1bnodeMaxlength_fail-bnode-long");
+
+        bNodeLabelTests.add("#1nonliteralMaxlength_pass-bnode-short");
+        bNodeLabelTests.add("#1nonliteralMaxlength_pass-bnode-equal");
+        bNodeLabelTests.add("#1nonliteralMaxlength_fail-bnode-long");
+
+        bNodeLabelTests.add("#1valExprRefbnode-IV1_pass-lit-equal");
+
+        bNodeLabelTests.add("#1focusBNODE_dot_fail-iriFocusLabel-equal");
+        bNodeLabelTests.add("#1focusBNODE_dot_pass");
+        bNodeLabelTests.add("#bnode1dot_pass-others_lexicallyEarlier");
+
+
+        return bNodeLabelTests;
     }
 
     /** Create a Shex test - or return null for "unrecognized" */
@@ -290,9 +276,7 @@ public class ShexTests {
                     Resource data = action.getProperty(ShexT.data).getResource();
                     // URI or literal.
                     RDFNode focus = action.getProperty(ShexT.focus).getObject();
-
-                    Runnable r = ()->{};
-                    return r;
+                    return new ShexValidationTest(entry);
                 } catch (Exception ex) {
                     System.err.println(ex.getClass().getName());
                     System.err.println(ex.getMessage());
@@ -308,7 +292,8 @@ public class ShexTests {
                     Resource map = action.getProperty(ShexT.map).getResource();
                     Resource data = action.getProperty(ShexT.data).getResource();
                     Runnable r = ()->{};
-                    return r;
+                    System.err.println("Shex test with map");
+                    return null;
                 } catch (Exception ex) {
                     System.err.println(ex.getClass().getName());
                     System.err.println(ex.getMessage());
@@ -330,7 +315,10 @@ public class ShexTests {
     private static boolean runTestExclusionsInclusions(ManifestEntry entry) {
         String fragment = fragment(entry);
         if ( fragment != null ) {
-            if ( !includes.isEmpty() && !includes.contains(fragment) )
+            // Includes, if present.
+            if ( includes.contains(fragment) )
+                return true;
+            if ( ! includes.isEmpty() )
                 return false;
 
             if ( excludes.contains(fragment) ) {
@@ -349,7 +337,6 @@ public class ShexTests {
         return null;
     }
 
-
     // [shex] Migrate
     public static String fragment(String uri) {
         int j = uri.lastIndexOf('#') ;
@@ -357,4 +344,36 @@ public class ShexTests {
         return fn ;
     }
 
+    private static void setup() {
+        // Setup StreamManager.
+        String places[] = { "files/spec/schemas/", "files/spec/validation/" };
+
+
+        for ( String dir : places ) {
+            Locator alt = new LocatorShexTest(dir);
+            streamMgr.addLocator(alt);
+        }
+        StreamManager.setGlobal(streamMgr);
+    }
+
+    // Hunt files.
+    static class LocatorShexTest extends LocatorFile {
+        public LocatorShexTest(String dir) {
+            super(dir);
+        }
+
+        @Override
+        public TypedInputStream open(String filenameOrURL) {
+            String fn = FileOps.basename(filenameOrURL);
+            String url = fn.endsWith(".shex")
+                    ? fn
+                    : fn+".shex";
+            return super.open(url);
+        }
+
+        @Override
+        public String getName() {
+            return "LocatorShexTest";
+        }
+    }
 }

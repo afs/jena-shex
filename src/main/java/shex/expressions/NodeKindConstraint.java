@@ -36,7 +36,7 @@ public class NodeKindConstraint extends NodeConstraint {
     }
 
     @Override
-    public ReportItem validateOne(ValidationContext vCxt, Node n) {
+    public ReportItem nodeSatisfies(ValidationContext vCxt, Node n) {
         switch (nodeKind) {
             case BNODE :
                 if ( n.isBlank() )

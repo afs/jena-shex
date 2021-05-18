@@ -41,7 +41,7 @@ public class NumLengthConstraint extends NodeConstraint {
 
     // [shex] revisit and rewrite
     @Override
-    public ReportItem validateOne(ValidationContext vCxt, Node n) {
+    public ReportItem nodeSatisfies(ValidationContext vCxt, Node n) {
         if ( ! n.isLiteral() ) {
             String msg = format("NumericConstraint: Not numeric: %s ", PLib.displayStr(n));
             return new ReportItem(msg, n);

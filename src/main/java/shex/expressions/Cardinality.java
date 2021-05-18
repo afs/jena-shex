@@ -103,6 +103,4 @@ public class Cardinality {
             return "*";
         return Integer.toString(x);
     }
-
-
 }

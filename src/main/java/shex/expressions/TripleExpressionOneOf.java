@@ -20,15 +20,10 @@ package shex.expressions;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.out.NodeFormatter;
-import shex.ReportItem;
-import shex.ValidationContext;
 
 public class TripleExpressionOneOf extends TripleExpression {
 
@@ -43,32 +38,12 @@ public class TripleExpressionOneOf extends TripleExpression {
     private List<TripleExpression> tripleExpressions;
 
     private TripleExpressionOneOf(List<TripleExpression> expressions) {
-        super(null);
+        super();
         this.tripleExpressions = expressions;
     }
 
     public List<TripleExpression> expressions() {
         return tripleExpressions;
-    }
-
-    @Override
-    public Set<Triple> matches(ValidationContext vCxt, Node data) {
-        // [shex] Partition
-        int matchCount = 0;
-        for ( TripleExpression ex : tripleExpressions ) {
-            ValidationContext vCxt2 = ValidationContext.create(vCxt);
-            ex.matches(vCxt2, data);
-            if ( vCxt2.conforms() ) {
-                matchCount++;
-                if ( matchCount > 1 )
-                    break;
-            }
-        }
-        if ( matchCount != 1 ) {
-            ReportItem r = new ReportItem("Failed in OneOf["+tripleExpressions.size()+"]", data);
-            vCxt.reportEntry(r);
-        }
-        return null;
     }
 
     @Override

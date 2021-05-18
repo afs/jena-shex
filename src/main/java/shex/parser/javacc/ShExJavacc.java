@@ -1238,7 +1238,7 @@ finishTripleExpressionClause(idx);
 
 // ----
   final public 
-void unaryTripleExpr() throws ParseException {
+void unaryTripleExpr() throws ParseException {Node n = null;
 startUnaryTripleExpr();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case RDF_TYPE:
@@ -1251,7 +1251,7 @@ startUnaryTripleExpr();
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case DOLLAR:{
         jj_consume_token(DOLLAR);
-        tripleExprLabel();
+        n = tripleExprLabel();
         break;
         }
       default:
@@ -1264,11 +1264,11 @@ startUnaryTripleExpr();
       case IRIref:
       case PNAME_NS:
       case PNAME_LN:{
-        tripleConstraint();
+        tripleConstraint(n);
         break;
         }
       case LPAREN:{
-        bracketedTripleExpr();
+        bracketedTripleExpr(n);
         break;
         }
       default:
@@ -1290,7 +1290,7 @@ startUnaryTripleExpr();
 finishUnaryTripleExpr();
   }
 
-  final public void bracketedTripleExpr() throws ParseException {TripleExpression tripleExpr = null; Cardinality cardinality = null;
+  final public void bracketedTripleExpr(Node label) throws ParseException {TripleExpression tripleExpr = null; Cardinality cardinality = null;
 startBracketedTripleExpr();
     jj_consume_token(LPAREN);
     tripleExpr = tripleExpression();
@@ -1321,10 +1321,10 @@ startBracketedTripleExpr();
       annotation();
     }
     semanticActions();
-finishBracketedTripleExpr(tripleExpr, cardinality);
+finishBracketedTripleExpr(label, tripleExpr, cardinality);
   }
 
-  final public void tripleConstraint() throws ParseException {Node p; int idx; boolean reverse = false; Cardinality cardinality = null;
+  final public void tripleConstraint(Node label) throws ParseException {Node p; int idx; boolean reverse = false; Cardinality cardinality = null;
 idx = startTripleConstraint();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case CARAT:{
@@ -1363,7 +1363,7 @@ idx = startTripleConstraint();
       annotation();
     }
     semanticActions();
-finishTripleConstraint(idx, p, reverse, cardinality);
+finishTripleConstraint(label, idx, p, reverse, cardinality);
   }
 
   final public Cardinality cardinality() throws ParseException {
@@ -1781,9 +1781,10 @@ exclusionLanguageRange(lang, seenTilde);
     }
   }
 
-  final public void include() throws ParseException {
+  final public void include() throws ParseException {Node n = null;
     jj_consume_token(AMP);
-    tripleExprLabel();
+    n = tripleExprLabel();
+ampTripleExprLabel(n);
   }
 
   final public void annotation() throws ParseException {
@@ -2157,6 +2158,12 @@ lex = stripQuotes3(t.image) ;
     finally { jj_save(0, xla); }
   }
 
+  private boolean jj_3R_34()
+ {
+    if (jj_3R_37()) return true;
+    return false;
+  }
+
   private boolean jj_3R_35()
  {
     if (jj_scan_token(AMP)) return true;
@@ -2166,12 +2173,6 @@ lex = stripQuotes3(t.image) ;
   private boolean jj_3R_37()
  {
     if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_34()
- {
-    if (jj_3R_37()) return true;
     return false;
   }
 
@@ -2223,12 +2224,6 @@ lex = stripQuotes3(t.image) ;
     return false;
   }
 
-  private boolean jj_3R_40()
- {
-    if (jj_scan_token(CARAT)) return true;
-    return false;
-  }
-
   private boolean jj_3R_42()
  {
     if (jj_scan_token(RDF_TYPE)) return true;
@@ -2241,9 +2236,21 @@ lex = stripQuotes3(t.image) ;
     return false;
   }
 
+  private boolean jj_3R_40()
+ {
+    if (jj_scan_token(CARAT)) return true;
+    return false;
+  }
+
   private boolean jj_3R_48()
  {
     if (jj_scan_token(PNAME_LN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_33()
+ {
+    if (jj_3R_36()) return true;
     return false;
   }
 
@@ -2269,12 +2276,6 @@ lex = stripQuotes3(t.image) ;
     return false;
   }
 
-  private boolean jj_3R_33()
- {
-    if (jj_3R_36()) return true;
-    return false;
-  }
-
   private boolean jj_3_1()
  {
     if (jj_scan_token(SEMI_COLON)) return true;
@@ -2282,15 +2283,15 @@ lex = stripQuotes3(t.image) ;
     return false;
   }
 
-  private boolean jj_3R_38()
- {
-    if (jj_3R_40()) return true;
-    return false;
-  }
-
   private boolean jj_3R_45()
  {
     if (jj_3R_47()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_38()
+ {
+    if (jj_3R_40()) return true;
     return false;
   }
 

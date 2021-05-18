@@ -26,16 +26,20 @@ import org.apache.jena.riot.out.NodeFormatter;
 import shex.ShexShape;
 import shex.ValidationContext;
 
+/** Shape expression that redirects. */
 public class ShapeExpressionRef extends ShapeExpression {
     private final Node ref;
 
     public ShapeExpressionRef(Node ref) { this.ref = ref; }
 
     @Override
-    public boolean validate(ValidationContext vCxt, Node data) {
+    public boolean satisfies(ValidationContext vCxt, Node data) {
         ShexShape shape = vCxt.getShape(ref);
-        ShapeExpression shapeExpr = shape.getShapeExpression();
-        return shapeExpr.validate(vCxt, data);
+        if ( shape == null )
+            return false;
+        if ( vCxt.cycle(shape, data) )
+            return true;
+        return shape.satisfies(vCxt, data);
     }
 
     @Override

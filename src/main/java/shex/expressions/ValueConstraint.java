@@ -35,7 +35,7 @@ public class ValueConstraint extends NodeConstraint {
     }
 
     @Override
-    public ReportItem validateOne(ValidationContext vCxt, Node data) {
+    public ReportItem nodeSatisfies(ValidationContext vCxt, Node data) {
         boolean b = valueSetRanges.stream().anyMatch(valueSetRange->validateRange(vCxt, valueSetRange, data));
         if ( !b )
             return new ReportItem("Value not in range: "+asString(), data);

@@ -50,13 +50,12 @@ public class ShapeExpressionOR extends ShapeExpression {
 
 
     @Override
-    public boolean validate(ValidationContext vCxt, Node data) {
+    public boolean satisfies(ValidationContext vCxt, Node data) {
         // We need to ignore validation failures from expressions - we need to find one success.
         for ( ShapeExpression shExpr : shapeExpressions ) {
             ValidationContext vCxt2 = ValidationContext.create(vCxt);
-            shExpr.validate(vCxt2, data);
-            boolean innerConforms = vCxt2.conforms();
-            if ( innerConforms )
+            boolean innerSatisfies = shExpr.satisfies(vCxt2, data);
+            if ( innerSatisfies )
                 return true;
         }
         ReportItem item = new ReportItem("OR expression not satisfied:", data);

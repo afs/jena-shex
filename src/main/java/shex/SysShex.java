@@ -16,29 +16,17 @@
  * limitations under the License.
  */
 
-package shex.expressions;
+package shex;
 
-public abstract class TripleExpression implements ShexPrintable {
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    // tripleExpr = EachOf | OneOf | TripleConstraint | tripleExprRef
+public class SysShex {
+    public static String URI = "org.apache.jena.shex";
+    public static Logger log = LoggerFactory.getLogger("org.apache.jena.shex.shex");
 
-    //cardinality, semActs, annotation.
-
-    // [shex] annotations
-    // [shex] semanticActions
-
-    protected TripleExpression() {}
-
-    public abstract void visit(TripleExpressionVisitor visitor);
-
-    @Override
-    public abstract int hashCode();
-
-    @Override
-    public abstract boolean equals(Object obj);
-
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName()+"[]";
-    }
+    // Node used for a START shape.
+    public static Node startNode = NodeFactory.createLiteral("=start=");
 }

@@ -48,7 +48,7 @@ public class ShexParser {
      * @return ShexShapes
      */
     public static ShexShapes parse(String filename, String baseURI) {
-        InputStream input = IO.openFile(filename);
+        InputStream input = IO.openFileBuffered(filename);
         return parse(input, baseURI);
     }
 
@@ -76,7 +76,6 @@ public class ShexParser {
 
 
     private static ShexShapes parse$(ShExJavacc parser, String baseURI, Context context) {
-
         ParserProfile profile = new ParserProfileStd(RiotLib.factoryRDF(),
                                                      ErrorHandlerFactory.errorHandlerStd,
                                                      IRIxResolver.create(baseURI).build(),

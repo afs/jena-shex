@@ -22,16 +22,18 @@ import java.util.Objects;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import shex.expressions.PLib;
 
 public class V {
 
     public static ValidationReport validate(Graph graphData, ShexShapes shapes, Node shapeRef, Node focus) {
         Objects.requireNonNull(shapeRef);
+        shapes = shapes.withImports();
         ShexShape shape = shapes.get(shapeRef);
         if ( shape == null ) {
             ValidationContext vCxt = new ValidationContext(graphData, shapes);
-//            ReportItem item = new ReportItem("No such shape: "+PLib.displayStr(shapeRef), shapeRef);
-//            vCxt.reportEntry(item);
+            ReportItem item = new ReportItem("No such shape: "+PLib.displayStr(shapeRef), shapeRef);
+            vCxt.reportEntry(item);
             return vCxt.generateReport();
         }
         return validate(graphData, shapes, shape, focus);
@@ -39,13 +41,22 @@ public class V {
 
     public static ValidationReport validate(Graph graphData, ShexShapes shapes, ShexShape shape, Node focus) {
         Objects.requireNonNull(shape);
+        shapes = shapes.withImports();
         ValidationContext vCxt = new ValidationContext(graphData, shapes);
-        boolean b = shape.getShapeExpression().validate(vCxt, focus);
-        if ( b != vCxt.conforms() ) {
-            System.out.println("ValidationContext.conforms = "+vCxt.conforms());
-            System.out.println("ShapeExpression().validate = "+b);
-        }
-
+        vCxt.startValidate(shape, focus);
+        boolean b = shape.satisfies(vCxt, focus);
+        // [shex] Reports accumulate for validation paths not taken.
+        vCxt.finishValidate(shape, focus);
+        if ( b )
+            return ValidationReport.reportConformsTrue();
+        ReportItem reportItem = new ReportItem("Failed", focus);
+        // Ensures one item.
+        vCxt.reportEntry(reportItem);
+        // [shex] Re-enable or put a report here
+//        if ( b != vCxt.conforms() ) {
+//            System.out.println("ValidationContext.conforms = "+vCxt.conforms());
+//            System.out.println("ShapeExpression().validate = "+b);
+//        }
         ValidationReport report = vCxt.generateReport();
         return report;
     }

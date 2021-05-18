@@ -27,6 +27,7 @@ import shex.expressions.ShapeExpression;
 // ShapeTripleExpression -- TripleExpression.
 // ShexShape - ShapeExpression
 
+// A labelled shape.
 public class ShexShape {
     private final Node label;
     private ShapeExpression shExpression;
@@ -41,11 +42,20 @@ public class ShexShape {
     public void setShapeExpression(ShapeExpression shExpression) { this.shExpression = shExpression; }
     public ShapeExpression getShapeExpression() { return shExpression; }
 
+    public boolean satisfies(ValidationContext vCxt, Node data) {
+        vCxt.startValidate(this, data);
+        try {
+            // [shex] ShexShape.validate?
+            return shExpression.satisfies(vCxt, data);
+        } finally {
+            vCxt.finishValidate(this, data);
+        }
+    }
+
     public void print(IndentedWriter iOut, NodeFormatter nFmt) {
         iOut.printf("Shape: ");
         nFmt.format(iOut, getLabel());
         iOut.println();
-        // [shex] Closed
         iOut.incIndent();
         // ShapeExpressionAND:
         // Consolidate adjacent TripleConstraints.

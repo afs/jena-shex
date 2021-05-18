@@ -214,3 +214,29 @@ C/
 
 D/
 
+=== TripleConstraint.
+
+T is a set of one triple, how can it have a cardinality of 2?
+
+:Shape { :predicate LITERAL {2} }
+
+=> tripleConstraint with tripleExpr LITERAL and min=max=2.
+matches for tripleConstraint takes a T that is a singleton.
+
+But.
+
+
+"""
+expr has a cardinality of min and/or max not equal to 1, where a max of -1 is treated as unbounded, and T can be partitioned into k subsets T1, T2,…Tk such that min ≤ k ≤ max and for each Tn, matches(Tn, expr, m) by the remaining rules in this list.
+"""
+
+so why not 6 :predicate in 3 groups of 2?
+
+
+(no EachOf, 
+
+
+
+expr has a cardinality of min and/or max not equal to 1, where a max of -1 is treated as unbounded, and
+
+SPartition rule for cardiality need to also restrict to singleton.

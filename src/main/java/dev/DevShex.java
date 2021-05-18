@@ -18,52 +18,79 @@
 
 package dev;
 
+import static shex.expressions.PLib.printShapes;
+
 import java.util.function.Supplier;
 
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.riot.out.NodeFormatter;
-import org.apache.jena.riot.out.NodeFormatterTTL;
+import org.apache.jena.riot.RIOT;
+import org.apache.jena.riot.out.NodeFmtLib;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sys.JenaSystem;
 import shex.*;
+import shex.expressions.ShapeEval;
+import shex.expressions.ShapeEvalEachOf;
 import shex.parser.ShExCompactParser;
 
 public class DevShex {
 
-    static String strValidateTest = StrUtils.strjoinNL
-            (
-             //"<http://example/s1> LITERAL"
-             //"<http://example/s1> { rdfs:label /^z/ {3} ; }",
-             //"<http://example/s2> { rdfs:label [ 'abc' ] }",
-
-             "<http://a.example/S1> {"
-             ,"  <http://a.example/p1> NOT [<http://a.example/v1> <http://a.example/v2> <http://a.example/v3>]"
-             ,"}"
-//
-//             "<http://example/s3> { :iri [ <http://example/x> ] }"
-//             ,""
-            );
+    static {
+        JenaSystem.init();
+        LogCtl.setLog4j2();
+        RIOT.getContext().set(RIOT.symTurtleDirectiveStyle, "sparql");
+    }
 
     static String strParserTest = StrUtils.strjoinNL
             (""
+             ,"IMPORT <http://foo/>"
+             ,"PREFIX files: <http://host/files#>"
+             ,"IMPORT files:other"
+             //2OneInclude1.shex
+//             ,"<http://all.example/S1> {"
+//             ,"    &<http://all.example/S2e>"
+//             ,"  }"
+//             ,"  <http://all.example/S2> {"
+//             ,"    $<http://all.example/S2e> <http://all.example/p1> ."
+//             ,"  }"
 
-             ,"<http://a.example/S1> {"
-             ,"  <http://a.example/p1> NOT [<http://a.example/v1> <http://a.example/v2> <http://a.example/v3>]"
+             ,"<http://ex/S> {"
+             ," <http://all.example/p1> LITERAL /^abc/ ;"
              ,"}"
             );
 
     public static void main(String[] args) {
+        //partition();
+
         parsePrint();
+        //parsePrintFile("file:///home/afs/ASF/shapes/jena-shex/files/spec/schemas/2OneInclude1.shex");
         //parsePrintFile("file:///home/afs/ASF/shapes/jena-shex/files/spec/schemas/1NOTvs.shex");
+        ShapeEvalEachOf.DEBUG = true;
         //validate();
+        validate2();
+        //validate_eric_wiki();
     }
+
+//    private static void partition() {
+//        int N = 4 ;
+//        int k = 3 ;
+//        Set<String> triples = new HashSet<>();
+//        for ( int i = 0 ; i < N ; i++ ) {
+//            triples.add(""+(char)(i+'A'));
+//        }
+//        List<List<Set<String>>> subSets = ShapeEvalCardinality.cardinalityPartition(triples, k, k);
+//        subSets.forEach(s->System.out.println(s));
+//        System.exit(0);
+//    }
 
     public static void validate() {
         String str = PREFIXES_DEV +"\n" + strValidateTest;
@@ -92,6 +119,99 @@ public class DevShex {
         }
     }
 
+    static String strValidateTest = StrUtils.strjoinNL
+            (
+             //"<http://example/s1> LITERAL"
+             //"<http://example/s1> { rdfs:label /^z/ {3} ; }",
+             //"<http://example/s2> { rdfs:label [ 'abc' ] }",
+
+             "<http://ex/S1> {"
+             ,"  (:p1 .){2} ;"
+             //,"  :p3 . ;"
+             ,"}"
+//             "<http://example/s3> { :iri [ <http://example/x> ] }"
+//             ,""
+            );
+
+    static PrefixMap pmap = PrefixMapFactory.create(SSE.getPrefixMapRead());
+
+    public static void validate2() {
+        String str = strValidateTest;
+
+        Graph graph = GraphFactory.createDefaultGraph();
+        graph.getPrefixMapping().setNsPrefix("ex", "http://example/");
+        //add(graph, "(<http://example/f> :p1 'abc')");
+        add(graph, "(<http://example/f> :p1 'def')");
+        add(graph, "(<http://example/f> :p3 'xyz')");
+        add(graph, "(<http://example/f> :p9 'xyz')");
+        Node focus = SSE.parseNode("<http://example/f>");
+        Node testShape = SSE.parseNode("<http://ex/S1>");
+        // add(graph, "(<http://example/f1> :link _:b)");
+        // add(graph, "(<http://example/f> :iri <http://example/x>)");
+
+        validate(str, testShape, graph, focus);
+        System.exit(0);
+    }
+
+
+    public static void validate_eric_wiki() {
+        String str = StrUtils.strjoinNL
+                (
+                 "<x:S1> {"
+                 ,"    ("
+                 ,"      <x:p1> . ; # TC1"
+                 ,"      <x:p2> .   # TC2"
+                 ,"    | <x:p3> . ; # TC3"
+                 ,"      <x:p2> .+  # TC4"
+                 ,"    ) ;"
+                 ,"    <x:p2> ['1']   # TC5"
+                 ,"  }"
+                        );
+
+        Graph graph = GraphFactory.createDefaultGraph();
+        graph.getPrefixMapping().setNsPrefix("ex", "http://example/");
+        add(graph, "(<x:n1> <x:p2> '1')");
+        add(graph, "(<x:n1> <x:p2> '2')");
+        add(graph, "(<x:n1> <x:p2> '3')");
+        add(graph, "(<x:n1> <x:p3> '4')");
+        Node focus = SSE.parseNode("<x:n1>");
+        Node testShape = SSE.parseNode("<x:S1>");
+
+        validate(str, testShape, graph, focus);
+        System.exit(0);
+
+    }
+
+    private static void validate(String shapesStr, Node testShape, Graph graph, Node focus) {
+        System.out.println(shapesStr);
+        System.out.println("--");
+        ShexShapes shapes = Shex.shapesFromString(PREFIXES_DEV +"\n" +shapesStr);
+        printShapes(shapes);
+        System.out.println("--");
+        ShexShape shape = shapes.get(testShape);
+        if ( shape == null ) {
+            System.err.println("No such shape: "+testShape);
+            return;
+        }
+
+        RDFDataMgr.write(System.out, graph, RDFFormat.TURTLE_FLAT);
+        System.out.println("--");
+
+        ValidationContext vCxt = new ValidationContext(graph, shapes);
+
+        System.out.println(NodeFmtLib.str(focus, pmap));
+        System.out.println("--");
+
+        boolean b = ShapeEval.matchesShapeExpr(vCxt, shape.getShapeExpression(), focus);
+        System.out.println(b);
+        vCxt.getReportEntries().forEach(e->System.out.println(e));
+
+    }
+
+    private static void add(Graph graph, String str) {
+        graph.add(SSE.parseTriple(str));
+    }
+
     public static void parsePrint() {
         //parsePrintFile("/home/afs/ASF/shapes/jena-shex/files/spec/schemas/1val1IRIREF.shex", true, true);
         parsePrintString(strParserTest, true, true);
@@ -114,10 +234,10 @@ public class DevShex {
     }
 
     public static ShexShapes parsePrintString(String str, boolean debug, boolean debugParse) {
-        System.out.println("----");
-        System.out.println(str);
-        System.out.println("----");
         String str2 = PREFIXES_DEV +"\n" + str;
+        System.out.println("----");
+        System.out.print(str2);
+        System.out.println("----");
         return parsePrint(()->Shex.shapesFromString(str2), debug, debugParse);
     }
 
@@ -135,13 +255,6 @@ public class DevShex {
         return supplier.get();
     }
 
-    public static void printShapes(ShexShapes shapes) {
-        IndentedWriter iOut = IndentedWriter.clone(IndentedWriter.stdout);
-        NodeFormatter nFmt = new NodeFormatterTTL(null, shapes.getPrefixMap());
-        shapes.getShapes().forEach(shape->shape.print(iOut, nFmt));
-        iOut.flush();
-    }
-
     static String PREFIXES = StrUtils.strjoinNL
             ("PREFIX foaf:   <http://xmlns.com/foaf/0.1/>"
             ,"PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>"
@@ -152,7 +265,6 @@ public class DevShex {
             ,"PREFIX :        <http://example/>"
             ,"PREFIX dev:     <urn:dev:>"
             ,"PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>"
-            ,""
             );
 
     static String PREFIXES_DEV = StrUtils.strjoinNL
@@ -163,6 +275,5 @@ public class DevShex {
             ,"PREFIX ex:      <http://example/>"
             ,"PREFIX :        <http://example/>"
             ,"PREFIX dev:     <urn:dev:>"
-            ,""
             );
 }

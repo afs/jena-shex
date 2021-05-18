@@ -25,7 +25,6 @@ import shex.ReportItem;
 import shex.ValidationContext;
 
 public abstract class NodeConstraint extends ShapeExpression {
-// Something that can only validates to one report.
     /*
      *  5.4 Node Constraints
      *  5.4.1 Semantics
@@ -36,9 +35,30 @@ public abstract class NodeConstraint extends ShapeExpression {
      *  5.4.6 Values Constraint
      */
 
+    // [shex] Convert to record
+    /*
+     * NodeConstraint  {
+     *   OneOf:
+     *   Node Kind Constraints
+     *   Datatype Constraints
+     *   XML Schema String Facet Constraints
+     *   XML Schema Numeric Facet Constraints
+     *   Values Constraints
+     */
+
+     // [shex] Convert to (builder):
+     /*  NodeConstraint   {
+     *    id:shapeExprLabel?
+     *    nodeKind:("iri" | "bnode" | "nonliteral" | "literal")?
+     *    datatype:IRIREF?
+     *    xsFacet*
+     *    values:[valueSetValue+]?
+     * }
+     */
+
     @Override
-    public boolean validate(ValidationContext vCxt, Node data) {
-        ReportItem item = validateOne(vCxt, data);
+    public boolean satisfies(ValidationContext vCxt, Node data) {
+        ReportItem item = nodeSatisfies(vCxt, data);
         if ( item != null ) {
             vCxt.reportEntry(item);
             return false;
@@ -46,8 +66,8 @@ public abstract class NodeConstraint extends ShapeExpression {
         return true;
     }
 
-    // [shex] public abstract boolean validate(Node data) ;
-    public abstract ReportItem validateOne(ValidationContext vCxt, Node data);
+    /** The function "nodeSatisfies" == satisfies2(n, nc)*/
+    public abstract ReportItem nodeSatisfies(ValidationContext vCxt, Node data);
 
 
     @Override

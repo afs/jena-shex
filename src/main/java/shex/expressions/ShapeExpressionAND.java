@@ -52,11 +52,11 @@ public class ShapeExpressionAND extends ShapeExpression {
     }
 
     @Override
-    public boolean validate(ValidationContext vCxt, Node data) {
-        // Record all reports.
+    public boolean satisfies(ValidationContext vCxt, Node data) {
+        // Record all reports?
         for ( ShapeExpression shExpr : shapeExpressions ) {
-            boolean b = shExpr.validate(vCxt, data);
-            if ( !b )
+            boolean innerSatisfies = shExpr.satisfies(vCxt, data);
+            if ( !innerSatisfies )
                 return false;
         }
         return true;

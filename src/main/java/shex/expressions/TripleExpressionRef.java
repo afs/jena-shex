@@ -18,31 +18,27 @@
 
 package shex.expressions;
 
+import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.out.NodeFormatter;
-import shex.ValidationContext;
 
 public class TripleExpressionRef extends TripleExpression {
 
     private Node ref;
+    private Map<Node, TripleExpression> map;
 
-    public TripleExpressionRef(Node node) {
-        super(null);
+    public TripleExpressionRef(Map<Node, TripleExpression> tripleExprRefs, Node node) {
+        super();
+        this.map = tripleExprRefs;
         this.ref = node;
     }
 
-    @Override
-    public Set<Triple> matches(ValidationContext vCxt, Node data) {
-        throw new NotImplemented();
-        //vCxt.getShape(ref);
+    public TripleExpression get() {
+        return map.get(ref);
     }
-
 
     @Override
     public void visit(TripleExpressionVisitor visitor) {

@@ -60,7 +60,7 @@ public class StrRegexConstraint extends NodeConstraint {
     }
 
     @Override
-    public ReportItem validateOne(ValidationContext vCxt, Node n) {
+    public ReportItem nodeSatisfies(ValidationContext vCxt, Node n) {
         if ( n.isBlank() ) {
             String msg = toString()+": Blank node: "+ShLib.displayStr(n);
             return new ReportItem(msg, n);

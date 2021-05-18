@@ -54,7 +54,7 @@ public class DatatypeConstraint extends NodeConstraint {
     }
 
     @Override
-    public ReportItem validateOne(ValidationContext vCxt, Node n) {
+    public ReportItem nodeSatisfies(ValidationContext vCxt, Node n) {
         if ( n.isLiteral() && dtURI.equals(n.getLiteralDatatypeURI()) ) {
             // Must be valid for the type
             if ( ! rdfDatatype.isValid(n.getLiteralLexicalForm()) ) {

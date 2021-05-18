@@ -441,27 +441,27 @@ void tripleExpressionClause_1() : { }
 
 // ----
 
-void unaryTripleExpr() : {}
+void unaryTripleExpr() : { Node n = null; }
 {
     { startUnaryTripleExpr(); }
     (
-       (<DOLLAR> tripleExprLabel())? (tripleConstraint() | bracketedTripleExpr())
+      ( (<DOLLAR> n = tripleExprLabel())? (tripleConstraint(n) | bracketedTripleExpr(n)) )
     | include()
     )
     { finishUnaryTripleExpr(); }
 }
 
-void bracketedTripleExpr(): { TripleExpression tripleExpr = null; Cardinality cardinality = null; }
+void bracketedTripleExpr(Node label): { TripleExpression tripleExpr = null; Cardinality cardinality = null; }
 {
     { startBracketedTripleExpr(); }
    	<LPAREN> tripleExpr = tripleExpression() <RPAREN>
     (cardinality = cardinality())?
     (annotation())*
     semanticActions()
-    { finishBracketedTripleExpr(tripleExpr, cardinality); }
+    { finishBracketedTripleExpr(label, tripleExpr, cardinality); }
 }
 
-void tripleConstraint() : { Node p; int idx; boolean reverse = false; Cardinality cardinality = null; }
+void tripleConstraint(Node label) : { Node p; int idx; boolean reverse = false; Cardinality cardinality = null; }
 {
     { idx = startTripleConstraint(); }
   	( reverse = senseFlags() )?
@@ -470,7 +470,7 @@ void tripleConstraint() : { Node p; int idx; boolean reverse = false; Cardinalit
     (cardinality = cardinality())?
     (annotation())*
     semanticActions()
-    { finishTripleConstraint(idx, p, reverse, cardinality); }
+    { finishTripleConstraint(label, idx, p, reverse, cardinality); }
 }
 
 Cardinality cardinality() : {}
@@ -642,9 +642,11 @@ void langRangeAT() : { boolean haveSet = false; String lang = null; boolean seen
    )*
 }
 
-void include() : {}
+void include() : { Node n = null; }
 {
-     <AMP> tripleExprLabel()
+     <AMP> n = tripleExprLabel()
+     { ampTripleExprLabel(n); }
+
 }
 
 void annotation() : {}

@@ -19,7 +19,7 @@
 package shex.expressions;
 
 public interface TripleExpressionVisitor {
-    default void visit(TripleExpressionDecoration object) {}
+    default void visit(TripleExpressionCardinality object) {}
     default void visit(TripleExpressionEachOf object) {}
     default void visit(TripleExpressionOneOf object) {}
     default void visit(TripleExpressionNone object) {}

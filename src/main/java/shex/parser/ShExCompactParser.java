@@ -30,6 +30,7 @@ import org.apache.jena.atlas.lib.EscapeStr;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.lang.extra.LangParserBase;
 import org.apache.jena.riot.lang.extra.LangParserLib;
@@ -53,11 +54,16 @@ public class ShExCompactParser extends LangParserBase {
 
     // -- Top level shapes.
     private List<ShexShape> shapes = new ArrayList<>();
+    private List<String> imports = null;
 
     // The shape currently in progress.
     // [shex] Shape.newBuilder.
     private ShexShape currentShexShape = null;
+    private Map<Node, TripleExpression> tripleExprRefs = new HashMap<>();
+
+    // [shex] Switch to this: Unused ATM.
     private ShapeTripleExpression.Builder currentShapeBuilder = null;
+
     // Stack of shape expressions used during parsing a top level shape.
     private Deque<ShapeExpression> shapeExprStack = new ArrayDeque<>();
     private ShapeExpression currentShapeExpression() { return peek(shapeExprStack); }
@@ -74,9 +80,9 @@ public class ShExCompactParser extends LangParserBase {
     }
 
     // [shex] adapter
-    //@Override
+    @Override
     protected Node createURI(String iriStr, int line, int column) {
-        return super.createNode(iriStr, line, column);
+        return super.profile.createURI(iriStr, line, column);
     }
 
     // Convert exceptions, if necessary.
@@ -109,15 +115,21 @@ public class ShExCompactParser extends LangParserBase {
     public void parseStart() { }
 
     public ShexShapes parseFinish() {
+        // XXX Bind/check refs.
         // Check stacks empty.
         if ( currentShexShape != null )
             throw new InternalErrorException("shape in-progress");
         if (! shapeExprStack.isEmpty() )
             throw new InternalErrorException("shape expresion stack not empty");
-        return new ShexShapes(super.profile.getPrefixMap(), shapes);
+        return new ShexShapes(super.profile.getPrefixMap(), shapes, imports);
     }
 
     protected void imports(String iri, int line, int column) {
+        if ( imports == null )
+            imports = new ArrayList<>();
+        if ( IRIs.check(iri) )
+            profile.getErrorHandler().warning("Bad IRI: <"+iri+">", line, column);
+        imports.add(iri);
     }
 
     protected void startShexDoc() { }
@@ -196,7 +208,7 @@ public class ShExCompactParser extends LangParserBase {
         return front(shapeExprStack);
     }
 
-    // Do noting with the stack but pairs with startShapeOp
+    // Do nothing with the stack but pairs with startShapeOp
     private void finishShapeOpNoAction(String operation, int idx) { }
 
     private List<ShapeExpression> finishShapeOp(int idx) {
@@ -311,6 +323,9 @@ public class ShExCompactParser extends LangParserBase {
     }
 
     protected void finishShapeNot(Inline inline, int idx, boolean negate) {
+        int x = front(shapeExprStack) - idx ;
+        if ( x > 1)
+            throw new InternalErrorException("Shape NOT - multiple items on the stack");
         if ( negate && ! shapeExprStack.isEmpty() ) {
             ShapeExpression shExpr = pop(shapeExprStack);
             ShapeExpression shExpr2 = new ShapeExpressionNOT(shExpr);
@@ -325,18 +340,19 @@ public class ShExCompactParser extends LangParserBase {
     }
 
     protected void finishShapeAtom(Inline inline, int idx) {
-        finishShapeOpNoAction("ShapeAtom", idx);
+        //Gather NodeConstraints parts, Kind, datatype and facets, together.
+        finishShapeOp(idx, ShapeExpressionAND::create);
+        //finishShapeOpNoAction("ShapeAtom", idx);
         finish(inline, "ShapeAtom");
     }
 
     protected void shapeAtomDOT() {
-        debug("ShapeAtom <DOT>");
         push(shapeExprStack, new ShapeExpressionTrue());
     }
 
     protected void shapeReference(Node ref) {
-        ShapeExpressionRef shapeRef = new ShapeExpressionRef(ref);
-        push(shapeExprStack, shapeRef);
+        debug("shapeReference");
+        push(shapeExprStack, new ShapeExpressionRef(ref));
     }
 
     protected void startShapeDefinition() {
@@ -345,8 +361,8 @@ public class ShExCompactParser extends LangParserBase {
 
     // [shex] Pass builder in at startShapeDefinition.
     protected void finishShapeDefinition(TripleExpression tripleExpr, List<Node> extras, boolean closed) {
-        // XXX Empty.
-        // XXX Other
+        if ( tripleExpr == null )
+            tripleExpr = TripleExpressionNone.get();
         ShapeTripleExpression shape = ShapeTripleExpression.newBuilder()
                 //.label(???)
                 .closed(closed)
@@ -355,7 +371,6 @@ public class ShExCompactParser extends LangParserBase {
         push(shapeExprStack, shape);
         finish("ShapeDefinition");
     }
-
 
     // ?? Top of TripleExpression
     protected int startTripleExpression() {
@@ -395,11 +410,13 @@ public class ShExCompactParser extends LangParserBase {
         start("BracketedTripleExpression");
     }
 
-    protected void finishBracketedTripleExpr(TripleExpression tripleExpr, Cardinality cardinality) {
+    protected void finishBracketedTripleExpr(Node label, TripleExpression tripleExpr, Cardinality cardinality) {
         TripleExpression tripleExpr2 = tripleExpr;
         if ( cardinality != null )
-            tripleExpr2 = new TripleExpressionDecoration(tripleExpr, cardinality);
+            tripleExpr2 = new TripleExpressionCardinality(tripleExpr, cardinality);
         push(tripleExprStack, tripleExpr2);
+        if ( label != null )
+            tripleExprRefs.put(label, tripleExpr2);
         finish("BracketedTripleExpression");
     }
 
@@ -411,11 +428,15 @@ public class ShExCompactParser extends LangParserBase {
         return startShapeOp();
     }
 
-    protected void finishTripleConstraint(int idx, Node predicate, boolean reverse, Cardinality cardinality) {
+    protected void finishTripleConstraint(Node label, int idx, Node predicate, boolean reverse, Cardinality cardinality) {
+        if ( label != null ) { /*ref*/ } // XXX
         List<ShapeExpression> args = finishShapeOp(idx);
         // [shex] Remove!
         if ( args == null ) {
-            push(tripleExprStack, TripleExpressionNone.get());
+            TripleExpression tripleExpr = TripleExpressionNone.get();
+            push(tripleExprStack, tripleExpr);
+            if ( label != null )
+                tripleExprRefs.put(label, tripleExpr);
             return ;
         }
 
@@ -425,8 +446,10 @@ public class ShExCompactParser extends LangParserBase {
         ShapeExpression arg = args.get(0);
         if ( args != null ) {
             // Cardinality as argument.
-            TripleExpression shExpr = new TripleConstraint(predicate, reverse, arg, cardinality);
-            push(tripleExprStack, shExpr);
+            TripleExpression tripleExpr = new TripleConstraint(label, predicate, reverse, arg, cardinality);
+            push(tripleExprStack, tripleExpr);
+            if ( label != null )
+                tripleExprRefs.put(label, tripleExpr);
         }
         finish("TripleConstraint");
     }
@@ -440,6 +463,8 @@ public class ShExCompactParser extends LangParserBase {
 
     protected void finishLiteralNodeConstraint(int idx, int line, int column) {
         finishShapeOpNoAction("LiteralNodeConstraint", idx);
+        // This gathers NodeConstraints ... which happen to be ShapeExpressions as well.
+        //finishShapeOp(idx, ShapeExpressionAND::create);
         finish("LiteralNodeConstraint");
     }
 
@@ -449,7 +474,8 @@ public class ShExCompactParser extends LangParserBase {
     }
 
     protected void finishNonLiteralNodeConstraint(int idx, int line, int column) {
-        finishShapeOpNoAction("vLiteralNodeConstraint", idx);
+        //finishShapeOp(idx, ShapeExpressionAND::create);
+        finishShapeOpNoAction("NonLiteralNodeConstraint", idx);
         finish("NonLiteralNodeConstraint");
     }
 
@@ -636,6 +662,11 @@ public class ShExCompactParser extends LangParserBase {
         String iriStr = resolvePName(prefixedName, line, column);
         // [shex] Rename as "createIRINode"
         return createURI(iriStr, line, column);
+    }
+
+    protected void ampTripleExprLabel(Node ref) {
+        debug("& TripleExprLabel");
+        push(tripleExprStack, new TripleExpressionRef(tripleExprRefs, ref));
     }
 
     // ---- Stacks

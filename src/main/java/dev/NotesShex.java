@@ -22,10 +22,32 @@ public class NotesShex {
     // Grammar. Check file for ToDo and other notes.
     // Test Suite
 
-    // [ ] Validation debug (includes only).
-    // [ ] Does ShapeAND reverse order due to stack? TripleExpressionEachOf?
+    // [ ] ShexMap
+    // [ ] Move EachOf prework to class.
+    // [ ] Improve ShapeEval.
+    // [ ] Better imports - keep individual read in ShexShapes.
+    //     Create for import (no "=start=")
+    //     Fix up PLib.print
+
+    // [ ] Schema requirements (5.7), including only one START
+    //     START - and check only one.
+    // [ ] Check no dependency on "if ( .conforms)"
+
+    // [ ] Matches Set<Triple> calc in?
+    // [ ] tripleConstraint on one triple - boolean return.
+    //     Caller assembles
+
+    // "Note that ShEx uses a partitioning strategy to find a solution whereby triples in the data are assigned to triple constraints in the schema."
+
+    // [ ] Validation debug
+    // [x] NOT is wrong. Only flags for last - related to next?
+    // [x] Does ShapeAND reverse order due to stack? TripleExpressionEachOf?
     // [ ] test for XSDFuncOp.isNumberic??
     // [ ] test for ShexParserlib.unescapeShexRegex
+
+    // [ ] ShapesMap
+    // [ ] ShapeReport
+    // [ ] START
 
     // *** Fix parser around TripleExpression.
     // [-]  Shape (inlineShapeDefinition) and ShexShape (shapeExprDecl)

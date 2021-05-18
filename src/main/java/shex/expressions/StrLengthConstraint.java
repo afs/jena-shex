@@ -39,7 +39,7 @@ public class StrLengthConstraint extends NodeConstraint {
     }
 
     @Override
-    public ReportItem validateOne(ValidationContext vCxt, Node n) {
+    public ReportItem nodeSatisfies(ValidationContext vCxt, Node n) {
         if ( ! n.isLiteral() && ! n.isURI() ) {
             String msg = format("%s: Not a literal or URI: %s", lengthType.label(), PLib.displayStr(n));
             return new ReportItem(msg, n);

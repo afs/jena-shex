@@ -19,34 +19,46 @@
 package shex.expressions;
 
 import java.util.Objects;
-import java.util.Set;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.out.NodeFormatter;
-import shex.ValidationContext;
 
-/** Class to add cardinality to a {@link TripleExpression}. */
-public class TripleExpressionDecoration extends TripleExpression {
+/**
+ * Class to add cardinality to a bracketed {@link TripleExpression}.
+ * <p>
+ * {@link TripleConstraint TripleConstraints} have their own cardinality handling.
+ */
+public class TripleExpressionCardinality extends TripleExpression {
 
     private final TripleExpression other;
+    private final Cardinality cardinality;
+    private final int min;
+    private final int max;
 
-    public TripleExpressionDecoration(TripleExpression tripleExpr, Cardinality cardinality) {
-        super(cardinality);
+    public TripleExpressionCardinality(TripleExpression tripleExpr, Cardinality cardinality) {
+        super();
         this.other = tripleExpr;
+        this.cardinality = cardinality;
+        this.min = (cardinality==null) ? 1 : cardinality.min;
+        this.max = (cardinality==null) ? 1 : cardinality.max;
     }
 
-//    @Override
-//    public void validate(ValidationContext vCxt, Node data) {
-//        throw new NotImplemented(this.getClass().getSimpleName()+".validate");
-//    }
+    public TripleExpression target() { return other; }
 
-    @Override
-    public Set<Triple> matches(ValidationContext vCxt, Node data) {
-        Set<Triple> x = other.matches(vCxt, data);
-        return x;
+    public String cardinalityString() {
+        if ( cardinality == null )
+            return "";
+        return cardinality.image;
     }
+
+    public int min() {
+        return min;
+    }
+
+    public int max() {
+        return max;
+    }
+
 
     @Override
     public void visit(TripleExpressionVisitor visitor) {
@@ -66,27 +78,27 @@ public class TripleExpressionDecoration extends TripleExpression {
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        TripleExpressionDecoration other = (TripleExpressionDecoration)obj;
+        TripleExpressionCardinality other = (TripleExpressionCardinality)obj;
         return Objects.equals(this.other, other.other);
     }
 
     @Override
     public void print(IndentedWriter iOut, NodeFormatter nFmt) {
-        String s = super.cardinalityString();
-        iOut.println("Other");
+        String s = cardinalityString();
+        iOut.println("Cardinality");
+        if ( ! s.isEmpty() )
+            iOut.println("Cardinality = "+s);
         iOut.incIndent();
         other.print(iOut, nFmt);
         iOut.decIndent();
-        if ( ! s.isEmpty() )
-            iOut.println("Cardinality = "+s);
-        iOut.println("/Other");
+        iOut.println("/Cardinality");
     }
 
     @Override
     public String toString() {
-        String s = super.cardinalityString();
+        String s = cardinalityString();
         if ( s.isEmpty() )
-            return "TripleExpression [other="+other+"]";
-        return "TripleExpression ["+s+" other="+other+"]";
+            return "Cardinality [{-} other="+other+"]";
+        return "Cardinality ["+s+" other="+other+"]";
     }
 }

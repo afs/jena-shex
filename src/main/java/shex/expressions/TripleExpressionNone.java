@@ -18,25 +18,14 @@
 
 package shex.expressions;
 
-import java.util.Collections;
-import java.util.Set;
-
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.out.NodeFormatter;
-import shex.ValidationContext;
 
 public class TripleExpressionNone extends TripleExpression {
     private static TripleExpression instance = new TripleExpressionNone();
     public static TripleExpression get() { return instance ; }
 
-    private TripleExpressionNone() { super(null); }
-
-    @Override
-    public Set<Triple> matches(ValidationContext vCxt, Node data) {
-        return Collections.emptySet();
-    }
+    private TripleExpressionNone() { super(); }
 
     @Override
     public void visit(TripleExpressionVisitor visitor) {

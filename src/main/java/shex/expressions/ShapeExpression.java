@@ -35,9 +35,8 @@ public abstract class ShapeExpression {
 
     public ShapeExpression() { }
 
-    // [shex] return boolean for true -> OK, false -> not OK.
-    // Is this satisfies?
-    public abstract boolean validate(ValidationContext vCxt, Node data);
+    /** The "satisfies" function. Return true for OK, false for not OK. */
+    public abstract boolean satisfies(ValidationContext vCxt, Node data);
 
     private static PrefixMap displayPrefixMap = PrefixMapFactory.createForOutput();
     static {

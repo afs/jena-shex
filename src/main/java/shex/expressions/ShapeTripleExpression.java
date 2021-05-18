@@ -62,8 +62,9 @@ public class ShapeTripleExpression extends ShapeExpression {
     }
 
     @Override
-    public boolean validate(ValidationContext vCxt, Node node) {
-        return ShapeEval.matchesShape(vCxt, node, tripleExpr, closed);
+    public boolean satisfies(ValidationContext vCxt, Node node) {
+        // Pass extras
+        return ShapeEval.matchesTripleExpr(vCxt, tripleExpr, node, extras, closed);
     }
 
     @Override
@@ -79,7 +80,10 @@ public class ShapeTripleExpression extends ShapeExpression {
             iOut.println("CLOSED");
         iOut.println("TripleExpression");
         iOut.incIndent();
-        tripleExpr.print(iOut, nFmt);
+        if ( tripleExpr != null )
+            tripleExpr.print(iOut, nFmt);
+        else
+            iOut.println("<none>");
         iOut.decIndent();
         iOut.decIndent();
     }
