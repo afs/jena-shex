@@ -27,11 +27,11 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.shex.Shex;
+import org.apache.jena.shex.ShexShapes;
+import org.apache.jena.shex.ShexValidation;
+import org.apache.jena.shex.ValidationReport;
 import org.apache.jena.sys.JenaSystem;
-import shex.Shex;
-import shex.ShexShapes;
-import shex.V;
-import shex.ValidationReport;
 
 /** ShEx validation.
  * <p>
@@ -128,7 +128,7 @@ public class shex_validate extends CmdGeneral {
 
         Node shapeRef = null;
         Node focus = null;
-        ValidationReport report = V.validate(dataGraph, shapes, shapeRef, focus);
+        ValidationReport report = ShexValidation.validate(dataGraph, shapes, shapeRef, focus);
 
         if ( report.conforms() )
             System.out.println("OK");

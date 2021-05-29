@@ -19,7 +19,8 @@
     <ver.fuseki>${ver.jena}</ver.fuseki>
     <ver.slf4j>1.7.30</ver.slf4j>
     <ver.log4j2>2.13.3</ver.log4j2>
-    <ver.junit>4.13.1</ver.junit>
+    <ver.junit4>4.13.1</ver.junit4>
+    <ver.junit5>5.7.2</ver.junit5>
   </properties>
 
   <dependencyManagement>
@@ -30,7 +31,14 @@
         <version>${ver.log4j2}</version>
         <scope>import</scope>
         <type>pom</type>
-      </dependency>    
+      </dependency>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${ver.junit}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -89,8 +97,16 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>${ver.junit}</version>
+      <version>${ver.junit4}</version>
+      <scope>test</scope>
     </dependency>
+
+    <!-- Junit5 - Junit 4.13
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+    </dependency> 
+    -->
     
     <!-- Require a logging implementation -->
     

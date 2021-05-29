@@ -31,11 +31,11 @@ import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.shex.Shex;
+import org.apache.jena.shex.ShexShapes;
+import org.apache.jena.shex.expressions.PLib;
+import org.apache.jena.shex.parser.ShexParseException;
 import org.apache.jena.sys.JenaSystem;
-import shex.Shex;
-import shex.ShexShapes;
-import shex.expressions.PLib;
-import shex.parser.ShexParseException;
 
 /** ShEx parsing.
  * <p>

@@ -22,20 +22,16 @@ public class NotesShex {
     // Grammar. Check file for ToDo and other notes.
     // Test Suite
 
-    // [ ] ShexMap
-    // [ ] Extension "MAP{}"
+    // [x] ShexMap
+    //     JSON form (required by tests)
     // [x] Syntax tests - convert to runner. includes and excludes.
-    //     Tidy up (minor)
-    // [ ] Validate with ShexMap
-    // [ ] Unlink from SHACL :: Plib
-    // [ ] Map tests
+    // [ ] Unlink from SHACL :: PLib
     // [ ] resync tests
-    // [ ] V -> Shex.valdiation
 
+    // ShexParser map operation to Shex.*
 
     // [ ] Better imports - keep individual read in ShexShapes.
     //     Parse to a list of ShexShapes, filter starts out when making the closure. Avoid churning maps.
-    //     Create for import (no "=start=")
     //     Fix up PLib.print
 
     // == Part 1
@@ -53,6 +49,7 @@ public class NotesShex {
 
     // == Part 2
 
+    // [ ] Extension "MAP{}" -- including via imports. TARGET { ... }
     // [ ] Compact writer
     // [ ] ShexJ, ShexR
 

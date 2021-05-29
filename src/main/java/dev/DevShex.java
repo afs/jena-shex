@@ -18,35 +18,33 @@
 
 package dev;
 
-import static shex.expressions.PLib.printShapes;
+import static org.apache.jena.shex.expressions.PLib.printShapes;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.function.Supplier;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
-import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.shex.*;
+import org.apache.jena.shex.expressions.ShapeEval;
+import org.apache.jena.shex.parser.ShExCompactParser;
+import org.apache.jena.shex.parser.ShexParser;
+import org.apache.jena.shex.sys.ValidationContext;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sys.JenaSystem;
-import shex.*;
-import shex.expressions.ShapeEval;
-import shex.parser.ShExCompactParser;
-import shex.parser.ShexParser;
 
 public class DevShex {
 
@@ -140,30 +138,11 @@ public class DevShex {
     }
 
     private static void validate(Graph graph, ShexShapes shapes, ShexShapeMap shapeMap) {
-        shapeMap.entries().forEach(e->{
-            System.out.println("MAP: "+e);
-            List<Node> focusNodes;
-            if ( e.node != null ) {
-                focusNodes = List.of(e.node);
-            } else if ( e.pattern != null ) {
-                Triple t = e.asMatcher();
-                focusNodes = graph.find(t).mapWith(triple-> (e.isSubjectFocus()?triple.getSubject():triple.getObject()) ).toList();
-            } else
-                throw new InternalErrorException("Shex shape mapping has no node and no pattern");
-            if ( focusNodes.isEmpty() ) {
-                System.out.println("Nothing to do");
-                return;
-            }
-            for ( Node focus : focusNodes ) {
-                System.out.println("Validate: "+focus);
-                ValidationReport report = V.validate(graph, shapes, e.shapeExprLabel, focus);
-                if ( report.conforms() )
-                    System.out.println("OK");
-                else {
-                    report.getEntries().forEach(System.out::println);
-                }
-            }
-        });
+        ValidationReport report = ShexValidation.validate(graph, shapes, shapeMap);
+        if ( report.conforms() )
+            System.out.println("OK");
+        else
+            report.getEntries().forEach(System.out::println);
     }
 
 //    private static void partition() {
@@ -197,7 +176,7 @@ public class DevShex {
         Node testShape = SSE.parseNode("<http://example/s3>");
         ShexShape shape = shapes.get(testShape);
         System.out.println("---- Validation");
-        ValidationReport report = V.validate(graph, shapes, shape, focus);
+        ValidationReport report = ShexValidation.validate(graph, shapes, shape, focus);
         if ( report.conforms() )
             System.out.println("OK");
         else {
@@ -290,7 +269,7 @@ public class DevShex {
 
         boolean b = ShapeEval.matchesShapeExpr(vCxt, shape.getShapeExpression(), focus);
         System.out.println(b);
-        vCxt.getReportEntries().forEach(e->System.out.println(e));
+        vCxt.getReportItems().forEach(e->System.out.println(e));
 
     }
 

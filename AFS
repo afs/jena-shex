@@ -1,54 +1,23 @@
 ==== SHACL vs SheX
 
 SHACL ++
-    Reporting
-    
-Node contraints
-
-SHACL ++
-    better language tag handling.
-      sh:uniqueLang
+    sh:uniqueLang
 
 ShEx ++
     better value handling.
       sets and exclusions.
     enumerations
     
-ShEx ++
-    Semantic annotations
-    Annotations
-    (SHACL/RDF - both for free)
-
-SHACL ++ Not compact
-    Pair-wise
-
-SHACL ++
-    ignored and CLOSED
+SHACL -- No complete compact
 
 ShEx ?? ShapeMap
 
 SHACL ?? has sh:class -> Hook to RDFS?
 
-ShEx / SHACL
-    ShapeMap vs Targets
-    Targets associate shape with class
-    (ShEx - in shape map)
-
 SHACL-AF: ShEx devolves to shape map.
     Custom Targets
         3.1 SPARQL-based Targets
         3.2 SPARQL-based Target Types
-
-
-== Parser
-  Check grammar
-  Token order -> align to grammar.
-  Conflict adjustments
-
-https://github.com/shexSpec/spec
-https://github.com/shexSpec/shexTest
-
-https://github.com/shexSpec/grammar/blob/master/ShExDoc.g4
 
 REPEAT_RANGE
   Why "{}"?
@@ -61,16 +30,12 @@ REPEAT_RANGE
 
 anyExclusion need fixing.
 
-jjdoc
-
-Tests:
-https://github.com/shexSpec/shexTest/
-
 == Grammar
 
-1. Cardinality : why "{ }" when [ ] is maths notation.
-2. REPEAT_RANGE  Why a token? (ambiguity!) No WS.
-3. LANG_STRING Why a token? (minor)
+Cardinality => repeat
+
+REPEAT_RANGE  Why a token? (ambiguity!) No WS.
+LANG_STRING -- token
 
 4/ iriRange (spec wrong)
 
@@ -82,36 +47,7 @@ https://github.com/shexSpec/shexTest/
 
 6/ tripleExpression (shift/reduce) (rewrite)
 
-
-7a/ ?? Rename tripleExpression as tripleExpressionGroup
-// Then an OR-AND hierarchy with trailing AND-empty.
-
-"Clause" isa   SEMI_COLON cionjunctive block.
-7b/ tripleExpressionClause - remove recurision
-
-8/ ShapeAtom - why not allow literals-as-subject
-
-// void multiElementGroup() : {}
-// {
-//   	unaryTripleExpr()
-//      (LOOKAHEAD(2) <SEMI_COLON> unaryTripleExpr())+
-//      (<SEMI_COLON>)?
-// }
-better:
-// void multiElementGroup() : {}
-// {
-//   	unaryTripleExpr()
-//      (<SEMI_COLON> (unaryTripleExpr())?)*
-// }
-
 9/ No use of shapeAtomNoRef
-
-10/ { :p {0,6} } for cardinality (looks like shape but it's a token.).
-
-11/ WS in cardinality. (COMMA distinguishes from next shape)
-    [*] [?] [+] ?
-
-12/ Cardinality [] more common - use $..$ for value sets (don't nest?)
 
 13/ Ambiguity:
 
@@ -141,11 +77,6 @@ so allowing:
 
 [ . - 123 - <iri> ]
 
-And then "iriRange" can include the iriExclusion (iriExclusion is used only once so inline it).
-
-Rename:
-"exclusion" => "valueExclusion"
-
 14b/ Value MINUS
 Better as "^"?
 
@@ -160,20 +91,8 @@ Std math notation is "[", inclusive and "(" exclusive. "[5,]" mean 5->infinity
 
 and change valueSet.
 
-16/ Why the "."
-
-{ :predicate  {0,1} }
-
 17/ Negative syntax test for LENGTH LENGTH but the grammar allows it.
 (of course it may get lost in the JSON but that's not grammar but then if LENGTH 10 LENGTH 20 - which is right?
-
-18/
--- 1unknowndatatypeMaxInclusive
-<http://a.example/IssueShape> {
-   <http://a.example/p1> <http://a.example/dt1> MAXINCLUSIVE 5
-}
-
-Not a grammar error. (derived types?)
 
 19/ true~
 
@@ -191,52 +110,16 @@ Stray:
 
 == 5.2 Validation Definition
 
-A/
-satisfies(n, s, G, Sch, completeTyping(G, Sch)).
-
-Presumably sl = shape label -> names s
-??
-This forward reference style is unclear.
-
-B/
-a typing is a set of pairs of the form (n, s) where n is a node in G and s is a Shape that appears in some shape expression in the shapes mapping of Sch.
-
-What is "in some shape expression"? If a shape expression is used/nested
-
-:S { :p xsd:integer }
-
-then triple constraint(:p, xsd:integer) is a shape expression (by grammar).
-
-If :S is in the shape map, then is the triple constraint (n, tc) in the typing?
-
-C/
-"negiation"
-
-D/
-
 === TripleConstraint.
-
-T is a set of one triple, how can it have a cardinality of 2?
 
 :Shape { :predicate LITERAL {2} }
 
 => tripleConstraint with tripleExpr LITERAL and min=max=2.
 matches for tripleConstraint takes a T that is a singleton.
 
-But.
-
 
 """
 expr has a cardinality of min and/or max not equal to 1, where a max of -1 is treated as unbounded, and T can be partitioned into k subsets T1, T2,…Tk such that min ≤ k ≤ max and for each Tn, matches(Tn, expr, m) by the remaining rules in this list.
 """
 
-so why not 6 :predicate in 3 groups of 2?
-
-
-(no EachOf, 
-
-
-
-expr has a cardinality of min and/or max not equal to 1, where a max of -1 is treated as unbounded, and
-
-SPartition rule for cardiality need to also restrict to singleton.
+"expr has a cardinality" - exprs do not have a "cardinality"
