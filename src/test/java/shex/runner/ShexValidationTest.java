@@ -76,6 +76,9 @@ public class ShexValidationTest implements Runnable {
         try {
             if ( ShexTests.dumpTest )
                 describeTest();
+            if ( SysShex.startNode.equals(shape) ) {
+                if ( ! shapes.hasShape(shape) ) {}
+            }
 
             ValidationReport report = V.validate(graph, shapes, shape, focus);
             boolean b = (positiveTest == report.conforms());

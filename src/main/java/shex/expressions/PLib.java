@@ -27,9 +27,14 @@ import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.vocabulary.XSD;
 import shex.Shex;
 import shex.ShexShapes;
+import shex.SysShex;
 
 public class PLib {
     public static String displayStr(Node n) {
+        if ( n == SysShex.focusNode )
+            return "FOCUS";
+        if ( n == SysShex.startNode )
+            return "START";
         return ShLib.displayStr(n);
     }
 

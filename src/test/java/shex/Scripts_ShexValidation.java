@@ -18,8 +18,8 @@
 
 package shex;
 
-import org.apache.jena.arq.junit.manifest.Label;
 import org.apache.jena.arq.junit.manifest.Manifests;
+import org.apache.jena.arq.junit.runners.Label;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.riot.SysRIOT;
 import org.junit.AfterClass;
@@ -31,13 +31,9 @@ import shex.runner.RunnerShex;
 @Label("Shex")
 @Manifests({
     "files/spec/validation/manifest.ttl"
-
-// Are these tests? (no mf:action)
-// Need special handling.
-//    ,"files/spec/schemas/manifest.ttl"
 })
 
-// Syntax are:
+// Syntax are file files in:
 // TestShexSyntax:    "files/spec/syntax"
 // TestShexBadSyntax: "files/spec/negativeSyntax"
 

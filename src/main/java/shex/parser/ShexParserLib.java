@@ -124,16 +124,15 @@ public class ShexParserLib {
                 case 'f': ch3 = '\f' ;  break ;
                 case '\'': ch3 = '\'' ; break ;
                 case '\"': ch3 = '\"' ; break ;
-                case '\\': ch3 = '\\' ; break ;
 
-                case '/':
+                case '/': case '-':
                     ch3 = ch2;
                     break ;
-                //case '-':??
-                //
+
                 // Regex metacharacters
+                case '\\':
                 case  '|': case '.' : case '?': case '*': case '+':
-                case '(': case ')': case '{': case '}': case '$': case '-':
+                case '(': case ')': case '{': case '}': case '$':
                 case '[': case ']': case '^':
                     sb.append('\\');
                     ch3 = ch2;

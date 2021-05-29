@@ -18,17 +18,15 @@
 
 package shex;
 
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.jena.arq.junit.runners.Directories;
+import org.apache.jena.arq.junit.runners.Label;
+import org.junit.runner.RunWith;
+import shex.runner.RunnerShexSyntax;
 
-public class SysShex {
-    public static String URI = "org.apache.jena.shex";
-    public static Logger log = LoggerFactory.getLogger("org.apache.jena.shex.shex");
+@RunWith(RunnerShexSyntax.class)
+@Label("Shex Syntax")
+@Directories({
+    "files/spec/syntax"
+})
 
-    // Node used for a START shape.
-    public static Node startNode = NodeFactory.createExt("=start=");
-    // Node used for FOCUS in a shape map.
-    public static Node focusNode = NodeFactory.createExt("=focus=");
-}
+public class Scripts_ShexSyntax {}

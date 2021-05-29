@@ -90,7 +90,7 @@ public class StrRegexConstraint extends NodeConstraint {
 
     @Override
     public String toString() {
-        if ( flagsStr != null )
+        if ( flagsStr != null && ! flagsStr.isEmpty() )
             return "Pattern["+patternString+"("+flagsStr+")]";
         return "Pattern["+patternString+"]";
     }

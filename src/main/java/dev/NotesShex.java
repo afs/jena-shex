@@ -23,61 +23,48 @@ public class NotesShex {
     // Test Suite
 
     // [ ] ShexMap
-    // [ ] Move EachOf prework to class.
-    // [ ] Improve ShapeEval.
+    // [ ] Extension "MAP{}"
+    // [x] Syntax tests - convert to runner. includes and excludes.
+    //     Tidy up (minor)
+    // [ ] Validate with ShexMap
+    // [ ] Unlink from SHACL :: Plib
+    // [ ] Map tests
+    // [ ] resync tests
+    // [ ] V -> Shex.valdiation
+
+
     // [ ] Better imports - keep individual read in ShexShapes.
+    //     Parse to a list of ShexShapes, filter starts out when making the closure. Avoid churning maps.
     //     Create for import (no "=start=")
     //     Fix up PLib.print
 
+    // == Part 1
+
+    // [ ] ShapesMap
+    // [ ] Shape validation report
+    // [ ] Annotations
+    // [ ] Semantic Actions
+
     // [ ] Schema requirements (5.7), including only one START
     //     START - and check only one.
-    // [ ] Check no dependency on "if ( .conforms)"
 
-    // [ ] Matches Set<Triple> calc in?
-    // [ ] tripleConstraint on one triple - boolean return.
-    //     Caller assembles
+    // "Note that ShEx uses a partitioning strategy to find a solution whereby
+    // triples in the data are assigned to triple constraints in the schema."
 
-    // "Note that ShEx uses a partitioning strategy to find a solution whereby triples in the data are assigned to triple constraints in the schema."
+    // == Part 2
+
+    // [ ] Compact writer
+    // [ ] ShexJ, ShexR
 
     // [ ] Validation debug
-    // [x] NOT is wrong. Only flags for last - related to next?
-    // [x] Does ShapeAND reverse order due to stack? TripleExpressionEachOf?
     // [ ] test for XSDFuncOp.isNumberic??
     // [ ] test for ShexParserlib.unescapeShexRegex
 
-    // [ ] ShapesMap
-    // [ ] ShapeReport
-    // [ ] START
 
-    // *** Fix parser around TripleExpression.
-    // [-]  Shape (inlineShapeDefinition) and ShexShape (shapeExprDecl)
-    //      Shape -> TripleExpression;
-    //      ShexShape -> ShapeExpression
-    // [ ] Values "Current shape"
-
-    // Convert TestShexBadSyntax and testShesSyntax to runners?
-    // "files/spec/negativeSyntax"
-    // "files/spec/syntax"
-
-    // [ ] AST
-    // [ ] Common triple expression - cardinality, semActs, annotation.
-    // [ ] TripleConstraint
-
-    // **
-
-    // [ ] Better print of ADD,OR print index?
-
-
-    // [ ] ShapeMap
+    // https://github.com/shexSpec/shex/wiki/Shape-Validation-Algorithm
+    // https://github.com/hsolbrig/PyShEx/blob/master/pyshex/shape_expressions_language/p5_5_shapes_and_triple_expressions.py
 
     // [ ] Unicode [\uD800-\uDB7F][\uDC00-\uDFFF]
-
-    // [ ] Value Sets
-    // [ ] TripleConstraint printing.
-    // [ ] Consolidate NumberFacet. NumLength, NumRange to avoid NodeValue creation
-    // [ ] Consolidate String facet. minlength to avoid NodeFunctions.str(n); (less important)
-
-    // [ ] ShapeMap parser (same file, different entry point : shex.jj)
 
     // JUnit5? @TestFactory
 

@@ -47,6 +47,7 @@ PARSER_BEGIN(ShExJavacc)
 
 package shex.parser.javacc;
 
+import static shex.SysShex.*;
 import shex.parser.*;
 import shex.expressions.*;
 import org.apache.jena.graph.*;
@@ -57,7 +58,7 @@ public class ShExJavacc extends ShExCompactParser
 {}
 PARSER_END(ShExJavacc)
 
-void Unit(): { }
+void UnitShapes(): { }
 {
     (<BOM>)?
     shexDoc()
@@ -780,6 +781,83 @@ String IRIREF() : { Token t ; }
   { return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ; }
 }
 
+// ---- Shape Map
+
+void UnitShapeMap(): { }
+{
+    (<BOM>)?
+    shexMapDoc()
+    <EOF>
+}
+
+void shexMapDoc() : {}
+{
+    // Extension
+    ( directive() )*
+    shapeMap()
+}
+
+void shapeMap() : {}
+{
+    shapeAssociation()
+    //(<COMMA> shapeAssociation() )*
+    ((<COMMA>)? shapeAssociation())*
+}
+
+void shapeAssociation() : { Node n = null ; Triple t = null ; Node label; }
+{
+    //nodeSelector()
+    // Inline
+    ( n = objectTerm() | t = triplePattern() )
+    label = shapeLabel()
+    { association(n, t, label); }
+    // Extension.
+    (<DOT>)?
+}
+
+// void nodeSelector() : { Node n; Triple t; }
+// {
+//   ( n = objectTerm() { association(n); }
+//   | t = triplePattern() { association(t); }
+//   )
+// }
+
+Node subjectTerm() : { String s; }
+{
+    ( s = iri()
+      { return createURI(s, token.beginLine, token.beginColumn); }
+    | s = blankNode()
+      { return createBNode(s, token.beginLine, token.beginColumn); }
+    )
+}
+
+Node objectTerm() : { Node n; }
+{
+    ( n = subjectTerm() | n = literal() )
+    { return n ; }
+}
+
+Triple triplePattern() : { Node s = null; Node p = null ; Node o = null ; Token tok; }
+{
+  tok = <LBRACE>
+  (
+    <FOCUS> { s = focusNode; } p = predicate() ( o = objectTerm() | <USCORE> { o = Node.ANY; } )
+  |
+    ( s = subjectTerm() | <USCORE> { s = Node.ANY; } ) p = predicate() <FOCUS> { o = focusNode;}
+  )
+  <RBRACE>
+  { return createTriple(s, p, o, tok.beginLine, tok.beginColumn); }
+}
+
+Node shapeLabel() : { String x; }
+{
+  ( <AT>  ( x = iri() { return createURI(x, token.beginLine, token.beginColumn); }
+          | <START> { return startNode; }
+          )
+  ) | <ATSTART> { return startNode; }
+}
+
+// ----
 
 SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
 
@@ -827,6 +905,7 @@ TOKEN [IGNORE_CASE] :
 | <SHAPE            : "shape">
 | <START            : "start">
 | <EXTERNAL         : "external">
+| <FOCUS            : "focus">
 
 | <NOT              : "not">
 | <OR               : "or" >
@@ -876,6 +955,8 @@ TOKEN [IGNORE_CASE] :
 | <RBRACKET            : "]" >
 | <PERCENT_CHAR        : "%" >
 | <COMMA               : "," >
+| <USCORE              : "_" >
+
 // Break PNAME_NS
 // | <COLON               : ":" >
 | <SEMI_COLON          : ";" >
@@ -896,6 +977,8 @@ TOKEN [IGNORE_CASE] :
 
 | <ATPNAME_NS          : <AT><PNAME_LN> >
 | <ATPNAME_LN          : <AT><PNAME_NS> >
+
+| <ATSTART             : <AT><START> >
 
 | <#QUOTE_3D: "\"\"\"">
 | <#QUOTE_3S: "'''">

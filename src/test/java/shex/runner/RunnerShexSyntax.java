@@ -16,9 +16,7 @@
  * limitations under the License.
  */
 
-package shex;
-
-import static org.junit.Assert.fail;
+package shex.runner;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -36,79 +34,68 @@ import java.util.function.BiPredicate;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import shex.parser.ShexParseException;
+import org.junit.runners.model.InitializationError;
+import shex.ShexShapes;
 import shex.parser.ShexParser;
 
-@RunWith(Parameterized.class)
-public class TestShexBadSyntax {
+public class RunnerShexSyntax extends AbstractRunnerFiles {
+    public RunnerShexSyntax(Class<? > klass) throws InitializationError {
+        super(klass, RunnerShexSyntax::makeShexBadSyntaxTest);
+    }
 
-    private static String DIR = "files/spec/negativeSyntax";
+    public static Runnable makeShexBadSyntaxTest(String filename) {
+        return ()->shapesFromFileBadSyntax(filename);
+    }
 
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> data = new ArrayList<>();
-        Path src = Paths.get(DIR);
+    @Override
+    protected List<String> getFiles(String directory) {
+        Path src = Paths.get(directory);
         BiPredicate<Path, BasicFileAttributes> predicate = (path,attr)->attr.isRegularFile() && path.toString().endsWith(".shex");
 
         Set<String> excludes = new HashSet<>();
-        //---- Exclusions
-
-        // -- Explicit inclusions
         Set<String> includes = new HashSet<>();
+
+        // Contains \ud800 (ill-formed surrogate pair)
+        excludes.add("1refbnode_with_spanning_PN_CHARS_BASE1.shex");
+
+        // Contains \u0d00 (ill-formed surrogate pair)
+        excludes.add("_all.shex");
+
+
+        List<String> files = new ArrayList<>();
 
         if ( includes.isEmpty() ) {
             try {
                 Files.find(src, 1, predicate)
-                .filter(p-> ! excludes.contains(p.getFileName().toString()))
-                .map(Path::toString)
-                .forEach(includes::add);
+                    .filter(p-> ! excludes.contains(p.getFileName().toString()))
+                    .sorted()
+                    .map(Path::toString)
+                    .forEach(files::add);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        // -- Make parameters
-        includes.forEach(fn->{
-                    Object[] testArgs = new Object[] {FileOps.basename(fn), fn};
-                    data.add(testArgs);
-                });
-        return data;
+//        // -- Make parameters
+//        includes.forEach(fn->files.add(fn));
+        return files;
     }
 
-    private String name;
-    private String path;
-
-    public TestShexBadSyntax(String name, String path) {
-        this.name = name ;
-        this.path = path;
-    }
-
-    @Test public void test() {
-        ShexShapes shapes = shapesFromFile(path.toString());
-    }
-
-    public static ShexShapes shapesFromFile(String filename) {
+    public static ShexShapes shapesFromFileBadSyntax(String filename) {
         String str = IO.readWholeFileAsUTF8(filename);
         InputStream input = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
         try {
             ShexShapes shapes = ShexParser.parse(input, null);
+            return shapes;
+        } catch (RuntimeException ex) {
             System.out.print("-- ");
             System.out.println(FileOps.basename(filename));
+            if ( ex.getMessage() != null )
+                System.out.println(ex.getMessage());
+            else
+                System.out.println(ex.getClass().getSimpleName());
             System.out.println(str);
-            fail("Parsed negative syntax test");
-            return shapes;
-        } catch (ShexParseException ex) {
-            return null;
-//            System.out.print("-- ");
-//            System.out.println(FileOps.basename(filename));
-//            System.out.println(ex.getMessage());
-//            System.out.println(str);
-//            throw ex;
+            throw ex;
         }
     }
-
 }

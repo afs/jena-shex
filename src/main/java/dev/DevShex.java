@@ -20,14 +20,20 @@ package dev;
 
 import static shex.expressions.PLib.printShapes;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RIOT;
@@ -39,8 +45,8 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sys.JenaSystem;
 import shex.*;
 import shex.expressions.ShapeEval;
-import shex.expressions.ShapeEvalEachOf;
 import shex.parser.ShExCompactParser;
+import shex.parser.ShexParser;
 
 public class DevShex {
 
@@ -69,15 +75,95 @@ public class DevShex {
             );
 
     public static void main(String[] args) {
+//        String s = StrUtils.strjoinNL
+//                ("<http://data.example/#n1> @ <http://data.example/#S2>"
+//                ,"\"chat\"@en-fr@<http://...S3>"
+//                ,"{FOCUS a <http://schema.example/Some/Type>}@START"
+//                ,"{_ <http://...p3> FOCUS}@START"
+//                 );
+//        ShexShapeMap map = parseShapeMap(s);
+//        map.entries().forEach(System.out::println);
+//        System.exit(0);
+
         //partition();
 
-        parsePrint();
+        //parsePrint();
         //parsePrintFile("file:///home/afs/ASF/shapes/jena-shex/files/spec/schemas/2OneInclude1.shex");
         //parsePrintFile("file:///home/afs/ASF/shapes/jena-shex/files/spec/schemas/1NOTvs.shex");
-        ShapeEvalEachOf.DEBUG = true;
+        //ShapeEvalEachOf.DEBUG = true;
         //validate();
-        validate2();
+        //validate2();
         //validate_eric_wiki();
+        validateByMap();
+    }
+
+    private static void validateByMap() {
+        String s = StrUtils.strjoinNL
+                ("PREFIX : <http://example/>"
+                 ,":s @ :S1"
+//                 ,"\"chat\"@en-fr@<http://...S3>"
+                 ,"{FOCUS a <http://example/Type>} @ START"
+//                 ,"{_ <http://...p3> FOCUS}@START"
+                        );
+        String strShapes = StrUtils.strjoinNL
+                ("PREFIX : <http://example/>"
+                ,"START = @ :S2"
+                ,":S1 {"
+                ,"   :p1 LITERAL ;"
+                ,"}"
+                ,":S2 {"
+                ,"   :p1 . ;"
+                ,"}"
+                );
+
+        ShexShapes shapes = Shex.shapesFromString(strShapes);
+        printShapes(shapes);
+        Node focus = SSE.parseNode("<http://example/f1>");
+
+        Graph graph = GraphFactory.createDefaultGraph();
+        graph.add(SSE.parseTriple("(:s :p1 :xyz)"));
+        graph.add(SSE.parseTriple("(<http://example/f0> rdf:type :Type)"));
+        //graph.add(SSE.parseTriple("(<http://example/f1> rdfs:label 'def')"));
+        //graph.add(SSE.parseTriple("(<http://example/f1> :link _:b)"));
+        graph.add(SSE.parseTriple("(<http://example/f0> :p1 <http://example/x>)"));
+
+        shapes.getPrefixMap().forEach((p,u)->graph.getPrefixMapping().setNsPrefix(p, u));
+        System.out.println("---- Data");
+        RDFDataMgr.write(System.out, graph, RDFFormat.TURTLE_FLAT);
+
+        ShexShapeMap shapeMap = parseShapeMap(s);
+        //shapeMap.entries().forEach(System.out::println);
+        //ShexValidation.validate(graph, shapes, shapeMap);
+        validate(graph, shapes, shapeMap);
+        System.out.println("DONE");
+        System.exit(0);
+    }
+
+    private static void validate(Graph graph, ShexShapes shapes, ShexShapeMap shapeMap) {
+        shapeMap.entries().forEach(e->{
+            System.out.println("MAP: "+e);
+            List<Node> focusNodes;
+            if ( e.node != null ) {
+                focusNodes = List.of(e.node);
+            } else if ( e.pattern != null ) {
+                Triple t = e.asMatcher();
+                focusNodes = graph.find(t).mapWith(triple-> (e.isSubjectFocus()?triple.getSubject():triple.getObject()) ).toList();
+            } else
+                throw new InternalErrorException("Shex shape mapping has no node and no pattern");
+            if ( focusNodes.isEmpty() ) {
+                System.out.println("Nothing to do");
+                return;
+            }
+            for ( Node focus : focusNodes ) {
+                System.out.println("Validate: "+focus);
+                ValidationReport report = V.validate(graph, shapes, e.shapeExprLabel, focus);
+                if ( report.conforms() )
+                    System.out.println("OK");
+                else {
+                    report.getEntries().forEach(System.out::println);
+                }
+            }
+        });
     }
 
 //    private static void partition() {
@@ -253,6 +339,19 @@ public class DevShex {
         ShExCompactParser.DEBUG = debug;
         ShExCompactParser.DEBUG_PARSE = debugParse;
         return supplier.get();
+    }
+
+    private static ShexShapeMap parseShapeMap(String str) {
+        String str2 = PREFIXES_DEV +"\n" + str;
+        System.out.println("----");
+        System.out.print(str);
+        if ( !str.endsWith("\n") )
+            System.out.println();
+        System.out.println("----");
+
+        InputStream input = new ByteArrayInputStream(str2.getBytes(StandardCharsets.UTF_8));
+        ShexShapeMap shapeMap = ShexParser.parseShapesMap(input, null);
+        return shapeMap;
     }
 
     static String PREFIXES = StrUtils.strjoinNL

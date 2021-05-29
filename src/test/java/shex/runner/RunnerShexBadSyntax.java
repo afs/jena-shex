@@ -16,7 +16,9 @@
  * limitations under the License.
  */
 
-package shex;
+package shex.runner;
+
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -34,93 +36,69 @@ import java.util.function.BiPredicate;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.model.InitializationError;
+import shex.ShexShapes;
+import shex.parser.ShexParseException;
 import shex.parser.ShexParser;
 
-@RunWith(Parameterized.class)
-public class TestShexSyntax {
+public class RunnerShexBadSyntax extends AbstractRunnerFiles {
+    public RunnerShexBadSyntax(Class<? > klass) throws InitializationError {
+        super(klass, RunnerShexBadSyntax::makeShexSyntaxTest);
+    }
 
-    private static String DIR = "files/spec/syntax";
+    public static Runnable makeShexSyntaxTest(String filename) {
+        return ()->fileBadSyntax(filename);
+    }
 
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> data = new ArrayList<>();
-        Path src = Paths.get(DIR);
+    @Override
+    protected List<String> getFiles(String directory) {
+        Path src = Paths.get(directory);
         BiPredicate<Path, BasicFileAttributes> predicate = (path,attr)->attr.isRegularFile() && path.toString().endsWith(".shex");
 
         Set<String> excludes = new HashSet<>();
-        //---- Exclusions
-        // java does to support character classes \N (all numbers)
-        excludes.add("1literalPattern_with_all_meta.shex");
 
-        // Unclear. Breaks when fix for unicode escapes is applied.
-        // Is tgis because of the incompatible REGEX language choice?
-        excludes.add("1literalPattern_with_REGEXP_escapes_escaped.shex");
+        // Bad facets. Needs more work.
+        // [shex] post parse processing rules.
+//        excludes.add("1iriLength2.shex");
+//        excludes.add("1literalLength2.shex");
+//        excludes.add("1unknowndatatypeMaxInclusive.shex");
 
-        // Regex has a null (unicode codepoint 0000) which is illegal.
-        excludes.add("1literalPattern_with_ascii_boundaries.shex");
-
-
-        // Contains \ud800 (ill-formed surrogate pair)
-        excludes.add("1refbnode_with_spanning_PN_CHARS_BASE1.shex");
-
-        // Contains \u0d00 (ill-formed surrogate pair)
-        excludes.add("_all.shex");
         //---- Exclusions
 
         // -- Explicit inclusions
+        List<String> files = new ArrayList<>();
         Set<String> includes = new HashSet<>();
 
         if ( includes.isEmpty() ) {
             try {
                 Files.find(src, 1, predicate)
                 .filter(p-> ! excludes.contains(p.getFileName().toString()))
+                .sorted()
                 .map(Path::toString)
-                .forEach(includes::add);
+                .forEach(files::add);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        // -- Make parameters
-        includes.forEach(fn->{
-                    Object[] testArgs = new Object[] {FileOps.basename(fn), fn};
-                    data.add(testArgs);
-                });
-        return data;
+//        // -- Make parameters
+//        includes.forEach(fn->files.add(fn));
+        return files;
     }
 
-    private String name;
-    private String path;
-
-    public TestShexSyntax(String name, String path) {
-        this.name = name ;
-        this.path = path;
-    }
-
-    @Test public void test() {
-        ShexShapes shapes =  shapesFromFile(path.toString());
-    }
-
-    public static ShexShapes shapesFromFile(String filename) {
+    public static ShexShapes fileBadSyntax(String filename) {
         String str = IO.readWholeFileAsUTF8(filename);
         InputStream input = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
         try {
             ShexShapes shapes = ShexParser.parse(input, null);
-            return shapes;
-        } catch (RuntimeException ex) {
+            // Should not get here.
             System.out.print("-- ");
             System.out.println(FileOps.basename(filename));
-            if ( ex.getMessage() != null )
-                System.out.println(ex.getMessage());
-            else
-                System.out.println(ex.getClass().getSimpleName());
             System.out.println(str);
-            throw ex;
+            fail("Parsed negative syntax test");
+            return shapes;
+        } catch (ShexParseException ex) {
+            return null;
         }
     }
-
 }

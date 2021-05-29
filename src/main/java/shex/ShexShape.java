@@ -54,7 +54,10 @@ public class ShexShape {
 
     public void print(IndentedWriter iOut, NodeFormatter nFmt) {
         iOut.printf("Shape: ");
-        nFmt.format(iOut, getLabel());
+        if ( SysShex.startNode.equals(getLabel()) )
+            iOut.print("START");
+        else
+            nFmt.format(iOut, getLabel());
         iOut.println();
         iOut.incIndent();
         // ShapeExpressionAND:

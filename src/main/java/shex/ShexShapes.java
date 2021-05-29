@@ -41,11 +41,12 @@ public class ShexShapes {
     }
 
     // Import - no start.
-    // [shex] Better way?
     public ShexShapes asImport() {
-        ShexShape x = shapesMap.remove(SysShex.startNode);
-        shapes.remove(x);
-        return this;
+        // Remove START.
+        List<ShexShape> shapes2 = shapes.stream().filter(s->
+            ! SysShex.startNode.equals(s.getLabel())
+        ).collect(Collectors.toList());
+        return new ShexShapes(this.prefixes, shapes2, null);
     }
 
     private void addShape(ShexShape shape) {
@@ -68,7 +69,10 @@ public class ShexShapes {
         return imports;
     }
 
-
+    /**
+     * Import form of this ShexShape collection.
+     * This involves removing the START reference.
+     */
     public ShexShapes withImports() {
         if ( shapesWithImports != null )
             return shapesWithImports;

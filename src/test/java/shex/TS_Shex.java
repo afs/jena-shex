@@ -23,9 +23,10 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestShexSyntax.class,
-    TestShexBadSyntax.class,
-    //Scripts_ShexValidation.class
+    Scripts_ShexSyntax.class,
+    Scripts_ShexBadSyntax.class,
+    Scripts_ShexValidation.class,
+    TestShexShapeMapSyntax.class
 })
 
 public class TS_Shex {

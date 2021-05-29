@@ -48,26 +48,10 @@ public class ShexTests {
 
         // --- Exclusions - development
 
-        // ---- Exclusions - check
-        // [shex] Check these again later.
-        excludes.add("#1literalPattern_with_REGEXP_escapes_pass");
-        excludes.add("#1literalPattern_with_REGEXP_escapes_bare_pass");
-        excludes.add("#1literalPattern_with_REGEXP_escapes_pass_bare");
-        excludes.add("#1literalPattern_with_REGEXP_escapes_bare_pass_escapes");
 
-        // Unclear. Breaks when fix for unicode escapes is applied.
-        // Is this because of the incompatible REGEX language choice?
-        excludes.add("#1literalPattern_with_REGEXP_escapes_escaped_pass");
-        excludes.add("#1literalPattern_with_REGEXP_escapes_escaped_fail_escapes");
-        excludes.add("#1literalPattern_with_REGEXP_escapes_escaped_fail_escapes_bare");
-
-        // ?? Contains \u0d00 (ill-formed surrogate pair)
-        excludes.add("#1literalPattern_with_all_meta_pass");
-        excludes.add("#1literalPattern_with_all_meta_pass-NA");
-
-        // ---- Exclusions - never
+        // ---- Exclusions
+        // BNodes tests we don't support (tesing labels, cross file references)
         excludes.addAll(bNodeLabeltests());
-        // Focus bnode - assumes same-label data and manifest.
 
         // Syntax exclusions - may be needed here.
         //    //---- Exclusions

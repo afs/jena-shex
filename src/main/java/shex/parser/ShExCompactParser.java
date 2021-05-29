@@ -30,12 +30,12 @@ import org.apache.jena.atlas.lib.EscapeStr;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.lang.extra.LangParserBase;
 import org.apache.jena.riot.lang.extra.LangParserLib;
-import shex.ShexShape;
-import shex.ShexShapes;
+import shex.*;
 import shex.expressions.*;
 
 /** ShExCompactParser */
@@ -112,9 +112,9 @@ public class ShExCompactParser extends LangParserBase {
 
     // -- Parser
 
-    public void parseStart() { }
+    public void parseShapesStart() { }
 
-    public ShexShapes parseFinish() {
+    public ShexShapes parseShapesFinish() {
         // XXX Bind/check refs.
         // Check stacks empty.
         if ( currentShexShape != null )
@@ -166,7 +166,7 @@ public class ShExCompactParser extends LangParserBase {
     protected void startStartClause() {
         start("StartClause");
         // [shex] Constant
-        currentShexShape = new ShexShape(NodeFactory.createLiteral("=start="));
+        currentShexShape = new ShexShape(SysShex.startNode);
         startShapeExpressionTop();
     }
 
@@ -822,4 +822,28 @@ public class ShExCompactParser extends LangParserBase {
 
     protected int startInlineShapeAtom() { return startShapeAtom(INLINE); }
     protected void finishInlineShapeAtom(int idx) { finishShapeAtom(INLINE, idx); }
+
+    // ---- Shex Shape map
+
+    private List<ShexShapeAssociation> associations = new ArrayList<>();
+
+    public void parseShapeMapStart() {}
+
+    public ShexShapeMap parseShapeMapFinish() {
+        return new ShexShapeMap(associations);
+    }
+
+    protected Triple createTriple(Node s, Node p, Node o, int line, int column) {
+        s = nullToAny(s);
+        p = nullToAny(p);
+        o = nullToAny(o);
+        return Triple.create(s, p, o);
+    }
+
+    protected void association(Node n, Triple t, Node label) {
+        ShexShapeAssociation assoc = new ShexShapeAssociation(n, t, label);
+        associations.add(assoc);
+    }
+
+    private static Node nullToAny( Node n ) { return n == null ? Node.ANY : n; }
 }

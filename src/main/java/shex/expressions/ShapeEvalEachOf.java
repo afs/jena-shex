@@ -29,7 +29,7 @@ import shex.ValidationContext;
 
 public
 /*package*/ class ShapeEvalEachOf {
-    // Sufficiently large and complex so separated from ShaclEval.
+    // Sufficiently large and complex so separated from ShapeEval.
 
     public static boolean DEBUG = false;
 
@@ -47,18 +47,8 @@ public
             #       Case 4: predicate occurs in two or more expressions and at least one of the referenced expressions
          */
 
-        /*
-         *
-         */
-
-        if ( DEBUG ) {
-            System.out.println("** matchesEachOf");
-            eachOf.print();
-        }
-
         // ---- Preparation
-        // for each
-        // This can be done once on parsing.
+        // This can be done once on parsing except that imports must have been done.
         // Unused: List<Set<Node>> exprIdxToPredicates = new ArrayList<>();
 
         // We use indexing for expressions because a triple expression may occur twice in the list.
@@ -75,7 +65,6 @@ public
         }
         // -- end preparation.
 
-        // --
         List<List<Set<Triple>>> partitions = partition(matchables, tripleExprs, /*exprIdxToPredicates,*/ predicateToTripleExprs);
         if ( DEBUG ) {
             if ( partitions.isEmpty() ) {
@@ -108,7 +97,6 @@ public
             if ( success )
                 return true;
         }
-
         return false;
     }
 

@@ -18,17 +18,20 @@
 
 package shex;
 
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class SysShex {
-    public static String URI = "org.apache.jena.shex";
-    public static Logger log = LoggerFactory.getLogger("org.apache.jena.shex.shex");
+public class ShexShapeMap {
 
-    // Node used for a START shape.
-    public static Node startNode = NodeFactory.createExt("=start=");
-    // Node used for FOCUS in a shape map.
-    public static Node focusNode = NodeFactory.createExt("=focus=");
+    //associations.forEach(System.out::println);
+    private final List<ShexShapeAssociation> associations;
+
+    public ShexShapeMap(List<ShexShapeAssociation> associations) {
+        this.associations = new ArrayList<>(associations);
+    }
+
+    public List<ShexShapeAssociation> entries() {
+        return Collections.unmodifiableList(associations);
+    }
 }
