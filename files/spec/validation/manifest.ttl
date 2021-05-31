@@ -5,7 +5,7 @@
 #  Note that incremental search opens leaves for the duration of the search.
 
 # prefixes
-##@base <https://raw.githubusercontent.com/shexSpec/shexTest/master/validation/manifest> .
+## @base <https://raw.githubusercontent.com/shexSpec/shexTest/master/validation/manifest> .
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
@@ -1211,37 +1211,37 @@
         <#1NOTRefOR1dot_pass-other>
 
 ## shape extern
-## 
-##         <#shapeExtern_pass>
-##         <#shapeExtern_fail>
-##         <#shapeExternRef_pass>
-##         <#shapeExternRef_fail>
-## 
+
+        <#shapeExtern_pass>
+        <#shapeExtern_fail>
+        <#shapeExternRef_pass>
+        <#shapeExternRef_fail>
+
 ## relative IRIs
 
         <#1dot-relative_pass-short-shape>
         <#1dot-relative_pass-relative-shape>
-## 
-## ## manual schemas
-##         <#false-lead-excluding-value-shape>
-##         <#nPlus1>
-##         # <#nPlus1-greedy_fail>
-##         <#nPlus1-greedy-rewrite>
-##         <#skipped>
-##         <#open2Eachdotclosecard25c1dot>
-##         <#2Eachdot>
-##         <#PstarT>
-##         # <#PstarT-greedy>
-##         <#PTstar>
-##         # <#PTstar-greedy-fail>
-##         <#PTstar-greedy-rewrite>
-##         <#PstarTstar>
-##         <#P2T2>
-## 
-## ## error reporting
-##         <#1dot_fail-empty-err>
-##         <#2dot_fail-empty-err>
-## 
+
+## manual schemas
+        <#false-lead-excluding-value-shape>
+        <#nPlus1>
+        # <#nPlus1-greedy_fail>
+        <#nPlus1-greedy-rewrite>
+        <#skipped>
+        <#open2Eachdotclosecard25c1dot>
+        <#2Eachdot>
+        <#PstarT>
+        # <#PstarT-greedy>
+        <#PTstar>
+        # <#PTstar-greedy-fail>
+        <#PTstar-greedy-rewrite>
+        <#PstarTstar>
+        <#P2T2>
+
+## error reporting
+        <#1dot_fail-empty-err>
+        <#2dot_fail-empty-err>
+
 ## imports
 ###  shape reference
         <#2RefS1-IS2>
@@ -1266,11 +1266,11 @@
         <#1valExprRef-IV1_pass-lit-equal>
         <#1valExprRefbnode-IV1_fail-lit-short>
         <#1valExprRefbnode-IV1_pass-lit-equal>
-## 
-## ###  include (ref to triple expression)
-##         <#2EachInclude1-IS2_pass>
-## 
-##  # could steal from: <#2EachInclude1-after_pass> <#2OneInclude1_pass> <#2OneInclude1-after_pass>
+
+###  include (ref to triple expression)
+        <#2EachInclude1-IS2_pass>
+
+ # could steal from: <#2EachInclude1-after_pass> <#2OneInclude1_pass> <#2OneInclude1-after_pass>
 
 ## lists
 
