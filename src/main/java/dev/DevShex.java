@@ -18,8 +18,6 @@
 
 package dev;
 
-import static org.apache.jena.shex.expressions.PLib.printShapes;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +29,7 @@ import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RIOT;
@@ -38,7 +37,7 @@ import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shex.*;
-import org.apache.jena.shex.expressions.ShapeEval;
+import org.apache.jena.shex.eval.ShapeEval;
 import org.apache.jena.shex.parser.ShExCompactParser;
 import org.apache.jena.shex.parser.ShexParser;
 import org.apache.jena.shex.sys.ValidationContext;
@@ -56,23 +55,14 @@ public class DevShex {
 
     static String strParserTest = StrUtils.strjoinNL
             (""
-             ,"IMPORT <http://foo/>"
-             ,"PREFIX files: <http://host/files#>"
-             ,"IMPORT files:other"
-             //2OneInclude1.shex
-//             ,"<http://all.example/S1> {"
-//             ,"    &<http://all.example/S2e>"
-//             ,"  }"
-//             ,"  <http://all.example/S2> {"
-//             ,"    $<http://all.example/S2e> <http://all.example/p1> ."
-//             ,"  }"
-
              ,"<http://ex/S> {"
-             ," <http://all.example/p1> LITERAL /^abc/ ;"
+             ," <http://all.example/p1> LITERAL LENGTH 5 LENGTH 6"
              ,"}"
             );
 
     public static void main(String[] args) {
+        runOne();
+        System.exit(0);
 //        String s = StrUtils.strjoinNL
 //                ("<http://data.example/#n1> @ <http://data.example/#S2>"
 //                ,"\"chat\"@en-fr@<http://...S3>"
@@ -85,14 +75,66 @@ public class DevShex {
 
         //partition();
 
-        //parsePrint();
+        parsePrint();
         //parsePrintFile("file:///home/afs/ASF/shapes/jena-shex/files/spec/schemas/2OneInclude1.shex");
         //parsePrintFile("file:///home/afs/ASF/shapes/jena-shex/files/spec/schemas/1NOTvs.shex");
         //ShapeEvalEachOf.DEBUG = true;
         //validate();
         //validate2();
         //validate_eric_wiki();
-        validateByMap();
+        //validateByMap();
+    }
+
+    public static void runOne() {
+
+//        Schema:   file:///home/afs/ASF/shapes/jena-shex/files/spec/validation/nPlus1.shex
+//            Data:     file:///home/afs/ASF/shapes/jena-shex/files/spec/validation/nPlus1.ttl
+//            Shape:    <http://a.example.org/S>
+//            Focus:    <file:///home/afs/ASF/shapes/jena-shex/files/spec/validation/x>
+//            Positive: true
+
+
+
+        String fnShapes = "nPlus1.shex";
+        String fnData = "nPlus1.ttl";
+
+//        Node shapeRef = SSE.parseNode("<http://a.example.org/S>");
+//        Node focus = SSE.parseNode("<file:///home/afs/ASF/shapes/jena-shex/files/spec/validation/x>");
+//
+//        String DIR = "file:///home/afs/ASF/shapes/jena-shex/files/spec/validation/";
+//        Graph data = RDFDataMgr.loadGraph(DIR+fnData);
+//        ShexShapes shapes = Shex.readShapes(DIR+fnShapes);
+
+        Graph data = SSE.parseGraph("(graph (:s :a '1') (:s :a '2'))");
+        data.getPrefixMapping().setNsPrefix("", "http://example/");
+
+
+        Node shapeRef = SSE.parseNode(":S");
+        Node focus = SSE.parseNode(":s");
+        String shape = StrUtils.strjoinNL
+                ("BASE <http://example/>"
+                 ,"PREFIX : <http://example/>"
+                 ,""
+                 ,"<S> { (:a .+ | :a .); :a . }"
+                 //,"<S> { :a .*; (:a .+ | :a .); :a . }"
+                 //,"<S> { :p1 . |  ( :p2 . ; :p3 . ; :p1 .? ) }"
+                 //,"<S> { :p1 . }"
+                        );
+        ShexShapes shapes = Shex.shapesFromString(shape);
+        ShapeEval.debug(true);
+
+        RDFDataMgr.write(System.out,  data,  Lang.TTL);
+        System.out.println("--");
+//        String s = IO.readWholeFileAsUTF8(IRILib.IRIToFilename(DIR+fnShapes));
+//        System.out.print(s);
+//        System.out.println("--");
+        Shex.printShapes(shapes);
+        System.out.println("--");
+
+
+        ValidationReport report = ShexValidation.validate(data, shapes, shapeRef, focus);
+        boolean b = report.conforms();
+        System.out.println(b);
     }
 
     private static void validateByMap() {
@@ -115,7 +157,7 @@ public class DevShex {
                 );
 
         ShexShapes shapes = Shex.shapesFromString(strShapes);
-        printShapes(shapes);
+        Shex.printShapes(shapes);
         Node focus = SSE.parseNode("<http://example/f1>");
 
         Graph graph = GraphFactory.createDefaultGraph();
@@ -160,7 +202,7 @@ public class DevShex {
     public static void validate() {
         String str = PREFIXES_DEV +"\n" + strValidateTest;
         ShexShapes shapes = Shex.shapesFromString(str);
-        printShapes(shapes);
+        Shex.printShapes(shapes);
         Node focus = SSE.parseNode("<http://example/f1>");
 
         Graph graph = GraphFactory.createDefaultGraph();
@@ -251,7 +293,7 @@ public class DevShex {
         System.out.println(shapesStr);
         System.out.println("--");
         ShexShapes shapes = Shex.shapesFromString(PREFIXES_DEV +"\n" +shapesStr);
-        printShapes(shapes);
+        Shex.printShapes(shapes);
         System.out.println("--");
         ShexShape shape = shapes.get(testShape);
         if ( shape == null ) {
@@ -295,7 +337,7 @@ public class DevShex {
         System.out.println("----");
         System.out.println(str);
         System.out.println("----");
-        return parsePrint(()->Shex.shapesFromFile(filename), debug, debugParse);
+        return parsePrint(()->Shex.readShapes(filename), debug, debugParse);
     }
 
     public static ShexShapes parsePrintString(String str, boolean debug, boolean debugParse) {
@@ -310,7 +352,7 @@ public class DevShex {
         if ( debug || debugParse )
             System.out.println();
         ShexShapes shapes = parse(supplier, debug, debugParse);
-        printShapes(shapes);
+        Shex.printShapes(shapes);
         return shapes;
     }
 

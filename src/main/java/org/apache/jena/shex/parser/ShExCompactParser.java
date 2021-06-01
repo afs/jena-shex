@@ -464,8 +464,6 @@ public class ShExCompactParser extends LangParserBase {
 
     protected void finishLiteralNodeConstraint(int idx, int line, int column) {
         finishShapeOpNoAction("LiteralNodeConstraint", idx);
-        // This gathers NodeConstraints ... which happen to be ShapeExpressions as well.
-        //finishShapeOp(idx, ShapeExpressionAND::create);
         finish("LiteralNodeConstraint");
     }
 
@@ -475,7 +473,6 @@ public class ShExCompactParser extends LangParserBase {
     }
 
     protected void finishNonLiteralNodeConstraint(int idx, int line, int column) {
-        //finishShapeOp(idx, ShapeExpressionAND::create);
         finishShapeOpNoAction("NonLiteralNodeConstraint", idx);
         finish("NonLiteralNodeConstraint");
     }
@@ -641,8 +638,8 @@ public class ShExCompactParser extends LangParserBase {
 
     protected void stringFacetLength(String str, int len) {
         StrLengthKind lengthType = StrLengthKind.create(str);
-        NodeConstraint shExpr = new StrLengthConstraint(lengthType, len);
-        addNodeConstraint(shExpr);
+        NodeConstraint nodeConstraint = new StrLengthConstraint(lengthType, len);
+        addNodeConstraint(nodeConstraint);
     }
 
     protected Node langStringLiteral(int quoteLen, String image, int line, int column) {

@@ -22,22 +22,18 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.riot.out.NodeFormatterTTL;
+import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.shex.parser.ShexParser;
 
 public class Shex {
-    public static ShexShapes shapesFromFile(String filename) {
-        return shapesFromFile(filename, null);
-    }
-
-    public static ShexShapes shapesFromFile(String filename, String base) {
-        InputStream input = IO.openFileBuffered(filename);
-        ShexShapes shapes = ShexParser.parse(input, base);
-        return shapes;
-    }
 
     public static ShexShapes shapesFromString(String inputStr) {
         InputStream input = new ByteArrayInputStream(inputStr.getBytes(StandardCharsets.UTF_8));
@@ -56,5 +52,50 @@ public class Shex {
         String parserBase = (base != null) ? base : IRILib.filenameToIRI(filenameOrURL);
         ShexShapes shapes = ShexParser.parse(input, parserBase);
         return shapes;
+    }
+
+    /** Print shapes - the format details the internal structure */
+    public static void printShapes(ShexShapes shapes) {
+        IndentedWriter iOut = IndentedWriter.clone(IndentedWriter.stdout);
+        iOut.setLinePrefix("");
+        Set<String> visited = new HashSet<>();
+        printShapes(iOut, shapes, visited);
+    }
+
+    private static void printShapes(IndentedWriter iOut, ShexShapes shapes, Set<String> visited) {
+        if ( ! shapes.getPrefixMap().isEmpty() ) {
+            RiotLib.writePrefixes(iOut, shapes.getPrefixMap(), true);
+            iOut.println();
+        }
+
+        if ( shapes.hasImports() ) {
+            shapes.getImports().forEach(iriStr->{
+                String pname = shapes.getPrefixMap().abbreviate(iriStr);
+                if ( pname == null )
+                    iOut.printf("IMPORT <%s>\n", iriStr);
+                else
+                    iOut.printf("IMPORT %s\n", pname);
+            });
+            iOut.println();
+        }
+        NodeFormatter nFmt = new NodeFormatterTTL(null, shapes.getPrefixMap());
+        shapes.getShapes().forEach(shape->shape.print(iOut, nFmt));
+        iOut.println();
+        iOut.flush();
+        // Print imports.
+        if ( shapes.hasImports() ) {
+            shapes.getImports().forEach(iriStr->{
+                if ( visited.contains(iriStr) )
+                    return;
+                visited.add(iriStr);
+                String prefix = iOut.getLinePrefix();
+                iOut.incIndent(4);
+                ShexShapes imports = readShapes(iriStr);
+                iOut.setLinePrefix("I"+prefix);
+                printShapes(iOut, imports, visited);
+                iOut.setLinePrefix(prefix);
+                iOut.decIndent(4);
+            });
+        }
     }
 }

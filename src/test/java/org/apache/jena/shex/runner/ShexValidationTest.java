@@ -152,7 +152,7 @@ public class ShexValidationTest implements Runnable {
                 ex.printStackTrace(System.out);
             else
                 System.out.println(ex.getClass().getName());
-            PLib.printShapes(shapes);
+            Shex.printShapes(shapes);
             throw ex;
         }
     }
@@ -160,12 +160,15 @@ public class ShexValidationTest implements Runnable {
     private void describeTest() {
         System.out.println("** "+ShexTests.fragment(entry));
         System.out.println("Schema:   "+schema);
+        System.out.println("Data:     "+data);
+
         if ( shape != null )
             System.out.println("Shape:    "+PLib.displayStr(shape));
         if ( focus != null )
             System.out.println("Focus:    "+PLib.displayStr(focus));
         if ( shapeMapURI != null )
             System.out.println("Map:      "+shapeMapURI);
+
         System.out.println("Positive: "+positiveTest);
         {
             String fn = IRILib.IRIToFilename(schema);
@@ -192,7 +195,7 @@ public class ShexValidationTest implements Runnable {
                 System.out.println();
             System.out.println("-- --");
         }
-        PLib.printShapes(shapes);
+        Shex.printShapes(shapes);
 
         System.out.println("-- --");
     }

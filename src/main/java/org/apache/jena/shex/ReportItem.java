@@ -19,6 +19,7 @@
 package org.apache.jena.shex;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.shex.expressions.PLib;
 
 /**
  * Result of validation of a constraint.
@@ -38,5 +39,10 @@ public class ReportItem {
 
     public Node getValue() {
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return message+" ("+PLib.displayStr(value)+")";
     }
 }

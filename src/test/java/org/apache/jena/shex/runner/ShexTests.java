@@ -46,23 +46,18 @@ public class ShexTests {
         setup();
         //Sx.TRACE : true if there are inclusions
 
+//        includes.add("#nPlus1");
+
+        //includes.add("#skipped"); // Shape partition?
+        excludes.add("#2EachInclude1-IS2_pass"); // Triple expression reference across files.
+
         // --- Exclusions - development
 
-        // ## annotations
-        excludes.add("#1dotAnnotIRIREF_pass");
-        excludes.add("#1dotAnnotIRIREF_missing");
-        excludes.add("#1dotPlusAnnotIRIREF_pass");
-        excludes.add("#1dotAnnotAIRIREF_pass");
-        excludes.add("#1dotAnnotSTRING_LITERAL1_pass");
-        excludes.add("#1dotAnnot3_pass");
-        excludes.add("#1dotAnnot3_missing");
-        excludes.add("#1inversedotAnnot3_pass");
-        excludes.add("#1inversedotAnnot3_missing");
-        excludes.add("#1dotShapeAnnotIRIREF_pass");
-        excludes.add("#1dotShapeAnnotIRIREF_missing");
-        excludes.add("#1dotShapePlusAnnotIRIREF_pass");
-        excludes.add("#1dotShapeAnnotAIRIREF_pass");
-        excludes.add("#1dotShapeAnnotSTRING_LITERAL1_pass");
+        // # External
+        excludes.add("#shapeExtern_pass");
+        excludes.add("#shapeExtern_fail");
+        excludes.add("#shapeExternRef_pass");
+        excludes.add("#shapeExternRef_fail");
 
         // ## semantic actions
         excludes.add("#1dotCode1_pass");

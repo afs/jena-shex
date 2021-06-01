@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shex.expressions;
+package org.apache.jena.shex.eval;
 
 import static org.apache.jena.atlas.lib.CollectionUtils.oneElt;
 
@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.shex.expressions.TripleExpressionCardinality;
 import org.apache.jena.shex.sys.ValidationContext;
 
 public class ShapeEvalCardinality {
@@ -38,14 +39,32 @@ public class ShapeEvalCardinality {
             // Direct
             return ShapeEval.matches(vCxt, matchables, node, tripleExprCard.target(), extras);
 
-        // Partition
-        List<List<Set<Triple>>> x = cardinalityPartition(matchables, min, max);
+        if ( min == 0 )
+            return true;
 
-        for ( List<Set<Triple>> candidate : x ) {
+        // Partition
+        List<List<Set<Triple>>> partitions = cardinalityPartition(matchables, min, max);
+
+        if ( ShapeEval.DEBUG_cardinalityOf  ) {
+            System.out.println("Cardinality: "+tripleExprCard);
+            if ( partitions.isEmpty() ) {
+                System.out.println("--");
+                System.out.println("<empty>");
+            }
+            System.out.println("----");
+        }
+
+        for ( List<Set<Triple>> partition : partitions ) {
             boolean OK = true;
+
+            if ( ShapeEval.DEBUG_cardinalityOf )
+                System.out.println(partition);
+
             // One partition
-            for ( Set<Triple> part : candidate ) {
+            for ( Set<Triple> part : partition ) {
                 boolean b = ShapeEval.matches(vCxt, part, node, tripleExprCard.target(), extras);
+                if ( ShapeEval.DEBUG_cardinalityOf )
+                    System.out.println("  "+b);
                 if ( !b ) {
                     OK = false;
                     break;

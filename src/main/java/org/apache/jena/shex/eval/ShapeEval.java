@@ -16,90 +16,88 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shex.expressions;
+package org.apache.jena.shex.eval;
 
 import static org.apache.jena.atlas.lib.StreamOps.toSet;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.apache.jena.atlas.lib.NotImplemented;
-import org.apache.jena.atlas.lib.StreamOps;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.other.G;
-import org.apache.jena.shex.ReportItem;
+import org.apache.jena.shex.expressions.*;
 import org.apache.jena.shex.sys.ValidationContext;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 public class ShapeEval {
 
+    static boolean DEBUG = false;
+    static boolean DEBUG_eachOf = DEBUG;
+    static boolean DEBUG_cardinalityOf = DEBUG;
+
+    public static void debug(boolean debug) {
+        DEBUG = debug;
+        DEBUG_eachOf = debug;
+        DEBUG_cardinalityOf = debug;
+    }
+
     // With help from the ideas (not code) of:
     // https://github.com/hsolbrig/PyShEx/blob/master/pyshex/shape_expressions_language/p5_5_shapes_and_triple_expressions.py
-
 
     public static boolean matchesShapeExpr(ValidationContext vCxt, ShapeExpression shapeExpr, Node node) {
         return shapeExpr.satisfies(vCxt, node);
     }
 
-    static boolean matches(ValidationContext vCxt, Set<Triple> matchables, Node node, TripleExpression tripleExpr, Set<Node> extras) {
-//        if isinstance_(expr, ShExJ.tripleExprLabel):
-//            return matchesExpr(cntxt, T, expr)
-//        else:
-//            return matchesCardinality(cntxt, T, expr, extras) \
-//                   and (expr.semActs is None or semActsSatisfied(expr.semActs, cntxt))
+    /*package*/ public static boolean matchesTripleExpr(ValidationContext vCxt, TripleExpression tripleExpr, Node node, Set<Node> extras, boolean closed) {
+//        Set<Triple> neigh = new HashSet<>();
+//        Set<Triple> arcsOut = new HashSet<>();
+//        Set<Triple> arcsIn = new HashSet<>();
+//        arcsOut(arcsOut, vCxt.getData(), node);
+//        arcsIn(arcsIn, vCxt.getData(), node);
+//        neigh.addAll(arcsOut);
+//        neigh.addAll(arcsIn);
 
-        return matchesExpr(vCxt, matchables, node, tripleExpr, extras);
-    }
-
-    /*package*/ static boolean matchesTripleExpr(ValidationContext vCxt, TripleExpression tripleExpr, Node node, Set<Node> extras, boolean closed) {
-        // [shex] improve!
-        // [shex] calculate once for recursive calls.
-        Set<Triple> neigh = new HashSet<>();
         Set<Triple> arcsOut = new HashSet<>();
-        Set<Triple> arcsIn = new HashSet<>();
         arcsOut(arcsOut, vCxt.getData(), node);
-        arcsIn(arcsIn, vCxt.getData(), node);
-        neigh.addAll(arcsOut);
-        neigh.addAll(arcsIn);
         Set<Node> predicates = findPredicates(tripleExpr);
-
         Set<Triple> matchables = toSet(arcsOut.stream().filter(t->predicates.contains(t.getPredicate())));
 
         boolean b = matches(vCxt, matchables, node, tripleExpr, extras);
         if ( ! b )
             return false;
         if ( closed ) {
+            // CLOSED : no other triples.
             Set<Triple> non_matchables = toSet(arcsOut.stream().filter(t->!matchables.contains(t)));
-            //Set<TripleConstraint> constraints = findTripleConstraint(tripleExpr);
             if ( ! non_matchables.isEmpty() )
                 return false;
         }
 
-        // EXTRA
-        // ?? Find all triple constraints?
-
         return true;
     }
+
+    static boolean matches(ValidationContext vCxt, Set<Triple> matchables, Node node, TripleExpression tripleExpr, Set<Node> extras) {
+      return matchesExpr(vCxt, matchables, node, tripleExpr, extras);
+  }
 
     private static boolean matchesExpr(ValidationContext vCxt, Set<Triple> T, Node node, TripleExpression tripleExpr, Set<Node> extras) {
         if ( tripleExpr instanceof TripleExpressionEachOf ) {
             return ShapeEvalEachOf.matchesEachOf(vCxt, T, node, (TripleExpressionEachOf)tripleExpr, extras);
         }
         else if ( tripleExpr instanceof TripleExpressionOneOf ) {
-            return matchesOneOf(vCxt, T, node, (TripleExpressionOneOf)tripleExpr, extras);
+            return ShapeEvalOneOf.matchesOneOf(vCxt, T, node, (TripleExpressionOneOf)tripleExpr, extras);
         }
         else if ( tripleExpr instanceof TripleExpressionRef ) {
             return matchesTripleExprRef(vCxt, T, node, (TripleExpressionRef)tripleExpr, extras);
         }
         else if ( tripleExpr instanceof TripleExpressionCardinality ) {
-            return matchesCardinality(vCxt, T, node, (TripleExpressionCardinality)tripleExpr, extras);
+            return ShapeEvalCardinality.matchesCardinality(vCxt, T, node, (TripleExpressionCardinality)tripleExpr, extras);
         }
         else if ( tripleExpr instanceof TripleConstraint ) {
-            return matchesCardinalityTC(vCxt, T, node, (TripleConstraint)tripleExpr, extras);
+            return ShapeEvalTripleConstraint.matchesCardinalityTC(vCxt, T, node, (TripleConstraint)tripleExpr, extras);
 //            TripleConstraint tc = (TripleConstraint)tripleExpr;
 //            tc.matches(vCxt, data);
         }
@@ -111,77 +109,10 @@ public class ShapeEval {
         throw new NotImplemented(tripleExpr.getClass().getSimpleName());
     }
 
-    private static boolean matchesOneOf(ValidationContext vCxt, Set<Triple> matchables, Node node, TripleExpressionOneOf oneOf, Set<Node> extras) {
-        int matchCount = 0;
-        for ( TripleExpression tripleExpr : oneOf.expressions() ) {
-            if ( matches(vCxt, matchables, node, tripleExpr, extras) ) {
-                matchCount++;
-                if ( matchCount > 1 )
-                    break;
-            }
-        }
-        return matchCount == 1;
-        //return oneOf.expressions().stream().anyMatch(ex->matches(vCxt, matchables, node, ex, null));
-    }
-
     private static boolean matchesTripleExprRef(ValidationContext vCxt, Set<Triple> matchables, Node node, TripleExpressionRef ref, Set<Node> extras) {
         TripleExpression tripleExpr = ref.get();
         //ShapeExpression shExpr = new ShapeTripleExpression(tripleExpr);
         return matches(vCxt, matchables, node, tripleExpr, extras);
-    }
-
-
-    private static boolean matchesCardinality(ValidationContext vCxt, Set<Triple> T, Node node, TripleExpressionCardinality tripleExpr, Set<Node> extras) {
-        return ShapeEvalCardinality.matchesCardinality(vCxt, T, node, tripleExpr, extras);
-    }
-
-    private static boolean matchesCardinalityTC(ValidationContext vCxt, Set<Triple> matchables, Node node,
-                                                TripleConstraint tripleConstraint, Set<Node> extras) {
-        if ( tripleConstraint.reverse() ) {
-            // [shex] Fudge.
-            matchables = G.find(vCxt.getData(), null,  null, node).toSet();
-        }
-
-        // Find same predicate.
-        Node predicate = tripleConstraint.getPredicate();
-        Set<Triple> triples = StreamOps.toSet(matchables.stream().filter(t->predicate.equals(t.getPredicate())));
-        int min = tripleConstraint.min();
-        int max = tripleConstraint.max();
-        ShapeExpression shExpr = tripleConstraint.getShapeExpression();
-
-        Set<Triple> positive = triples.stream().filter(t->{
-            Node v = tripleConstraint.reverse() ? t.getSubject() : t.getObject();
-            return shExpr.satisfies(vCxt, v);
-        }).collect(Collectors.toSet());
-
-        // Remove extras.
-
-        if ( extras == null || ! extras.contains(predicate) ) {
-            if ( positive.size() != triples.size() )
-                // Something did not match.
-                return false;
-        }
-
-        int N = positive.size();
-        if ( min >= 0 && N < min ) {
-            vCxt.reportEntry(new ReportItem("Cardinality violation (min="+min+"): "+N, null));
-            return false;
-        }
-        if ( max >= 0 && N > max ) {
-            vCxt.reportEntry(new ReportItem("Cardinality violation (max="+max+"): "+N, null));
-            return false;
-        }
-        return true;
-    }
-
-    private static <X> TripleExpressionVisitor accumulator(Set<X> acc, Function<TripleConstraint, X> mapper) {
-        TripleExpressionVisitor step = new TripleExpressionVisitor() {
-            @Override
-            public void visit(TripleConstraint tripleConstraint) {
-                acc.add(mapper.apply(tripleConstraint));
-            }
-        };
-        return walk(step);
     }
 
     // Recursive.
@@ -234,6 +165,16 @@ public class ShapeEval {
         Set<Node> predicates = new HashSet<>();
         tripleExpr.visit(accumulator(predicates, TripleConstraint::getPredicate));
         return predicates;
+    }
+
+    private static <X> TripleExpressionVisitor accumulator(Set<X> acc, Function<TripleConstraint, X> mapper) {
+        TripleExpressionVisitor step = new TripleExpressionVisitor() {
+            @Override
+            public void visit(TripleConstraint tripleConstraint) {
+                acc.add(mapper.apply(tripleConstraint));
+            }
+        };
+        return walk(step);
     }
 
     private static void arcsOut(Set<Triple> neigh, Graph graph, Node node) {

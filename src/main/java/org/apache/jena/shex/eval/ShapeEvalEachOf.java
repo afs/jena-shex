@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shex.expressions;
+package org.apache.jena.shex.eval;
 
 import java.util.*;
 
@@ -25,13 +25,13 @@ import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.shex.expressions.TripleExpression;
+import org.apache.jena.shex.expressions.TripleExpressionEachOf;
 import org.apache.jena.shex.sys.ValidationContext;
 
 public
 /*package*/ class ShapeEvalEachOf {
     // Sufficiently large and complex so separated from ShapeEval.
-
-    public static boolean DEBUG = false;
 
     /*package*/ static boolean matchesEachOf(ValidationContext vCxt, Set<Triple> matchables, Node node,
                                              TripleExpressionEachOf eachOf, Set<Node> extras) {
@@ -66,17 +66,17 @@ public
         // -- end preparation.
 
         List<List<Set<Triple>>> partitions = partition(matchables, tripleExprs, /*exprIdxToPredicates,*/ predicateToTripleExprs);
-        if ( DEBUG ) {
-            if ( partitions.isEmpty() ) {
-                System.out.println("--");
+        if ( ShapeEval.DEBUG_eachOf ) {
+            System.out.println("EachOf: "+eachOf);
+            if ( partitions == null  )
+                System.out.println("<null>");
+            else if ( partitions.isEmpty() )
                 System.out.println("<empty>");
-            }
-            partitions.forEach(x->{
-                System.out.println("--");
-                x.forEach(y->System.out.println(y));
-            });
-            System.out.println("----");
         }
+
+        if ( partitions == null )
+            // No partition possible. e.g.triple that can't be placed.
+            return false;
 
         // And now eval.
         // [shex] How to account for unmatched.
@@ -87,7 +87,13 @@ public
                 Set<Triple> triples = partition.get(i);
                 TripleExpression tripleExpr = tripleExprs.get(i);
                 // [shex] TripleEpxerssion to have matches()
+
+                if ( ShapeEval.DEBUG_eachOf )
+                    System.out.println("Partition: "+partition);
+
                 boolean b = ShapeEval.matches(vCxt, triples, node, tripleExpr, extras);
+                if ( ShapeEval.DEBUG_eachOf )
+                    System.out.println("    "+b);
                 if ( !b ) {
                     success = false;
                     break;
@@ -108,15 +114,29 @@ public
                                                      List<TripleExpression> tripleExprs,
                                                      //List<Set<Node>> exprIdxToPredicates,
                                                      ListMultimap<Node, Integer> predicateToTripleExprs) {
+        // Any unallocateables?
+        // Can each triple be placed somewhere?
+        for ( Triple t : triples ) {
+            // Could do in the loop below.
+            if ( ! predicateToTripleExprs.containsKey(t.getPredicate()) )
+                // Predicate of a triple can't be placed.
+                return null;
+        }
+//        if ( triples.stream().noneMatch(t->predicateToTripleExprs.containsKey(t.getPredicate())) )
+//            return null;
+
+
         // Start. One empty partition
         List<Set<Triple>> emptyPartial = emptyPartition(tripleExprs);
+
 
         List<List<Set<Triple>>> partials = new ArrayList<>();
         partials.add(emptyPartial);
 
         for ( Triple t : triples ) {
-            if ( ! predicateToTripleExprs.containsKey(t.getPredicate()) )
-                continue;
+//            if ( ! predicateToTripleExprs.containsKey(t.getPredicate()) )
+//                // Predicate of a triple that can't be placed.
+//                return null;
 
             List<List<Set<Triple>>> partials2 = new ArrayList<>();
             // foreach partial partition, create new partitions with the triple allocated to a slot.

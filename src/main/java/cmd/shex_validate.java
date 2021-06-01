@@ -105,7 +105,7 @@ public class shex_validate extends CmdGeneral {
 
         //Graph shapesGraph = load(shapesfile, "shapes file");
 
-        ShexShapes shapes = Shex.shapesFromFile(shapesfile);
+        ShexShapes shapes = Shex.readShapes(shapesfile);
 
         Graph dataGraph;
 //        if ( datafile.equals(shapesfile) )

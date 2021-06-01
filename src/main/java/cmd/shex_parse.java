@@ -33,7 +33,6 @@ import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.shex.Shex;
 import org.apache.jena.shex.ShexShapes;
-import org.apache.jena.shex.expressions.PLib;
 import org.apache.jena.shex.parser.ShexParseException;
 import org.apache.jena.sys.JenaSystem;
 
@@ -139,7 +138,7 @@ public class shex_parse extends CmdGeneral {
         }
 
         try {
-            shapes = Shex.shapesFromFile(fn);
+            shapes = Shex.readShapes(fn);
         }
         catch ( RiotException ex ) { /*ErrorHandler logged this */ return; }
         catch (ShexParseException ex) {
@@ -171,7 +170,7 @@ public class shex_parse extends CmdGeneral {
     }
 
     private boolean printText(PrintStream out, PrintStream err, ShexShapes shapes) {
-        PLib.printShapes(shapes);
+        Shex.printShapes(shapes);
 //        IndentedWriter iOut  = new IndentedWriter(out);
 //        ShLib.printShapes(iOut, shapes);
 //        iOut.ensureStartOfLine();
