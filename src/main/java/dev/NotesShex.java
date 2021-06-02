@@ -22,17 +22,12 @@ public class NotesShex {
     // Grammar. Check file for ToDo and other notes.
     // Test Suite
 
-    // matches allocation.
 
-    // [x] EachOf needs to allocate all triples
-    //     ShapeEvalEachOf.partition
-    //     matchesCardinalityTC - (commented out) exclusion code.
-    // [x] Matches needs to position all triples.
-
-    // ---
-
+    // [ ] Merge test runners.
+    //     Shaes inclusion/exclusion code.
     // [ ] EachOf partition generation produce duplicates. -> algorithm H!
-    // TripleExpressionRef[] a cross imported files.
+
+    // [x] TripleExpressionRef - a cross imported files.
     // [x] ShexMap
     //     JSON form (required by tests)
     // [x] Syntax tests - convert to runner. includes and excludes.
@@ -43,6 +38,7 @@ public class NotesShex {
     // ShexParser map operation to Shex.*
 
     // [ ] Better imports - keep individual read in ShexShapes.
+    //     Need "all shapes" triple constraint and shape ref maps.
     //     Parse to a list of ShexShapes, filter starts out when making the closure. Avoid churning maps.
     //     Fix up PLib.print
 

@@ -20,13 +20,11 @@
 
 package org.apache.jena.shex.parser.javacc;
 
-import org.apache.jena.graph.*;
-import org.apache.jena.shex.expressions.*;
-import org.apache.jena.shex.parser.*;
-
-import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 import static org.apache.jena.shex.sys.SysShex.*;
-
+import org.apache.jena.shex.parser.*;
+import org.apache.jena.shex.expressions.*;
+import org.apache.jena.graph.*;
+import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 import java.util.*;
 
 public class ShExJavacc extends ShExCompactParser implements ShExJavaccConstants {
@@ -656,6 +654,7 @@ idx = startLiteralNodeConstraint(token.beginLine, token.beginColumn);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case LITERAL:{
       t = jj_consume_token(LITERAL);
+cNodeKind(t.image, t.beginLine, t.beginColumn);
       label_8:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -678,7 +677,6 @@ idx = startLiteralNodeConstraint(token.beginLine, token.beginColumn);
         }
         xsFacet();
       }
-cNodeKind(t.image, t.beginLine, t.beginColumn);
       break;
       }
     case IRIref:

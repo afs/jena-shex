@@ -32,10 +32,22 @@ public class StrLengthConstraint extends NodeConstraint {
     private final StrLengthKind lengthType;
     private final int length;
 
-    public StrLengthConstraint(StrLengthKind lengthType, int len) {
+    public static StrLengthConstraint create(StrLengthKind lengthType, int len) {
+        return new StrLengthConstraint(lengthType, len);
+    }
+
+    private StrLengthConstraint(StrLengthKind lengthType, int len) {
         Objects.requireNonNull(lengthType);
         this.lengthType = lengthType;
         this.length = len;
+    }
+
+    public StrLengthKind getLengthType() {
+        return lengthType;
+    }
+
+    public int getLength() {
+        return length;
     }
 
     @Override
@@ -65,6 +77,11 @@ public class StrLengthConstraint extends NodeConstraint {
 
         String msg = format("Expected %s %d : got = %d", lengthType.label(), length, str.length());
         return new ReportItem(msg, n);
+    }
+
+    @Override
+    public void visit(ShapeExpressionVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override

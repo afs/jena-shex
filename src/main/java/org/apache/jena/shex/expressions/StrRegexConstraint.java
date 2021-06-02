@@ -72,21 +72,11 @@ public class StrRegexConstraint extends NodeConstraint {
         String msg = toString()+": Does not match: '"+str+"'";
         return new ReportItem(msg, n);
     }
-//
-//    @Override
-//    public void visit(ConstraintVisitor visitor){
-//        visitor.visit(this);
-//    }
-//
-//    @Override
-//    public void print(IndentedWriter out, NodeFormatter nodeFmt) {
-//        // XXX flagStr?
-//        compactQuotedString(out, "pattern", patternString);
-//        if ( flagsStr != null ) {
-//            out.print(" ");
-//            compactQuotedString(out, "flags", flagsStr);
-//        }
-//    }
+
+    @Override
+    public void visit(ShapeExpressionVisitor visitor) {
+        visitor.visit(this);
+    }
 
     @Override
     public String toString() {

@@ -31,4 +31,15 @@ import org.junit.runners.Suite;
 
 public class TS_Shex {
 
+    // Too later t- he runners have setup by now.
+//    private static boolean oldValue = false;
+//
+//    @BeforeClass public static void beforeAll() {
+//        oldValue = SysShex.STRICT;
+//        SysShex.STRICT = true;
+//    }
+//
+//    @AfterClass public static void afterAll() {
+//        SysShex.STRICT = oldValue;
+//    }
 }

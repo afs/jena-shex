@@ -24,6 +24,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
+import org.apache.jena.arq.junit.manifest.Prefix;
+import org.apache.jena.arq.junit.runners.Label;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.TypedInputStream;
@@ -35,7 +37,9 @@ import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.shex.expressions.Sx;
 
 public class ShexTests {
-    // Test filtering.
+    static boolean VERBOSE = false;
+
+    // Validation test filtering.
     static Set<String> excludes = new HashSet<>();
     static Set<String> includes = new LinkedHashSet<>();
     static boolean dumpTest = false;
@@ -46,10 +50,8 @@ public class ShexTests {
         setup();
         //Sx.TRACE : true if there are inclusions
 
-//        includes.add("#nPlus1");
-
         //includes.add("#skipped"); // Shape partition?
-        excludes.add("#2EachInclude1-IS2_pass"); // Triple expression reference across files.
+        //includes.add("#2EachInclude1-IS2_pass"); // Triple expression reference across files.
 
         // --- Exclusions - development
 
@@ -104,10 +106,11 @@ public class ShexTests {
         //    excludes.add("_all.shex");
         //---- Exclusions
 
-        if ( ! includes.isEmpty() || ! excludes.isEmpty() ) {
-            System.err.println("Inclusions    = "+includes.size());
-            System.err.println("Exclusions    = "+(excludes.size()-bNodeLabeltests().size()));
-            System.err.println("BNode labels  = "+bNodeLabeltests().size());
+        if ( ShexTests.VERBOSE ) {
+            System.err.println("Validation");
+            System.err.println("  inclusions    = "+includes.size());
+            System.err.println("  exclusions    = "+(excludes.size()-bNodeLabeltests().size()));
+            System.err.println("  bNode labels  = "+bNodeLabeltests().size());
             System.err.println();
             dumpTest = ! includes.isEmpty();
         }
@@ -197,7 +200,7 @@ public class ShexTests {
     }
 
     /** Create a Shex test - or return null for "unrecognized" */
-    public static Runnable makeShexTest(ManifestEntry entry) {
+    public static Runnable makeShexValidationTest(ManifestEntry entry) {
         if ( ! runTestExclusionsInclusions(entry) )
             return null;
 
@@ -342,6 +345,16 @@ public class ShexTests {
         int j = uri.lastIndexOf('#') ;
         String fn = (j >= 0) ? uri.substring(j) : uri ;
         return fn ;
+    }
+
+    /*package*/ static String getLabel(Class<? > klass) {
+        Label annotation = klass.getAnnotation(Label.class);
+        return ( annotation == null ) ? null : annotation.value();
+    }
+
+    /*package*/ static String getPrefix(Class<? > klass) {
+        Prefix annotation = klass.getAnnotation(Prefix.class);
+        return ( annotation == null ) ? null : annotation.value();
     }
 
     private static void setup() {

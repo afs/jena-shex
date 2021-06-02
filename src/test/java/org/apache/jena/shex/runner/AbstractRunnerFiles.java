@@ -18,14 +18,19 @@
 
 package org.apache.jena.shex.runner;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.jena.arq.junit.manifest.Prefix;
 import org.apache.jena.arq.junit.runners.Directories;
-import org.apache.jena.arq.junit.runners.Label;
 import org.apache.jena.arq.junit.runners.RunnerOneTest;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.junit.runner.Description;
@@ -36,24 +41,26 @@ import org.junit.runners.model.InitializationError;
 
 /**
  * Common super class for {@code @Runner(....)}
- * where the tests are one per file.
+ * where the tests are defined by the contents of a file.
  */
 public abstract class AbstractRunnerFiles extends ParentRunner<Runner> {
     private Description  description;
     private List<Runner> children = new ArrayList<>();
 
-    public AbstractRunnerFiles(Class<? > klass, Function <String, Runnable> maker) throws InitializationError {
+    // Includes and excludes are filenames with a directory.
+    public AbstractRunnerFiles(Class<? > klass, Function <String, Runnable> maker,
+                               Set<String> includes, Set<String> excludes) throws InitializationError {
         super(klass);
-        String label = getLabel(klass);
+        String label = ShexTests.getLabel(klass);
         if ( label == null )
             label = klass.getName();
-        String prefix = getPrefix(klass);
+        String prefix = ShexTests.getPrefix(klass);
         String[] directories = getDirectories(klass);
         description = Description.createSuiteDescription(label);
 
         for ( String directory : directories ) {
             // LEVEL per directory?
-            List<String> files = getFiles(directory);
+            List<String> files = getFiles(directory, includes, excludes);
             if ( files.isEmpty() )
                 //System.err.println("No files: "+label);
                 throw new InitializationError("No files");
@@ -66,9 +73,38 @@ public abstract class AbstractRunnerFiles extends ParentRunner<Runner> {
                 }
             }
         }
+
+        if ( ShexTests.VERBOSE ) {
+            System.err.println(label);
+            System.err.println("  inclusions    = "+includes.size());
+            System.err.println("  exclusions    = "+excludes.size());
+            System.err.println();
+        }
+
     }
 
-    protected abstract List<String> getFiles(String directory);
+    protected final List<String> getFiles(String directory, Set<String> includes, Set<String> excludes) {
+        Path src = Paths.get(directory);
+        BiPredicate<Path, BasicFileAttributes> predicate = (path,attr)->attr.isRegularFile() && path.toString().endsWith(".shex");
+
+        List<String> files = new ArrayList<>();
+
+        if ( includes.isEmpty() ) {
+            try {
+                Files.find(src, 1, predicate)
+                    .filter(p-> ! excludes.contains(p.getFileName().toString()))
+                    .sorted()
+                    .map(Path::toString)
+                    .forEach(files::add);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            includes.forEach(fn->files.add(fn));
+        }
+        return files;
+    }
+
 
     // Print all manifests, top level and included.
     private static boolean PrintManifests = false;
@@ -88,16 +124,6 @@ public abstract class AbstractRunnerFiles extends ParentRunner<Runner> {
         string = string.replace('(', '[');
         string = string.replace(')', ']');
         return string;
-    }
-
-    private static String getLabel(Class<? > klass) {
-        Label annotation = klass.getAnnotation(Label.class);
-        return ( annotation == null ) ? null : annotation.value();
-    }
-
-    private static String getPrefix(Class<? > klass) {
-        Prefix annotation = klass.getAnnotation(Prefix.class);
-        return ( annotation == null ) ? null : annotation.value();
     }
 
     private static String[] getDirectories(Class<? > klass) throws InitializationError {

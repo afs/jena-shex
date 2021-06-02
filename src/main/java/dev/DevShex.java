@@ -56,24 +56,15 @@ public class DevShex {
     static String strParserTest = StrUtils.strjoinNL
             (""
              ,"<http://ex/S> {"
-             ," <http://all.example/p1> LITERAL LENGTH 5 LENGTH 6"
+             //,"    <http://a.example/p1> <http://a.example/dt1> MAXINCLUSIVE 5"
+             ,"    <http://a.example/p1> xsd:int MAXINCLUSIVE 5"
+             //," <http://all.example/p1> LITERAL LENGTH 5 LENGTH 6"
              ,"}"
             );
 
     public static void main(String[] args) {
-        runOne();
-        System.exit(0);
-//        String s = StrUtils.strjoinNL
-//                ("<http://data.example/#n1> @ <http://data.example/#S2>"
-//                ,"\"chat\"@en-fr@<http://...S3>"
-//                ,"{FOCUS a <http://schema.example/Some/Type>}@START"
-//                ,"{_ <http://...p3> FOCUS}@START"
-//                 );
-//        ShexShapeMap map = parseShapeMap(s);
-//        map.entries().forEach(System.out::println);
+//        runOne();
 //        System.exit(0);
-
-        //partition();
 
         parsePrint();
         //parsePrintFile("file:///home/afs/ASF/shapes/jena-shex/files/spec/schemas/2OneInclude1.shex");
@@ -344,6 +335,8 @@ public class DevShex {
         String str2 = PREFIXES_DEV +"\n" + str;
         System.out.println("----");
         System.out.print(str2);
+        if ( ! str2.endsWith("\n") )
+            System.out.println();
         System.out.println("----");
         return parsePrint(()->Shex.shapesFromString(str2), debug, debugParse);
     }

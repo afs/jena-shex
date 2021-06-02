@@ -74,6 +74,11 @@ public class ValueConstraint extends NodeConstraint {
         out.println(" ]");
     }
 
+    @Override
+    public void visit(ShapeExpressionVisitor visitor) {
+        visitor.visit(this);
+    }
+
     // [shex] hashCode and equals.
     @Override
     public int hashCode() {

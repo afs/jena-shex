@@ -18,7 +18,6 @@
 
 package org.apache.jena.shex.expressions;
 
-import java.util.Map;
 import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -28,16 +27,14 @@ import org.apache.jena.riot.out.NodeFormatter;
 public class TripleExpressionRef extends TripleExpression {
 
     private Node ref;
-    private Map<Node, TripleExpression> map;
 
-    public TripleExpressionRef(Map<Node, TripleExpression> tripleExprRefs, Node node) {
+    public TripleExpressionRef(Node node) {
         super();
-        this.map = tripleExprRefs;
         this.ref = node;
     }
 
-    public TripleExpression get() {
-        return map.get(ref);
+    public Node ref() {
+        return ref;
     }
 
     @Override

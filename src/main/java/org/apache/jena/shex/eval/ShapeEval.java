@@ -29,6 +29,9 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.other.G;
+import org.apache.jena.shacl.validation.ReportItem;
+import org.apache.jena.shex.ShexException;
+import org.apache.jena.shex.ShexShapes;
 import org.apache.jena.shex.expressions.*;
 import org.apache.jena.shex.sys.ValidationContext;
 import org.apache.jena.util.iterator.ExtendedIterator;
@@ -63,7 +66,7 @@ public class ShapeEval {
 
         Set<Triple> arcsOut = new HashSet<>();
         arcsOut(arcsOut, vCxt.getData(), node);
-        Set<Node> predicates = findPredicates(tripleExpr);
+        Set<Node> predicates = findPredicates(vCxt, tripleExpr);
         Set<Triple> matchables = toSet(arcsOut.stream().filter(t->predicates.contains(t.getPredicate())));
 
         boolean b = matches(vCxt, matchables, node, tripleExpr, extras);
@@ -110,13 +113,18 @@ public class ShapeEval {
     }
 
     private static boolean matchesTripleExprRef(ValidationContext vCxt, Set<Triple> matchables, Node node, TripleExpressionRef ref, Set<Node> extras) {
-        TripleExpression tripleExpr = ref.get();
+        Node label = ref.ref();
+        if ( label == null ) {}
+        TripleExpression tripleExpr = vCxt.getTripleExpression(label);
+        if ( tripleExpr == null ) {
+            new ReportItem("Filed to get triple expression from reference "+PLib.displayStr(label));
+        }
         //ShapeExpression shExpr = new ShapeTripleExpression(tripleExpr);
         return matches(vCxt, matchables, node, tripleExpr, extras);
     }
 
     // Recursive.
-    private static TripleExpressionVisitor walk(TripleExpressionVisitor step) {
+    private static TripleExpressionVisitor walk(ShexShapes shapes, TripleExpressionVisitor step) {
         //Walker
         return new TripleExpressionVisitor() {
             @Override
@@ -145,7 +153,9 @@ public class ShapeEval {
             @Override
             public void visit(TripleExpressionRef expr) {
                 expr.visit(step);
-                expr.get().visit(this);
+                if ( expr.ref() == null )
+                    throw new ShexException("Failed to dereference : "+expr.ref());
+                shapes.getTripleExpression(expr.ref()).visit(this);
             }
 
             @Override
@@ -155,26 +165,26 @@ public class ShapeEval {
         };
     }
 
-    /*package*/ static Set<TripleConstraint> findTripleConstraint(TripleExpression tripleExpr) {
+    /*package*/ static Set<TripleConstraint> findTripleConstraint(ValidationContext vCxt, TripleExpression tripleExpr) {
         Set<TripleConstraint> constraints = new HashSet<>();
-        tripleExpr.visit(accumulator(constraints, Function.identity()));
+        tripleExpr.visit(accumulator(vCxt.getShapes(), constraints, Function.identity()));
         return constraints;
     }
 
-    /*package*/ static Set<Node> findPredicates(TripleExpression tripleExpr) {
+    /*package*/ static Set<Node> findPredicates(ValidationContext vCxt, TripleExpression tripleExpr) {
         Set<Node> predicates = new HashSet<>();
-        tripleExpr.visit(accumulator(predicates, TripleConstraint::getPredicate));
+        tripleExpr.visit(accumulator(vCxt.getShapes(), predicates, TripleConstraint::getPredicate));
         return predicates;
     }
 
-    private static <X> TripleExpressionVisitor accumulator(Set<X> acc, Function<TripleConstraint, X> mapper) {
+    private static <X> TripleExpressionVisitor accumulator(ShexShapes shapes, Set<X> acc, Function<TripleConstraint, X> mapper) {
         TripleExpressionVisitor step = new TripleExpressionVisitor() {
             @Override
             public void visit(TripleConstraint tripleConstraint) {
                 acc.add(mapper.apply(tripleConstraint));
             }
         };
-        return walk(step);
+        return walk(shapes, step);
     }
 
     private static void arcsOut(Set<Triple> neigh, Graph graph, Node node) {

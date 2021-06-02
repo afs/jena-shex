@@ -53,6 +53,15 @@ public class ShapeExpressionNOT extends ShapeExpression {
         return false;
     }
 
+    public ShapeExpression subShape() {
+        return other;
+    }
+
+    @Override
+    public void visit(ShapeExpressionVisitor visitor) {
+        visitor.visit(this);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(other);

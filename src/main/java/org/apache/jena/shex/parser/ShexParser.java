@@ -18,19 +18,31 @@
 
 package org.apache.jena.shex.parser;
 
+import static java.lang.String.format;
+
 import java.io.InputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.riot.system.*;
+import org.apache.jena.shex.ShexShape;
 import org.apache.jena.shex.ShexShapeMap;
 import org.apache.jena.shex.ShexShapes;
+import org.apache.jena.shex.expressions.*;
 import org.apache.jena.shex.parser.javacc.ParseException;
 import org.apache.jena.shex.parser.javacc.ShExJavacc;
 import org.apache.jena.shex.parser.javacc.TokenMgrError;
+import org.apache.jena.shex.sys.ShexLib;
+import org.apache.jena.shex.sys.SysShex;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.util.Context;
 
 public class ShexParser {
@@ -136,6 +148,7 @@ public class ShexParser {
             parser.parseShapesStart();
             parser.UnitShapes();
             ShexShapes shapes = parser.parseShapesFinish();
+            validatePhase2(shapes);
             return shapes;
         } catch (ParseException ex) {
             throw new ShexParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
@@ -144,6 +157,78 @@ public class ShexParser {
             int col = parser.token.endColumn ;
             int line = parser.token.endLine ;
             throw new ShexParseException(tErr.getMessage(), line, col) ;
+        }
+    }
+
+    /*
+     * section 5.7 Schema Requirements
+     * 5.7.1 Schema Validation Requirement
+     * 5.7.2 Shape Expression Reference Requirement
+     * 5.7.3 Triple Expression Reference Requirement
+     * 5.7.4 Negation Requirement
+     *
+     * (only after imports closure)
+     */
+    private static void validatePhase2(ShexShapes shapes) {
+        if ( ! SysShex.STRICT )
+            return;
+        shapes.getShapes().forEach(shape->validatePhase2(shapes, shape));
+    }
+
+    private static void validatePhase2(ShexShapes shapes, ShexShape shape) {
+        ShapeExpression shExpr = shape.getShapeExpression();
+        ShapeExpressionVisitor checker = new CheckFacets();
+        TripleExpressionVisitor tExprVisitor = new TripleExpressionVisitor() {
+            @Override public void visit(TripleConstraint object) {
+                // One level call of visitor.
+                //object.getPredicate();
+                ShapeExpression theShapeExpression = object.getShapeExpression();
+                if ( theShapeExpression != null )
+                    theShapeExpression.visit(checker);
+            }
+        };
+        ShexLib.walk(shExpr, checker, null);
+    }
+
+    private static class CheckFacets implements ShapeExpressionVisitor {
+        // Inside TripleConstraint
+        @Override
+        public void visit(ShapeExpressionAND shape) {
+            List<ShapeExpression> elements = shape.expressions();
+            Set<StrLengthKind> x = new HashSet<>(3);
+            DatatypeConstraint dtConstraint = null;
+            for ( ShapeExpression expr : elements ) {
+                if ( expr instanceof StrLengthConstraint ) {
+                    StrLengthConstraint constraint = (StrLengthConstraint)expr;
+                    StrLengthKind lenType = constraint.getLengthType();
+                    if ( x.contains(lenType) )
+                        throw new ShexParseException("Multiple string length facets of the same kind: "+lenType, -1, -1);
+                    x.add(lenType);
+                    continue;
+                }
+
+                // Can't have numeric constraints after a non-numeric datatype.
+                // Assumes the order in shape.expressions();
+                // First, remember the DatatypeConstraint
+                if ( expr instanceof DatatypeConstraint ) {
+                    dtConstraint = (DatatypeConstraint)expr;
+                    continue;
+                }
+
+                if ( dtConstraint != null ) {
+                    if ( expr instanceof NumLengthConstraint || expr instanceof NumRangeConstraint ) {
+                        RDFDatatype rdfDT = dtConstraint.getRDFDatatype();
+                        if ( ! ( rdfDT instanceof XSDDatatype ) ) {
+                            String msg = format("Numeric facet: Not a numeric: <%s> ", dtConstraint.getDatatypeURI());
+                            throw new ShexParseException(msg, -1, -1);
+                        }
+                        if ( ! XSDFuncOp.isNumericDatatype((XSDDatatype)rdfDT) ) {
+                            String msg = format("Numeric facet: Not an XSD numeric: <%s> ", dtConstraint.getDatatypeURI());
+                            throw new ShexParseException(msg, -1, -1);
+                        }
+                    }
+                }
+            }
         }
     }
 

@@ -24,6 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SysShex {
+
+    public static boolean STRICT = true;
+
     public static String URI = "org.apache.jena.shex";
     public static Logger log = LoggerFactory.getLogger("org.apache.jena.shex.shex");
 

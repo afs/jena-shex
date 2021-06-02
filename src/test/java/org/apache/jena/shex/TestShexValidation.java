@@ -22,13 +22,13 @@ import org.apache.jena.arq.junit.manifest.Manifests;
 import org.apache.jena.arq.junit.runners.Label;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.riot.SysRIOT;
-import org.apache.jena.shex.runner.RunnerShex;
+import org.apache.jena.shex.runner.RunnerShexValidation;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-@RunWith(RunnerShex.class)
-@Label("Shex")
+@RunWith(RunnerShexValidation.class)
+@Label("Shex Validation")
 @Manifests({
     "files/spec/validation/manifest.ttl"
 })
@@ -45,16 +45,10 @@ public class TestShexValidation {
     public static void beforeClass() {
         logLevel = LogCtl.getLevel(SysRIOT.getLogger());
         LogCtl.setLevel(SysRIOT.getLogger(), "ERROR");
-//        bVerboseWarnings = NodeValue.VerboseWarnings;
-//        bWarnOnUnknownFunction = E_Function.WarnOnUnknownFunction;
-//        NodeValue.VerboseWarnings = false;
-//        E_Function.WarnOnUnknownFunction = false;
     }
 
     @AfterClass
     public static void afterClass() {
-//        NodeValue.VerboseWarnings = bVerboseWarnings;
-//        E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction;
         LogCtl.setLevel(SysRIOT.getLogger(), logLevel);
     }
 }

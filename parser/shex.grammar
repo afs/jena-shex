@@ -2,6 +2,14 @@ ShEx 2.1
 Differs from:
 https://github.com/shexSpec/grammar/blob/master/ShExDoc.g4
 
+&label : tripleExprLabel
+('$' tripleExprLabel)
+
+& --points to--> $
+
+'@' shapeExprLabel
+@ --points to--> a named shpe.
+
 [1]     shexDoc                ::=      directive* ((notStartAction | startActions) statement*)?
 [2]     directive              ::=      baseDecl | prefixDecl | importDecl
 [3]     baseDecl               ::=      "BASE" IRIREF

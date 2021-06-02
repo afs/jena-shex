@@ -32,7 +32,8 @@ public class ShexValidation {
 
     /** Validate data using a collection of shapes and a shape map */
     public static ValidationReport validate(Graph graph, ShexShapes shapes, ShexShapeMap shapeMap) {
-        ValidationContext vCxt = new ValidationContext(graph, shapes.withImports());
+        shapes = shapes.importsClosure();
+        ValidationContext vCxt = new ValidationContext(graph, shapes);
         shapeMap.entries().forEach(e->{
             List<Node> focusNodes;
             if ( e.node != null ) {
@@ -57,7 +58,7 @@ public class ShexValidation {
     /** Validate a specific node (the focus), with a specific shape in a set of shapes. */
     public static ValidationReport validate(Graph graphData, ShexShapes shapes, Node shapeRef, Node focus) {
         Objects.requireNonNull(shapeRef);
-        shapes = shapes.withImports();
+        shapes = shapes.importsClosure();
         ValidationContext vCxt = new ValidationContext(graphData, shapes);
         boolean rtn = validationStep(vCxt, shapeRef, focus);
         if ( rtn )
@@ -69,7 +70,7 @@ public class ShexValidation {
     /** Validate a specific node (the focus), against a shape. */
     public static ValidationReport validate(Graph graphData, ShexShapes shapes, ShexShape shape, Node focus) {
         Objects.requireNonNull(shape);
-        shapes = shapes.withImports();
+        shapes = shapes.importsClosure();
         ValidationContext vCxt = new ValidationContext(graphData, shapes);
         vCxt.startValidate(shape, focus);
         boolean b = shape.satisfies(vCxt, focus);

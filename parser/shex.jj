@@ -45,11 +45,11 @@ PARSER_BEGIN(ShExJavacc)
  * limitations under the License.
  */
 
-package shex.parser.javacc;
+package org.apache.jena.shex.parser.javacc;
 
-import static shex.SysShex.*;
-import shex.parser.*;
-import shex.expressions.*;
+import static org.apache.jena.shex.sys.SysShex.*;
+import org.apache.jena.shex.parser.*;
+import org.apache.jena.shex.expressions.*;
 import org.apache.jena.graph.*;
 import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 import java.util.*;
@@ -257,8 +257,9 @@ void shapeRef() : { Token t ; Node ref; }
 void litNodeConstraint() : { String str; Token t; int idx; } {
   { idx = startLiteralNodeConstraint(token.beginLine, token.beginColumn); }
   (
-    t = <LITERAL>  (xsFacet())*
+    t = <LITERAL>
     { cNodeKind(t.image, t.beginLine, t.beginColumn); }
+    (xsFacet())*
   | str = datatype()
     { cDatatype(str, token.beginLine, token.beginColumn); }
     (xsFacet())*

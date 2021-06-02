@@ -19,18 +19,10 @@
 package org.apache.jena.shex.runner;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.function.BiPredicate;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
@@ -39,46 +31,29 @@ import org.apache.jena.shex.parser.ShexParser;
 import org.junit.runners.model.InitializationError;
 
 public class RunnerShexSyntax extends AbstractRunnerFiles {
+
     public RunnerShexSyntax(Class<? > klass) throws InitializationError {
-        super(klass, RunnerShexSyntax::makeShexBadSyntaxTest);
+        super(klass, RunnerShexSyntax::makeShexBadSyntaxTest, includes(), excludes());
+    }
+
+    private static Set<String> includes() {
+        Set<String> includes = new HashSet<>();
+        return includes;
+    }
+
+    private static Set<String> excludes() {
+        Set<String> excludes = new HashSet<>();
+
+        // Contains \ud800 (ill-formed surrogate pair)
+        excludes.add("1refbnode_with_spanning_PN_CHARS_BASE1.shex");
+        // Contains \u0d00 (ill-formed surrogate pair)
+        excludes.add("_all.shex");
+
+        return excludes;
     }
 
     public static Runnable makeShexBadSyntaxTest(String filename) {
         return ()->shapesFromFileBadSyntax(filename);
-    }
-
-    @Override
-    protected List<String> getFiles(String directory) {
-        Path src = Paths.get(directory);
-        BiPredicate<Path, BasicFileAttributes> predicate = (path,attr)->attr.isRegularFile() && path.toString().endsWith(".shex");
-
-        Set<String> excludes = new HashSet<>();
-        Set<String> includes = new HashSet<>();
-
-        // Contains \ud800 (ill-formed surrogate pair)
-        excludes.add("1refbnode_with_spanning_PN_CHARS_BASE1.shex");
-
-        // Contains \u0d00 (ill-formed surrogate pair)
-        excludes.add("_all.shex");
-
-
-        List<String> files = new ArrayList<>();
-
-        if ( includes.isEmpty() ) {
-            try {
-                Files.find(src, 1, predicate)
-                    .filter(p-> ! excludes.contains(p.getFileName().toString()))
-                    .sorted()
-                    .map(Path::toString)
-                    .forEach(files::add);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-//        // -- Make parameters
-//        includes.forEach(fn->files.add(fn));
-        return files;
     }
 
     public static ShexShapes shapesFromFileBadSyntax(String filename) {

@@ -35,14 +35,18 @@ public class ShexShape {
     private ShapeExpression shExpression;
 
     // [shex] Future : builder.
-    public ShexShape(Node label) {
+    public ShexShape(Node label, ShapeExpression shExpression) {
         this.label = label;
+        this.shExpression = shExpression;
     }
 
-    public Node getLabel() { return label; }
+    public Node getLabel() {
+        return label;
+    }
 
-    public void setShapeExpression(ShapeExpression shExpression) { this.shExpression = shExpression; }
-    public ShapeExpression getShapeExpression() { return shExpression; }
+    public ShapeExpression getShapeExpression() {
+        return shExpression;
+    }
 
     public boolean satisfies(ValidationContext vCxt, Node data) {
         vCxt.startValidate(this, data);

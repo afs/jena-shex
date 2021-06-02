@@ -58,7 +58,7 @@ public
         int N = tripleExprs.size();
         for ( int i = 0 ; i < N ; i++ ) {
             TripleExpression tExpr = tripleExprs.get(i);
-            Set<Node> pred = ShapeEval.findPredicates(tExpr);
+            Set<Node> pred = ShapeEval.findPredicates(vCxt, tExpr);
             //exprIdxToPredicates.add(pred);
             for ( Node p : pred )
                 predicateToTripleExprs.put(p, i);

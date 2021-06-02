@@ -33,7 +33,7 @@ import org.apache.jena.shex.*;
 import org.apache.jena.shex.expressions.PLib;
 import org.apache.jena.shex.extra.Extra;
 
-/** A Shex validation test. Created by {@link RunnerShex}.  */
+/** A Shex validation test. Created by {@link RunnerShexValidation}.  */
 public class ShexValidationTest implements Runnable {
 
     private final ManifestEntry entry;

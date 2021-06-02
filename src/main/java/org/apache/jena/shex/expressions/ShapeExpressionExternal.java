@@ -23,19 +23,18 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shex.sys.ValidationContext;
 
-/** A shape expression that is always true. For example "{ . }"  */
-public class ShapeExpressionTrue extends ShapeExpression {
+public class ShapeExpressionExternal extends ShapeExpression {
 
-    public ShapeExpressionTrue() {}
-
-    @Override
-    public void print(IndentedWriter out, NodeFormatter nFmt) {
-        out.println(toString());
-    }
+    public ShapeExpressionExternal() { }
 
     @Override
     public boolean satisfies(ValidationContext vCxt, Node data) {
-        return true;
+        return false;
+    }
+
+    @Override
+    public void print(IndentedWriter out, NodeFormatter nFmt) {
+        out.println("EXTERNAL");
     }
 
     @Override
@@ -45,11 +44,11 @@ public class ShapeExpressionTrue extends ShapeExpression {
 
     @Override
     public int hashCode() {
-        return 59;
+        return 61;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public  boolean equals(Object obj) {
         if ( this == obj )
             return true;
         if ( obj == null )
@@ -60,5 +59,7 @@ public class ShapeExpressionTrue extends ShapeExpression {
     }
 
     @Override
-    public String toString() { return "ShapeExpressionNoOp"; }
+    public String toString() {
+        return "ShapeExpressionExternal []";
+    }
 }

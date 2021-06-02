@@ -42,6 +42,11 @@ public class ShapeExpressionFalse extends ShapeExpression {
     }
 
     @Override
+    public void visit(ShapeExpressionVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    @Override
     public int hashCode() {
         return 58;
     }

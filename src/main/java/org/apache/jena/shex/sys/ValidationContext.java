@@ -27,9 +27,9 @@ import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.shex.*;
+import org.apache.jena.shex.expressions.TripleExpression;
 
 public class ValidationContext {
-    // "Share" with SHACL?
     private final ShexShapes shapes;
     private final Graph data;
     private boolean verbose = false;
@@ -55,6 +55,14 @@ public class ValidationContext {
         this.shapes = shapes;
         if ( progress != null )
             this.inProgress.addAll(progress);
+    }
+
+    public TripleExpression getTripleExpression(Node label) {
+        return shapes.getTripleExpression(label);
+    }
+
+    public ShexShapes getShapes() {
+        return shapes;
     }
 
     public ShexShape getShape(Node label) {

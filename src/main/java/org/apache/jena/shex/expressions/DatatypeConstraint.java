@@ -53,6 +53,14 @@ public class DatatypeConstraint extends NodeConstraint {
         this.rdfDatatype = NodeFactory.getType(dtURI);
     }
 
+    public String getDatatypeURI() {
+        return dtURI;
+    }
+
+    public RDFDatatype getRDFDatatype() {
+        return rdfDatatype;
+    }
+
     @Override
     public ReportItem nodeSatisfies(ValidationContext vCxt, Node n) {
         if ( n.isLiteral() && dtURI.equals(n.getLiteralDatatypeURI()) ) {
@@ -86,6 +94,11 @@ public class DatatypeConstraint extends NodeConstraint {
             nFmt.format(out, datatype);
         }
         out.println("]");
+    }
+
+    @Override
+    public void visit(ShapeExpressionVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override

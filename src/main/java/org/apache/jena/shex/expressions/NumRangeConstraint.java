@@ -73,6 +73,11 @@ public class NumRangeConstraint extends NodeConstraint {
     }
 
     @Override
+    public void visit(ShapeExpressionVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(numericValue, rangeKind, value);
     }

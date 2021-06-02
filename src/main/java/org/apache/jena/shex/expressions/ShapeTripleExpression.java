@@ -62,6 +62,8 @@ public class ShapeTripleExpression extends ShapeExpression {
         this.tripleExpr = tripleExpr;
     }
 
+    public TripleExpression getTripleExpr() { return tripleExpr; }
+
     @Override
     public boolean satisfies(ValidationContext vCxt, Node node) {
         // Pass extras
@@ -87,6 +89,11 @@ public class ShapeTripleExpression extends ShapeExpression {
             iOut.println("<none>");
         iOut.decIndent();
         iOut.decIndent();
+    }
+
+    @Override
+    public void visit(ShapeExpressionVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override

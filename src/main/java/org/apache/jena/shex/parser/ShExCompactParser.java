@@ -53,23 +53,21 @@ public class ShExCompactParser extends LangParserBase {
         this.out = IndentedWriter.clone(IndentedWriter.stdout);
     }
 
-    // -- Top level shapes.
+    // -- All the top level shapes, as seen in order.
     private List<ShexShape> shapes = new ArrayList<>();
+    // The distinguished start shape. This is also in the list of all shapes.
+    private ShexShape startShape = null;
     private List<String> imports = null;
 
     // The shape currently in progress.
-    // [shex] Shape.newBuilder.
-    private ShexShape currentShexShape = null;
+    private Node currentShexShapeLabel = null;
+    // TripleExpression references
     private Map<Node, TripleExpression> tripleExprRefs = new HashMap<>();
-
-    // [shex] Switch to this: Unused ATM.
-    private ShapeTripleExpression.Builder currentShapeBuilder = null;
 
     // Stack of shape expressions used during parsing a top level shape.
     private Deque<ShapeExpression> shapeExprStack = new ArrayDeque<>();
     private ShapeExpression currentShapeExpression() { return peek(shapeExprStack); }
 
-    // Stack of shape expressions used during parsing a top level shape.
     private Deque<TripleExpression> tripleExprStack = new ArrayDeque<>();
     private TripleExpression currentTripleExpression() { return peek(tripleExprStack); }
 
@@ -80,14 +78,7 @@ public class ShExCompactParser extends LangParserBase {
         }
     }
 
-    // [shex] adapter
-    @Override
-    protected Node createURI(String iriStr, int line, int column) {
-        return super.profile.createURI(iriStr, line, column);
-    }
-
     // Convert exceptions, if necessary.
-
     protected String unescapeStr(String lex, int line, int column) {
         return convert(()->LangParserLib.unescapeStr(lex, line, column), line, column);
     }
@@ -116,13 +107,12 @@ public class ShExCompactParser extends LangParserBase {
     public void parseShapesStart() { }
 
     public ShexShapes parseShapesFinish() {
-        // XXX Bind/check refs.
         // Check stacks empty.
-        if ( currentShexShape != null )
+        if ( currentShexShapeLabel != null )
             throw new InternalErrorException("shape in-progress");
         if (! shapeExprStack.isEmpty() )
             throw new InternalErrorException("shape expresion stack not empty");
-        return new ShexShapes(super.profile.getPrefixMap(), shapes, imports);
+        return ShexShapes.shapes(super.profile.getPrefixMap(), startShape, shapes, imports, tripleExprRefs);
     }
 
     protected void imports(String iri, int line, int column) {
@@ -148,15 +138,13 @@ public class ShExCompactParser extends LangParserBase {
     // [shex] Shape.newBuilder
     protected void finishShapeExprDecl() {
         ShapeExpression sExpr = finishShapeExpressionTop();
-        currentShexShape.setShapeExpression(sExpr);
-        shapes.add(currentShexShape);
-        currentShexShape = null;
+        newShape(sExpr);
         finish("ShapeExprDecl");
     }
 
     protected void shapeExprDecl(Node label, int line, int column) {
         debug("shape label: %s", label);
-        currentShexShape = new ShexShape(label);
+        currentShexShapeLabel = label;
     }
 
     protected void shapeExternal() {
@@ -166,17 +154,21 @@ public class ShExCompactParser extends LangParserBase {
     // Start of top level shape, "start="
     protected void startStartClause() {
         start("StartClause");
-        // [shex] Constant
-        currentShexShape = new ShexShape(SysShex.startNode);
+        currentShexShapeLabel = SysShex.startNode;
         startShapeExpressionTop();
     }
 
     protected void finishStartClause() {
         ShapeExpression sExpr = finishShapeExpressionTop();
-        currentShexShape.setShapeExpression(sExpr);
-        shapes.add(currentShexShape);
-        currentShexShape = null;
+        startShape = newShape(sExpr);
         finish("StartClause");
+    }
+
+    private ShexShape newShape(ShapeExpression sExpr) {
+        ShexShape newShexShape = new ShexShape(currentShexShapeLabel, sExpr);
+        shapes.add(newShexShape);
+        currentShexShapeLabel = null;
+        return newShexShape;
     }
 
     // ---- Shape expressions
@@ -445,13 +437,11 @@ public class ShExCompactParser extends LangParserBase {
             throw new InternalErrorException("TripleConstraint with multiple ShapeExpressions");
 
         ShapeExpression arg = args.get(0);
-        if ( args != null ) {
-            // Cardinality as argument.
-            TripleExpression tripleExpr = new TripleConstraint(label, predicate, reverse, arg, cardinality);
-            push(tripleExprStack, tripleExpr);
-            if ( label != null )
-                tripleExprRefs.put(label, tripleExpr);
-        }
+        // Cardinality as argument.
+        TripleExpression tripleExpr = new TripleConstraint(label, predicate, reverse, arg, cardinality);
+        push(tripleExprStack, tripleExpr);
+        if ( label != null )
+            tripleExprRefs.put(label, tripleExpr);
         finish("TripleConstraint");
     }
 
@@ -638,7 +628,7 @@ public class ShExCompactParser extends LangParserBase {
 
     protected void stringFacetLength(String str, int len) {
         StrLengthKind lengthType = StrLengthKind.create(str);
-        NodeConstraint nodeConstraint = new StrLengthConstraint(lengthType, len);
+        NodeConstraint nodeConstraint = StrLengthConstraint.create(lengthType, len);
         addNodeConstraint(nodeConstraint);
     }
 
@@ -664,7 +654,7 @@ public class ShExCompactParser extends LangParserBase {
 
     protected void ampTripleExprLabel(Node ref) {
         debug("& TripleExprLabel");
-        push(tripleExprStack, new TripleExpressionRef(tripleExprRefs, ref));
+        push(tripleExprStack, new TripleExpressionRef(ref));
     }
 
     // ---- Stacks

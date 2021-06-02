@@ -21,69 +21,46 @@ package org.apache.jena.shex.runner;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.function.BiPredicate;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.shex.ShexShapes;
 import org.apache.jena.shex.parser.ShexParseException;
 import org.apache.jena.shex.parser.ShexParser;
+import org.apache.jena.shex.sys.SysShex;
 import org.junit.runners.model.InitializationError;
 
 public class RunnerShexBadSyntax extends AbstractRunnerFiles {
+
     public RunnerShexBadSyntax(Class<? > klass) throws InitializationError {
-        super(klass, RunnerShexBadSyntax::makeShexSyntaxTest);
+        super(klass, RunnerShexBadSyntax::makeShexSyntaxTest, includes(), excludes());
+    }
+
+    private static Set<String> includes() {
+        Set<String> includes = new HashSet<>();
+        return includes;
+    }
+
+    private static Set<String> excludes() {
+        Set<String> excludes = new HashSet<>();
+
+        if ( ! SysShex.STRICT ) {
+            // 2 length constraints of the same kind.
+            excludes.add("1iriLength2.shex");
+            excludes.add("1literalLength2.shex");
+            // Unknown datatype, followed by numeric facet
+            excludes.add("1unknowndatatypeMaxInclusive.shex");
+        }
+
+        return excludes;
     }
 
     public static Runnable makeShexSyntaxTest(String filename) {
         return ()->fileBadSyntax(filename);
-    }
-
-    @Override
-    protected List<String> getFiles(String directory) {
-        Path src = Paths.get(directory);
-        BiPredicate<Path, BasicFileAttributes> predicate = (path,attr)->attr.isRegularFile() && path.toString().endsWith(".shex");
-
-        Set<String> excludes = new HashSet<>();
-
-        // Bad facets. Needs more work.
-        // [shex] post parse processing rules.
-//        excludes.add("1iriLength2.shex");
-//        excludes.add("1literalLength2.shex");
-//        excludes.add("1unknowndatatypeMaxInclusive.shex");
-
-        //---- Exclusions
-
-        // -- Explicit inclusions
-        List<String> files = new ArrayList<>();
-        Set<String> includes = new HashSet<>();
-
-        if ( includes.isEmpty() ) {
-            try {
-                Files.find(src, 1, predicate)
-                .filter(p-> ! excludes.contains(p.getFileName().toString()))
-                .sorted()
-                .map(Path::toString)
-                .forEach(files::add);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-//        // -- Make parameters
-//        includes.forEach(fn->files.add(fn));
-        return files;
     }
 
     public static ShexShapes fileBadSyntax(String filename) {

@@ -44,6 +44,7 @@ public class TripleConstraint extends TripleExpression {
     }
      */
 
+    private final Node label;
     private final Node predicate;
     // [shex] Move to a block of constraints object
     private final ShapeExpression shapeExpression;
@@ -54,6 +55,7 @@ public class TripleConstraint extends TripleExpression {
 
     public TripleConstraint(Node label, Node predicate, boolean reverse, ShapeExpression valueExpr, Cardinality cardinality) {
         super();
+        this.label = label;
         this.predicate = predicate;
         this.reverse = reverse;
         this.shapeExpression = valueExpr;
@@ -66,6 +68,10 @@ public class TripleConstraint extends TripleExpression {
         if ( cardinality == null )
             return "";
         return cardinality.image;
+    }
+
+    public Node label() {
+        return label;
     }
 
     public int min() {
@@ -99,7 +105,12 @@ public class TripleConstraint extends TripleExpression {
 
     @Override
     public void print(IndentedWriter iOut, NodeFormatter nFmt) {
-        iOut.println("TripleConstraint {");
+        iOut.print("TripleConstraint");
+        if ( label != null ) {
+            iOut.print(" $");
+            nFmt.format(iOut, label);
+        }
+        iOut.println(" {");
         iOut.incIndent();
         iOut.printf("predicate = ");
         if ( reverse )
@@ -142,7 +153,10 @@ public class TripleConstraint extends TripleExpression {
         String cardStr = "";
         if ( ! cardinalityString().isEmpty() )
             cardStr = "cardinality="+cardinalityString()+", ";
-        return "TripleConstraint [predicate=" + predicate + ", "+cardStr+"shapeExpr=" + shapeExpression + "]";
+        String s = "TripleConstraint";
+        if ( label != null )
+            s = s+"($"+label+")";
+        return s+ " [predicate=" + predicate + ", "+cardStr+"shapeExpr=" + shapeExpression + "]";
     }
 
 }

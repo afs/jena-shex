@@ -56,6 +56,8 @@ public abstract class ShapeExpression {
         return x.asString();
     }
 
+    public abstract void visit(ShapeExpressionVisitor visitor);
+
     @Override
     public abstract int hashCode();
 

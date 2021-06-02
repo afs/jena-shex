@@ -17,7 +17,7 @@
 
 # Parser builder
 
-DIR="../src/main/java/shex/parser/javacc"
+DIR="../src/main/java/org/apache/jena/shex/parser/javacc"
 FILE="shex.jj"
 CLASS=ShExJavacc
 
