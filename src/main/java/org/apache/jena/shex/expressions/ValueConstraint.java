@@ -19,6 +19,7 @@
 package org.apache.jena.shex.expressions;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
@@ -75,23 +76,29 @@ public class ValueConstraint extends NodeConstraint {
     }
 
     @Override
-    public void visit(ShapeExpressionVisitor visitor) {
+    public void visit(ShapeExprVisitor visitor) {
         visitor.visit(this);
-    }
-
-    // [shex] hashCode and equals.
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return false;
     }
 
     @Override
     public String toString() {
         return "ValueConstraint"+asString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(valueSetRanges);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        ValueConstraint other = (ValueConstraint)obj;
+        return Objects.equals(valueSetRanges, other.valueSetRanges);
     }
 }

@@ -18,16 +18,16 @@
 
 package org.apache.jena.shex.expressions;
 
-public interface ShapeExpressionVisitor {
-    public default void visit(ShapeExpressionAND shape) {}
-    public default void visit(ShapeExpressionOR shape) {}
-    public default void visit(ShapeExpressionNOT shape) {}
-    public default void visit(ShapeExpressionFalse shape) {}
-    public default void visit(ShapeExpressionNone shape) {}
-    public default void visit(ShapeExpressionRef shape) {}
-    public default void visit(ShapeExpressionTrue shape) {}
-    public default void visit(ShapeExpressionExternal shape) {}
-    public default void visit(ShapeTripleExpression shape) {}
+public interface ShapeExprVisitor {
+    public default void visit(ShapeExprAND shape) {}
+    public default void visit(ShapeExprOR shape) {}
+    public default void visit(ShapeExprNOT shape) {}
+    public default void visit(ShapeExprFalse shape) {}
+    public default void visit(ShapeExprNone shape) {}
+    public default void visit(ShapeExprRef shape) {}
+    public default void visit(ShapeExprTrue shape) {}
+    public default void visit(ShapeExprExternal shape) {}
+    public default void visit(ShapeExprTripleExpr shape) {}
 
     public default void visit(StrRegexConstraint constraint) {}
     public default void visit(StrLengthConstraint constraint) {}

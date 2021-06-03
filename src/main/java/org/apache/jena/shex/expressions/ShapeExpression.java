@@ -56,16 +56,14 @@ public abstract class ShapeExpression {
         return x.asString();
     }
 
-    public abstract void visit(ShapeExpressionVisitor visitor);
+    public abstract void visit(ShapeExprVisitor visitor);
+
+    @Override
+    public abstract String toString();
 
     @Override
     public abstract int hashCode();
 
     @Override
     public abstract boolean equals(Object obj);
-
-    @Override
-    public String toString() {
-        return "ShapeExpression ["+this.getClass().getSimpleName()+"]";
-    }
 }

@@ -97,7 +97,7 @@ public class DatatypeConstraint extends NodeConstraint {
     }
 
     @Override
-    public void visit(ShapeExpressionVisitor visitor) {
+    public void visit(ShapeExprVisitor visitor) {
         visitor.visit(this);
     }
 
@@ -116,8 +116,6 @@ public class DatatypeConstraint extends NodeConstraint {
 
         return "Datatype["+x+"]";
     }
-
-
 
     @Override
     public int hashCode() {

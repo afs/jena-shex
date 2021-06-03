@@ -80,8 +80,13 @@ public class StrLengthConstraint extends NodeConstraint {
     }
 
     @Override
-    public void visit(ShapeExpressionVisitor visitor) {
+    public void visit(ShapeExprVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        return "StrLength["+lengthType.label()+" "+length+"]";
     }
 
     @Override
@@ -99,10 +104,5 @@ public class StrLengthConstraint extends NodeConstraint {
             return false;
         StrLengthConstraint other = (StrLengthConstraint)obj;
         return length == other.length && lengthType == other.lengthType;
-    }
-
-    @Override
-    public String toString() {
-        return "StrLength["+lengthType.label()+" "+length+"]";
     }
 }

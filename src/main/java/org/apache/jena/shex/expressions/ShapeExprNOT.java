@@ -18,37 +18,64 @@
 
 package org.apache.jena.shex.expressions;
 
+import java.util.Objects;
+
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.shex.ReportItem;
 import org.apache.jena.shex.sys.ValidationContext;
 
-/** Absence of a shape expression. For example, the outcome of "{}" */
-public class ShapeExpressionNone extends ShapeExpression {
+public class ShapeExprNOT extends ShapeExpression {
 
-    private static ShapeExpression instance = new ShapeExpressionNone();
-    public static ShapeExpression get() { return instance ; }
+//    public static ShapeExpression create(List<ShapeExpression> args) {
+//        if ( args.size() == 0 )
+//            return null;
+//        if ( args.size() != 1 )
+//            throw new InternalErrorException("ShapeExprNOT.create");
+//        ShapeExpression shapeExpr = args.get(0);
+//        return new ShapeExpressionNOT(shapeExpr);
+//    }
+    private final ShapeExpression other;
 
-    private ShapeExpressionNone() {}
+    public ShapeExprNOT(ShapeExpression shapeExpression) {
+        this.other = shapeExpression;
+    }
 
     @Override
     public boolean satisfies(ValidationContext vCxt, Node data) {
-        return true;
+        ValidationContext vCxt2 = ValidationContext.create(vCxt);
+        boolean innerSatisfies = other.satisfies(vCxt2, data);
+        if ( ! innerSatisfies )
+            return true;
+        ReportItem item = new ReportItem("NOT: Term reject because it conforms", data);
+        vCxt.reportEntry(item);
+        return false;
+    }
+
+    public ShapeExpression subShape() {
+        return other;
     }
 
     @Override
-    public void print(IndentedWriter out, NodeFormatter nFmt) {
-        out.println(toString());
-    }
-
-    @Override
-    public void visit(ShapeExpressionVisitor visitor) {
+    public void visit(ShapeExprVisitor visitor) {
         visitor.visit(this);
     }
 
     @Override
+    public void print(IndentedWriter out, NodeFormatter nFmt) {
+        out.print("NOT ");
+        other.print(out, nFmt);
+    }
+
+    @Override
+    public String toString() {
+        return "ShapeExprNOT["+other+"]";
+    }
+
+    @Override
     public int hashCode() {
-        return 60;
+        return Objects.hash(other);
     }
 
     @Override
@@ -59,9 +86,7 @@ public class ShapeExpressionNone extends ShapeExpression {
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        return true;
+        ShapeExprNOT other = (ShapeExprNOT)obj;
+        return Objects.equals(this.other, other.other);
     }
-
-    @Override
-    public String toString() { return "ShapeExpressionNone"; }
 }

@@ -184,7 +184,7 @@ public class ShExCompactParser extends LangParserBase {
 
     private ShapeExpression finishShapeExpressionTop() {
         if ( shapeExprStack.isEmpty() )
-            return ShapeExpressionNone.get();
+            return ShapeExprNone.get();
 
         ShapeExpression sExpr = pop(shapeExprStack);
         if ( DEBUG ) {
@@ -296,7 +296,7 @@ public class ShExCompactParser extends LangParserBase {
     }
 
     protected void finishShapeOr(Inline inline, int idx) {
-        finishShapeOp(idx, ShapeExpressionOR::create);
+        finishShapeOp(idx, ShapeExprOR::create);
         finish(inline, "ShapeOr");
     }
 
@@ -306,7 +306,7 @@ public class ShExCompactParser extends LangParserBase {
     }
 
     protected void finishShapeAnd(Inline inline, int idx) {
-        finishShapeOp(idx, ShapeExpressionAND::create);
+        finishShapeOp(idx, ShapeExprAND::create);
         finish(inline, "ShapeAnd");
     }
 
@@ -321,7 +321,7 @@ public class ShExCompactParser extends LangParserBase {
             throw new InternalErrorException("Shape NOT - multiple items on the stack");
         if ( negate && ! shapeExprStack.isEmpty() ) {
             ShapeExpression shExpr = pop(shapeExprStack);
-            ShapeExpression shExpr2 = new ShapeExpressionNOT(shExpr);
+            ShapeExpression shExpr2 = new ShapeExprNOT(shExpr);
             push(shapeExprStack, shExpr2);
         }
         finish(inline, "ShapeNot");
@@ -334,18 +334,18 @@ public class ShExCompactParser extends LangParserBase {
 
     protected void finishShapeAtom(Inline inline, int idx) {
         //Gather NodeConstraints parts, Kind, datatype and facets, together.
-        finishShapeOp(idx, ShapeExpressionAND::create);
+        finishShapeOp(idx, ShapeExprAND::create);
         //finishShapeOpNoAction("ShapeAtom", idx);
         finish(inline, "ShapeAtom");
     }
 
     protected void shapeAtomDOT() {
-        push(shapeExprStack, new ShapeExpressionTrue());
+        push(shapeExprStack, new ShapeExprTrue());
     }
 
     protected void shapeReference(Node ref) {
         debug("shapeReference");
-        push(shapeExprStack, new ShapeExpressionRef(ref));
+        push(shapeExprStack, new ShapeExprRef(ref));
     }
 
     protected void startShapeDefinition() {
@@ -355,8 +355,8 @@ public class ShExCompactParser extends LangParserBase {
     // [shex] Pass builder in at startShapeDefinition.
     protected void finishShapeDefinition(TripleExpression tripleExpr, List<Node> extras, boolean closed) {
         if ( tripleExpr == null )
-            tripleExpr = TripleExpressionNone.get();
-        ShapeTripleExpression shape = ShapeTripleExpression.newBuilder()
+            tripleExpr = TripleExprNone.get();
+        ShapeExprTripleExpr shape = ShapeExprTripleExpr.newBuilder()
                 //.label(???)
                 .closed(closed)
                 .extras(extras)
@@ -372,7 +372,7 @@ public class ShExCompactParser extends LangParserBase {
     }
 
     protected TripleExpression finishTripleExpression(int idx) {
-        finishTripleOp(idx, TripleExpressionOneOf::create);
+        finishTripleOp(idx, TripleExprOneOf::create);
         TripleExpression tripleExpr = pop(tripleExprStack);
         finish("TripleExpression");
         return tripleExpr;
@@ -386,7 +386,7 @@ public class ShExCompactParser extends LangParserBase {
     }
 
     protected void finishTripleExpressionClause(int idx) {
-        finishTripleOp(idx, TripleExpressionEachOf::create);
+        finishTripleOp(idx, TripleExprEachOf::create);
         finish("TripleExpressionClause");
     }
 
@@ -406,7 +406,7 @@ public class ShExCompactParser extends LangParserBase {
     protected void finishBracketedTripleExpr(Node label, TripleExpression tripleExpr, Cardinality cardinality) {
         TripleExpression tripleExpr2 = tripleExpr;
         if ( cardinality != null )
-            tripleExpr2 = new TripleExpressionCardinality(tripleExpr, cardinality);
+            tripleExpr2 = new TripleExprCardinality(tripleExpr, cardinality);
         push(tripleExprStack, tripleExpr2);
         if ( label != null )
             tripleExprRefs.put(label, tripleExpr2);
@@ -426,7 +426,7 @@ public class ShExCompactParser extends LangParserBase {
         List<ShapeExpression> args = finishShapeOp(idx);
         // [shex] Remove!
         if ( args == null ) {
-            TripleExpression tripleExpr = TripleExpressionNone.get();
+            TripleExpression tripleExpr = TripleExprNone.get();
             push(tripleExprStack, tripleExpr);
             if ( label != null )
                 tripleExprRefs.put(label, tripleExpr);
@@ -654,7 +654,7 @@ public class ShExCompactParser extends LangParserBase {
 
     protected void ampTripleExprLabel(Node ref) {
         debug("& TripleExprLabel");
-        push(tripleExprStack, new TripleExpressionRef(ref));
+        push(tripleExprStack, new TripleExprRef(ref));
     }
 
     // ---- Stacks

@@ -18,6 +18,8 @@
 
 package org.apache.jena.shex.expressions;
 
+import java.util.Objects;
+
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
@@ -57,5 +59,23 @@ public class ValueSetItem {
         if ( isStem )
             str = str+"~";
         return str;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(iriStr, isStem, langStr, literal);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        ValueSetItem other = (ValueSetItem)obj;
+        return Objects.equals(iriStr, other.iriStr) && isStem == other.isStem && Objects.equals(langStr, other.langStr)
+               && Objects.equals(literal, other.literal);
     }
 }

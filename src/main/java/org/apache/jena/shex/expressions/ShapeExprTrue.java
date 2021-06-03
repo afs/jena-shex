@@ -18,45 +18,37 @@
 
 package org.apache.jena.shex.expressions;
 
-import java.util.Objects;
-
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
-import org.apache.jena.shex.ShexShape;
 import org.apache.jena.shex.sys.ValidationContext;
 
-/** Shape expression that redirects. */
-public class ShapeExpressionRef extends ShapeExpression {
-    private final Node ref;
+/** A shape expression that is always true. For example "{ . }"  */
+public class ShapeExprTrue extends ShapeExpression {
 
-    public ShapeExpressionRef(Node ref) { this.ref = ref; }
-
-    @Override
-    public boolean satisfies(ValidationContext vCxt, Node data) {
-        ShexShape shape = vCxt.getShape(ref);
-        if ( shape == null )
-            return false;
-        if ( vCxt.cycle(shape, data) )
-            return true;
-        return shape.satisfies(vCxt, data);
-    }
+    public ShapeExprTrue() {}
 
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {
-        out.print("ShapeRef: ");
-        out.print(PLib.displayStr(ref));
-        out.println();
+        out.println(toString());
     }
 
     @Override
-    public void visit(ShapeExpressionVisitor visitor) {
+    public boolean satisfies(ValidationContext vCxt, Node data) {
+        return true;
+    }
+
+    @Override
+    public void visit(ShapeExprVisitor visitor) {
         visitor.visit(this);
     }
 
     @Override
+    public String toString() { return "ShapeExprNoOp"; }
+
+    @Override
     public int hashCode() {
-        return Objects.hash(ref);
+        return ShexConst.hashShExprTrue;
     }
 
     @Override
@@ -67,12 +59,6 @@ public class ShapeExpressionRef extends ShapeExpression {
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        ShapeExpressionRef other = (ShapeExpressionRef)obj;
-        return Objects.equals(ref, other.ref);
-    }
-
-    @Override
-    public String toString() {
-        return "ShapeExpressionRef [ref="+ref+"]";
+        return true;
     }
 }

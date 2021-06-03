@@ -177,8 +177,8 @@ public class ShexParser {
 
     private static void validatePhase2(ShexShapes shapes, ShexShape shape) {
         ShapeExpression shExpr = shape.getShapeExpression();
-        ShapeExpressionVisitor checker = new CheckFacets();
-        TripleExpressionVisitor tExprVisitor = new TripleExpressionVisitor() {
+        ShapeExprVisitor checker = new CheckFacets();
+        TripleExprVisitor tExprVisitor = new TripleExprVisitor() {
             @Override public void visit(TripleConstraint object) {
                 // One level call of visitor.
                 //object.getPredicate();
@@ -190,10 +190,10 @@ public class ShexParser {
         ShexLib.walk(shExpr, checker, null);
     }
 
-    private static class CheckFacets implements ShapeExpressionVisitor {
+    private static class CheckFacets implements ShapeExprVisitor {
         // Inside TripleConstraint
         @Override
-        public void visit(ShapeExpressionAND shape) {
+        public void visit(ShapeExprAND shape) {
             List<ShapeExpression> elements = shape.expressions();
             Set<StrLengthKind> x = new HashSet<>(3);
             DatatypeConstraint dtConstraint = null;

@@ -18,27 +18,11 @@
 
 package org.apache.jena.shex.expressions;
 
-public abstract class TripleExpression implements ShexPrintable {
-
-    // tripleExpr = EachOf | OneOf | TripleConstraint | tripleExprRef
-
-    //cardinality, semActs, annotation.
-
-    // [shex] annotations
-    // [shex] semanticActions
-
-    protected TripleExpression() {}
-
-    public abstract void visit(TripleExprVisitor visitor);
-
-    @Override
-    public abstract int hashCode();
-
-    @Override
-    public abstract boolean equals(Object obj);
-
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName()+"[]";
-    }
+public interface TripleExprVisitor {
+    public default void visit(TripleExprCardinality object) {}
+    public default void visit(TripleExprEachOf object) {}
+    public default void visit(TripleExprOneOf object) {}
+    public default void visit(TripleExprNone object) {}
+    public default void visit(TripleExprRef object) {}
+    public default void visit(TripleConstraint object) {}
 }

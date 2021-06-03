@@ -19,36 +19,26 @@
 package org.apache.jena.shex.expressions;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
-import org.apache.jena.shex.sys.ValidationContext;
 
-public class ShapeExpressionExternal extends ShapeExpression {
+public class TripleExprNone extends TripleExpression {
+    private static TripleExpression instance = new TripleExprNone();
+    public static TripleExpression get() { return instance ; }
 
-    public ShapeExpressionExternal() { }
-
-    @Override
-    public boolean satisfies(ValidationContext vCxt, Node data) {
-        return false;
-    }
+    private TripleExprNone() { super(); }
 
     @Override
-    public void print(IndentedWriter out, NodeFormatter nFmt) {
-        out.println("EXTERNAL");
-    }
-
-    @Override
-    public void visit(ShapeExpressionVisitor visitor) {
+    public void visit(TripleExprVisitor visitor) {
         visitor.visit(this);
     }
 
     @Override
     public int hashCode() {
-        return 61;
+        return ShexConst.hashTripleExprNone;
     }
 
     @Override
-    public  boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if ( this == obj )
             return true;
         if ( obj == null )
@@ -59,7 +49,10 @@ public class ShapeExpressionExternal extends ShapeExpression {
     }
 
     @Override
-    public String toString() {
-        return "ShapeExpressionExternal []";
+    public void print(IndentedWriter out, NodeFormatter nFmt) {
+        out.println(toString());
     }
+
+    @Override
+    public String toString() { return "TripleExpressionNone"; }
 }

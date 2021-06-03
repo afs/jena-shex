@@ -70,8 +70,13 @@ public class NodeKindConstraint extends NodeConstraint {
     }
 
     @Override
-    public void visit(ShapeExpressionVisitor visitor) {
+    public void visit(ShapeExprVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        return "NodeKind: "+nodeKind.toString();
     }
 
     @Override
@@ -89,10 +94,5 @@ public class NodeKindConstraint extends NodeConstraint {
             return false;
         NodeKindConstraint other = (NodeKindConstraint)obj;
         return nodeKind == other.nodeKind;
-    }
-
-    @Override
-    public String toString() {
-        return "NodeKind: "+nodeKind.toString();
     }
 }

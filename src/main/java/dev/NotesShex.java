@@ -23,39 +23,31 @@ public class NotesShex {
     // Test Suite
 
 
-    // [ ] Merge test runners.
-    //     Shaes inclusion/exclusion code.
     // [ ] EachOf partition generation produce duplicates. -> algorithm H!
+    // [ ] Unlink from SHACL :: PLib
+    // [ ] negativeStructure tests
 
     // [x] TripleExpressionRef - a cross imported files.
     // [x] ShexMap
     //     JSON form (required by tests)
-    // [x] Syntax tests - convert to runner. includes and excludes.
-    // [ ] Unlink from SHACL :: PLib
-    // [x] resync tests
-    // [ ] negativeStructure tests
 
-    // ShexParser map operation to Shex.*
-
-    // [ ] Better imports - keep individual read in ShexShapes.
-    //     Need "all shapes" triple constraint and shape ref maps.
-    //     Parse to a list of ShexShapes, filter starts out when making the closure. Avoid churning maps.
-    //     Fix up PLib.print
+    // [x] Better imports - keep individual read in ShexShapes.
 
     // == Part 1
 
-    // [ ] ShapesMap
-    // [ ] Shape validation report
-    // [ ] Annotations
+    // [ ] **** Clean up ****
+    // [ ] Reporting.
+
+    // [x] ShapesMap
+    // [ ] Annotations (?)
     // [ ] Semantic Actions
 
     // [ ] Schema requirements (5.7), including only one START
     //     START - and check only one.
 
-    // "Note that ShEx uses a partitioning strategy to find a solution whereby
-    // triples in the data are assigned to triple constraints in the schema."
-
     // == Part 2
+
+    // [ ] Negative Structure
 
     // [ ] Extension "MAP{}" -- including via imports. TARGET { ... }
     // [ ] Compact writer
@@ -65,19 +57,9 @@ public class NotesShex {
     // [ ] test for XSDFuncOp.isNumberic??
     // [ ] test for ShexParserlib.unescapeShexRegex
 
-
-    // https://github.com/shexSpec/shex/wiki/Shape-Validation-Algorithm
     // https://github.com/hsolbrig/PyShEx/blob/master/pyshex/shape_expressions_language/p5_5_shapes_and_triple_expressions.py
 
     // [ ] Unicode [\uD800-\uDB7F][\uDC00-\uDFFF]
 
     // JUnit5? @TestFactory
-
-    // --- Nesting and structure
-    // [ ] Schema Requirements
-    // [ ] Terminology
-    // [ ] Annotations
-    // [ ] Semantic actions
-    // [ ] ShapeExpression -> ShapeExpr
-    // [ ] ShexConstraint-> ShexExpression
 }

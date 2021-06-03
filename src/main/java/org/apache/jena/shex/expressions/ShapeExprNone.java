@@ -18,33 +18,40 @@
 
 package org.apache.jena.shex.expressions;
 
-import java.util.Objects;
-
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.shex.sys.ValidationContext;
 
-public class TripleExpressionRef extends TripleExpression {
+/** Absence of a shape expression. For example, the outcome of "{}" */
+public class ShapeExprNone extends ShapeExpression {
 
-    private Node ref;
+    private static ShapeExpression instance = new ShapeExprNone();
+    public static ShapeExpression get() { return instance ; }
 
-    public TripleExpressionRef(Node node) {
-        super();
-        this.ref = node;
-    }
+    private ShapeExprNone() {}
 
-    public Node ref() {
-        return ref;
+    @Override
+    public boolean satisfies(ValidationContext vCxt, Node data) {
+        return true;
     }
 
     @Override
-    public void visit(TripleExpressionVisitor visitor) {
+    public void print(IndentedWriter out, NodeFormatter nFmt) {
+        out.println(toString());
+    }
+
+    @Override
+    public void visit(ShapeExprVisitor visitor) {
         visitor.visit(this);
     }
 
     @Override
+    public String toString() { return "ShapeExprNone"; }
+
+    @Override
     public int hashCode() {
-        return Objects.hash(ref);
+        return ShexConst.hashShExprNone;
     }
 
     @Override
@@ -55,19 +62,6 @@ public class TripleExpressionRef extends TripleExpression {
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        TripleExpressionRef other = (TripleExpressionRef)obj;
-        return Objects.equals(ref, other.ref);
-    }
-
-    @Override
-    public void print(IndentedWriter iOut, NodeFormatter nFmt) {
-        iOut.print("tripleExprRef: ");
-        nFmt.format(iOut, ref);
-        iOut.println();
-    }
-
-    @Override
-    public String toString() {
-        return "TripleExpressionRef["+PLib.displayStr(ref)+"]";
+        return true;
     }
 }

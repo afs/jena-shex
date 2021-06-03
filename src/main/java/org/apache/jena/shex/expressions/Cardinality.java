@@ -18,6 +18,7 @@
 
 package org.apache.jena.shex.expressions;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -102,5 +103,22 @@ public class Cardinality {
         if ( x == UNBOUNDED )
             return "*";
         return Integer.toString(x);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(image, max, min);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        Cardinality other = (Cardinality)obj;
+        return Objects.equals(image, other.image) && max == other.max && min == other.min;
     }
 }

@@ -19,6 +19,7 @@
 package org.apache.jena.shex.expressions;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
@@ -52,6 +53,23 @@ public class ValueSetRange {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(exclusions, item);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        ValueSetRange other = (ValueSetRange)obj;
+        return Objects.equals(exclusions, other.exclusions) && Objects.equals(item, other.item);
+    }
+
     // Spot the visitor pattern.
 
     private static boolean contains(ValueSetItem item, Node node) {
@@ -60,7 +78,6 @@ public class ValueSetRange {
         else
             return matchStem(item, node);
     }
-
 
     private static boolean matchExact(ValueSetItem item, Node node) {
         if ( item.langStr != null) {

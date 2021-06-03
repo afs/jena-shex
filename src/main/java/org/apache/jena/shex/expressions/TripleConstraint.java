@@ -99,7 +99,7 @@ public class TripleConstraint extends TripleExpression {
     }
 
     @Override
-    public void visit(TripleExpressionVisitor visitor) {
+    public void visit(TripleExprVisitor visitor) {
         visitor.visit(this);
     }
 

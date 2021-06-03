@@ -18,37 +18,33 @@
 
 package org.apache.jena.shex.expressions;
 
+import java.util.Objects;
+
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
-import org.apache.jena.shex.ReportItem;
-import org.apache.jena.shex.sys.ValidationContext;
 
-/** A shape expression that is always false.  */
-public class ShapeExpressionFalse extends ShapeExpression {
+public class TripleExprRef extends TripleExpression {
 
-    public ShapeExpressionFalse() {}
+    private Node ref;
 
-    @Override
-    public void print(IndentedWriter out, NodeFormatter nFmt) {
-        out.println(toString());
+    public TripleExprRef(Node node) {
+        super();
+        this.ref = node;
+    }
+
+    public Node ref() {
+        return ref;
     }
 
     @Override
-    public boolean satisfies(ValidationContext vCxt, Node data) {
-        ReportItem r = new ReportItem("False", data);
-        vCxt.reportEntry(r);
-        return false;
-    }
-
-    @Override
-    public void visit(ShapeExpressionVisitor visitor) {
+    public void visit(TripleExprVisitor visitor) {
         visitor.visit(this);
     }
 
     @Override
     public int hashCode() {
-        return 58;
+        return Objects.hash(ref);
     }
 
     @Override
@@ -59,9 +55,19 @@ public class ShapeExpressionFalse extends ShapeExpression {
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        return true;
+        TripleExprRef other = (TripleExprRef)obj;
+        return Objects.equals(ref, other.ref);
     }
 
     @Override
-    public String toString() { return "ShapeExpressionNoOp"; }
+    public void print(IndentedWriter iOut, NodeFormatter nFmt) {
+        iOut.print("tripleExprRef: ");
+        nFmt.format(iOut, ref);
+        iOut.println();
+    }
+
+    @Override
+    public String toString() {
+        return "TripleExpressionRef["+PLib.displayStr(ref)+"]";
+    }
 }

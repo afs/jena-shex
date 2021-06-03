@@ -18,14 +18,14 @@
 
 package org.apache.jena.shex.expressions;
 
-public class TripleExpressionWalker implements TripleExpressionVisitor {
+public class TripleExprWalker implements TripleExprVisitor {
 
-    private final TripleExpressionVisitor beforeVisitor;
-    private final TripleExpressionVisitor afterVisitor;
-    private final ShapeExpressionVisitor shapeVisitor;
+    private final TripleExprVisitor beforeVisitor;
+    private final TripleExprVisitor afterVisitor;
+    private final ShapeExprVisitor shapeVisitor;
 
-    public TripleExpressionWalker(TripleExpressionVisitor beforeVisitor, TripleExpressionVisitor afterVisitor,
-                                  ShapeExpressionVisitor shapeVisitor) {
+    public TripleExprWalker(TripleExprVisitor beforeVisitor, TripleExprVisitor afterVisitor,
+                                  ShapeExprVisitor shapeVisitor) {
         this.beforeVisitor = beforeVisitor;
         this.afterVisitor = afterVisitor;
         this.shapeVisitor = shapeVisitor;
@@ -42,33 +42,33 @@ public class TripleExpressionWalker implements TripleExpressionVisitor {
     }
 
     @Override
-    public void visit(TripleExpressionEachOf object) {
+    public void visit(TripleExprEachOf object) {
         before(object);
         object.expressions().forEach(tripleExpr->tripleExpr.visit(this));
         after(object);
     }
 
     @Override
-    public void visit(TripleExpressionOneOf object) {
+    public void visit(TripleExprOneOf object) {
         before(object);
         object.expressions().forEach(tripleExpr->tripleExpr.visit(this));
         after(object);
     }
 
     @Override
-    public void visit(TripleExpressionCardinality object) {
+    public void visit(TripleExprCardinality object) {
         before(object);
         object.target().visit(this);
         after(object);
 
     }
 
-    @Override public void visit(TripleExpressionNone object) {
+    @Override public void visit(TripleExprNone object) {
         before(object);
         after(object);
     }
 
-    @Override public void visit(TripleExpressionRef object) {
+    @Override public void visit(TripleExprRef object) {
         before(object);
         after(object);
     }

@@ -28,16 +28,16 @@ public class ShexLib {
         return uri.substring(idx);
     }
 
-    public static void walk(ShapeExpression shExpr, ShapeExpressionVisitor beforeVisitor, ShapeExpressionVisitor afterVisitor) {
-        ShapeExpressionWalker walker = new ShapeExpressionWalker(beforeVisitor, afterVisitor, null, null);
+    public static void walk(ShapeExpression shExpr, ShapeExprVisitor beforeVisitor, ShapeExprVisitor afterVisitor) {
+        ShapeExprWalker walker = new ShapeExprWalker(beforeVisitor, afterVisitor, null, null);
         shExpr.visit(walker);
     }
 
     public static void walk(ShapeExpression shExpr,
-                            ShapeExpressionVisitor beforeVisitor, ShapeExpressionVisitor afterVisitor,
-                            TripleExpressionVisitor beforeTripleExpressionVisitor, TripleExpressionVisitor afterTripleExpressionVisitor
+                            ShapeExprVisitor beforeVisitor, ShapeExprVisitor afterVisitor,
+                            TripleExprVisitor beforeTripleExpressionVisitor, TripleExprVisitor afterTripleExpressionVisitor
                             ) {
-        ShapeExpressionWalker walker = new ShapeExpressionWalker(beforeVisitor, afterVisitor,
+        ShapeExprWalker walker = new ShapeExprWalker(beforeVisitor, afterVisitor,
                                                                  beforeTripleExpressionVisitor,
                                                                  afterTripleExpressionVisitor);
         shExpr.visit(walker);

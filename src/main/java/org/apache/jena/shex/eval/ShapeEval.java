@@ -87,24 +87,24 @@ public class ShapeEval {
   }
 
     private static boolean matchesExpr(ValidationContext vCxt, Set<Triple> T, Node node, TripleExpression tripleExpr, Set<Node> extras) {
-        if ( tripleExpr instanceof TripleExpressionEachOf ) {
-            return ShapeEvalEachOf.matchesEachOf(vCxt, T, node, (TripleExpressionEachOf)tripleExpr, extras);
+        if ( tripleExpr instanceof TripleExprEachOf ) {
+            return ShapeEvalEachOf.matchesEachOf(vCxt, T, node, (TripleExprEachOf)tripleExpr, extras);
         }
-        else if ( tripleExpr instanceof TripleExpressionOneOf ) {
-            return ShapeEvalOneOf.matchesOneOf(vCxt, T, node, (TripleExpressionOneOf)tripleExpr, extras);
+        else if ( tripleExpr instanceof TripleExprOneOf ) {
+            return ShapeEvalOneOf.matchesOneOf(vCxt, T, node, (TripleExprOneOf)tripleExpr, extras);
         }
-        else if ( tripleExpr instanceof TripleExpressionRef ) {
-            return matchesTripleExprRef(vCxt, T, node, (TripleExpressionRef)tripleExpr, extras);
+        else if ( tripleExpr instanceof TripleExprRef ) {
+            return matchesTripleExprRef(vCxt, T, node, (TripleExprRef)tripleExpr, extras);
         }
-        else if ( tripleExpr instanceof TripleExpressionCardinality ) {
-            return ShapeEvalCardinality.matchesCardinality(vCxt, T, node, (TripleExpressionCardinality)tripleExpr, extras);
+        else if ( tripleExpr instanceof TripleExprCardinality ) {
+            return ShapeEvalCardinality.matchesCardinality(vCxt, T, node, (TripleExprCardinality)tripleExpr, extras);
         }
         else if ( tripleExpr instanceof TripleConstraint ) {
             return ShapeEvalTripleConstraint.matchesCardinalityTC(vCxt, T, node, (TripleConstraint)tripleExpr, extras);
 //            TripleConstraint tc = (TripleConstraint)tripleExpr;
 //            tc.matches(vCxt, data);
         }
-        else if ( tripleExpr instanceof TripleExpressionNone ) {
+        else if ( tripleExpr instanceof TripleExprNone ) {
             return true;
         }
 
@@ -112,7 +112,7 @@ public class ShapeEval {
         throw new NotImplemented(tripleExpr.getClass().getSimpleName());
     }
 
-    private static boolean matchesTripleExprRef(ValidationContext vCxt, Set<Triple> matchables, Node node, TripleExpressionRef ref, Set<Node> extras) {
+    private static boolean matchesTripleExprRef(ValidationContext vCxt, Set<Triple> matchables, Node node, TripleExprRef ref, Set<Node> extras) {
         Node label = ref.ref();
         if ( label == null ) {}
         TripleExpression tripleExpr = vCxt.getTripleExpression(label);
@@ -124,34 +124,34 @@ public class ShapeEval {
     }
 
     // Recursive.
-    private static TripleExpressionVisitor walk(ShexShapes shapes, TripleExpressionVisitor step) {
+    private static TripleExprVisitor walk(ShexShapes shapes, TripleExprVisitor step) {
         //Walker
-        return new TripleExpressionVisitor() {
+        return new TripleExprVisitor() {
             @Override
-            public void visit(TripleExpressionCardinality expr) {
+            public void visit(TripleExprCardinality expr) {
                 expr.visit(step);
                 expr.target().visit(this);
             }
 
             @Override
-            public void visit(TripleExpressionEachOf expr) {
+            public void visit(TripleExprEachOf expr) {
                 expr.visit(step);
                 expr.expressions().forEach(ex -> ex.visit(this));
             }
 
             @Override
-            public void visit(TripleExpressionOneOf expr) {
+            public void visit(TripleExprOneOf expr) {
                 expr.visit(step);
                 expr.expressions().forEach(ex -> ex.visit(this));
             }
 
             @Override
-            public void visit(TripleExpressionNone expr) {
+            public void visit(TripleExprNone expr) {
                 expr.visit(step);
             }
 
             @Override
-            public void visit(TripleExpressionRef expr) {
+            public void visit(TripleExprRef expr) {
                 expr.visit(step);
                 if ( expr.ref() == null )
                     throw new ShexException("Failed to dereference : "+expr.ref());
@@ -177,8 +177,8 @@ public class ShapeEval {
         return predicates;
     }
 
-    private static <X> TripleExpressionVisitor accumulator(ShexShapes shapes, Set<X> acc, Function<TripleConstraint, X> mapper) {
-        TripleExpressionVisitor step = new TripleExpressionVisitor() {
+    private static <X> TripleExprVisitor accumulator(ShexShapes shapes, Set<X> acc, Function<TripleConstraint, X> mapper) {
+        TripleExprVisitor step = new TripleExprVisitor() {
             @Override
             public void visit(TripleConstraint tripleConstraint) {
                 acc.add(mapper.apply(tripleConstraint));

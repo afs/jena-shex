@@ -33,19 +33,28 @@ public class ShexShapeAssociation {
     public final Node node;
     public final Triple pattern;
     public final Node shapeExprLabel;
-//    public final String status;
-//    public final String reason;
+    public final String status;
+    public final String reason;
 //    public final String appInfo;
 
-    //ShexShapeAssociation(Node node, Triple pattern, Node shapeExprLabel, String status, String reason) {
     public ShexShapeAssociation(Node node, Triple pattern, Node shapeExprLabel) {
+        this(node, pattern, shapeExprLabel, null, null);
+    }
+
+    public ShexShapeAssociation(ShexShapeAssociation assoc, String status, String reason) {
+        // reporting form.
+        this(assoc.node, assoc.pattern, assoc.shapeExprLabel, status, reason);
+    }
+
+    private ShexShapeAssociation(Node node, Triple pattern, Node shapeExprLabel, String status, String reason) {
         super();
         this.node = node;
         this.pattern = pattern;
         this.shapeExprLabel = shapeExprLabel;
-//        this.status = status;
-//        this.reason = reason;
+        this.status = status;
+        this.reason = reason;
     }
+
 
     public boolean isSubjectFocus() {
         return pattern != null && SysShex.focusNode.equals(pattern.getSubject());

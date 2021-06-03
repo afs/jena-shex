@@ -28,14 +28,14 @@ import org.apache.jena.riot.out.NodeFormatter;
  * <p>
  * {@link TripleConstraint TripleConstraints} have their own cardinality handling.
  */
-public class TripleExpressionCardinality extends TripleExpression {
+public class TripleExprCardinality extends TripleExpression {
 
     private final TripleExpression other;
     private final Cardinality cardinality;
     private final int min;
     private final int max;
 
-    public TripleExpressionCardinality(TripleExpression tripleExpr, Cardinality cardinality) {
+    public TripleExprCardinality(TripleExpression tripleExpr, Cardinality cardinality) {
         super();
         this.other = tripleExpr;
         this.cardinality = cardinality;
@@ -61,7 +61,7 @@ public class TripleExpressionCardinality extends TripleExpression {
 
 
     @Override
-    public void visit(TripleExpressionVisitor visitor) {
+    public void visit(TripleExprVisitor visitor) {
         visitor.visit(this);
     }
 
@@ -78,7 +78,7 @@ public class TripleExpressionCardinality extends TripleExpression {
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        TripleExpressionCardinality other = (TripleExpressionCardinality)obj;
+        TripleExprCardinality other = (TripleExprCardinality)obj;
         return Objects.equals(this.other, other.other);
     }
 

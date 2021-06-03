@@ -23,12 +23,12 @@ import java.util.Set;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.shex.expressions.TripleExpression;
-import org.apache.jena.shex.expressions.TripleExpressionOneOf;
+import org.apache.jena.shex.expressions.TripleExprOneOf;
 import org.apache.jena.shex.sys.ValidationContext;
 
 public class ShapeEvalOneOf {
 
-    static boolean matchesOneOf(ValidationContext vCxt, Set<Triple> matchables, Node node, TripleExpressionOneOf oneOf, Set<Node> extras) {
+    static boolean matchesOneOf(ValidationContext vCxt, Set<Triple> matchables, Node node, TripleExprOneOf oneOf, Set<Node> extras) {
         //XOR semantics
         //        int matchCount = 0;
         //        for ( TripleExpression tripleExpr : oneOf.expressions() ) {

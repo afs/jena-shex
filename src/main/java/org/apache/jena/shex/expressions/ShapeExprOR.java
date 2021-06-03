@@ -25,25 +25,22 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.shex.ReportItem;
 import org.apache.jena.shex.sys.ValidationContext;
 
-public class ShapeExpressionAND extends ShapeExpression {
-
-    // Could pull out ShapeExpressionN
-    // [ ] print
-    // [ ] Most of equals.
+public class ShapeExprOR extends ShapeExpression {
 
     public static ShapeExpression create(List<ShapeExpression> acc) {
         if ( acc.size() == 0 )
             throw new InternalErrorException("Empty list");
         if ( acc.size() == 1 )
             return acc.get(0);
-        return new ShapeExpressionAND(acc);
+        return new ShapeExprOR(acc);
     }
 
-    List<ShapeExpression> shapeExpressions;
+    private List<ShapeExpression> shapeExpressions;
 
-    private ShapeExpressionAND(List<ShapeExpression> expressions) {
+    private ShapeExprOR(List<ShapeExpression> expressions) {
         this.shapeExpressions = expressions;
     }
 
@@ -51,25 +48,49 @@ public class ShapeExpressionAND extends ShapeExpression {
         return shapeExpressions;
     }
 
+
     @Override
     public boolean satisfies(ValidationContext vCxt, Node data) {
-        // Record all reports?
+        // We need to ignore validation failures from expressions - we need to find one success.
         for ( ShapeExpression shExpr : shapeExpressions ) {
-            boolean innerSatisfies = shExpr.satisfies(vCxt, data);
-            if ( !innerSatisfies )
-                return false;
+            ValidationContext vCxt2 = ValidationContext.create(vCxt);
+            boolean innerSatisfies = shExpr.satisfies(vCxt2, data);
+            if ( innerSatisfies )
+                return true;
         }
-        return true;
+        ReportItem item = new ReportItem("OR expression not satisfied:", data);
+        vCxt.reportEntry(item);
+        return false;
     }
 
     @Override
-    public void visit(ShapeExpressionVisitor visitor) {
+    public void visit(ShapeExprVisitor visitor) {
         visitor.visit(this);
     }
 
     @Override
+    public void print(IndentedWriter out, NodeFormatter nFmt) {
+        out.println("OR");
+        //out.printf("OR(%d)\n", shapeExpressions.size());
+        int idx = 0;
+        for ( ShapeExpression shExpr : shapeExpressions ) {
+            idx++;
+            out.printf("%d -", idx);
+            out.incIndent(4);
+            shExpr.print(out, nFmt);
+            out.decIndent(4);
+        }
+        out.println("/OR");
+    }
+
+    @Override
+    public String toString() {
+        return "ShapeExprOr "+expressions();
+    }
+
+    @Override
     public int hashCode() {
-        return Objects.hash(1, shapeExpressions);
+        return Objects.hash(2, shapeExpressions);
     }
 
     @Override
@@ -80,27 +101,7 @@ public class ShapeExpressionAND extends ShapeExpression {
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        ShapeExpressionAND other = (ShapeExpressionAND)obj;
+        ShapeExprOR other = (ShapeExprOR)obj;
         return Objects.equals(shapeExpressions, other.shapeExpressions);
-    }
-
-    @Override
-    public void print(IndentedWriter out, NodeFormatter nFmt) {
-        //out.printf("AND(%d)\n", shapeExpressions.size());
-        out.println("AND");
-        int idx = 0;
-        for ( ShapeExpression shExpr : shapeExpressions ) {
-            idx++;
-            out.printf("%d -", idx);
-            out.incIndent(4);
-            shExpr.print(out, nFmt);
-            out.decIndent(4);
-        }
-        out.println("/AND");
-    }
-
-    @Override
-    public String toString() {
-        return "ShapeExpressionAnd "+expressions();
     }
 }

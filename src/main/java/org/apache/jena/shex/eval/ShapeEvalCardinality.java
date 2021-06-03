@@ -27,12 +27,12 @@ import java.util.Set;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.shex.expressions.TripleExpressionCardinality;
+import org.apache.jena.shex.expressions.TripleExprCardinality;
 import org.apache.jena.shex.sys.ValidationContext;
 
 public class ShapeEvalCardinality {
 
-    /*package*/ static boolean matchesCardinality(ValidationContext vCxt, Set<Triple> matchables, Node node, TripleExpressionCardinality tripleExprCard, Set<Node> extras) {
+    /*package*/ static boolean matchesCardinality(ValidationContext vCxt, Set<Triple> matchables, Node node, TripleExprCardinality tripleExprCard, Set<Node> extras) {
         int min = tripleExprCard.min();
         int max = tripleExprCard.max();
         if ( min == 1 && max == 1 )

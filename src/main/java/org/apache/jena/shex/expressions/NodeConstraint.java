@@ -25,36 +25,8 @@ import org.apache.jena.shex.ReportItem;
 import org.apache.jena.shex.sys.ValidationContext;
 
 public abstract class NodeConstraint extends ShapeExpression {
-    /*
-     *  5.4 Node Constraints
-     *  5.4.1 Semantics
-     *  5.4.2 Node Kind Constraints
-     *  5.4.3 Datatype Constraints
-     *  5.4.4 XML Schema String Facet Constraints
-     *  5.4.5 XML Schema Numeric Facet Constraints
-     *  5.4.6 Values Constraint
-     */
 
-    // [shex] Convert to record
-    /*
-     * NodeConstraint  {
-     *   OneOf:
-     *   Node Kind Constraints
-     *   Datatype Constraints
-     *   XML Schema String Facet Constraints
-     *   XML Schema Numeric Facet Constraints
-     *   Values Constraints
-     */
-
-     // [shex] Convert to (builder):
-     /*  NodeConstraint   {
-     *    id:shapeExprLabel?
-     *    nodeKind:("iri" | "bnode" | "nonliteral" | "literal")?
-     *    datatype:IRIREF?
-     *    xsFacet*
-     *    values:[valueSetValue+]?
-     * }
-     */
+    protected NodeConstraint() {}
 
     @Override
     public boolean satisfies(ValidationContext vCxt, Node data) {
@@ -75,12 +47,12 @@ public abstract class NodeConstraint extends ShapeExpression {
         out.println(toString());
     }
 
-//    @Override
-//    public abstract int hashCode();
-//
-//    @Override
-//    public abstract boolean equals(Object other);
-//
-//    @Override
-//    public abstract String toString();
+    @Override
+    public abstract int hashCode();
+
+    @Override
+    public abstract boolean equals(Object other);
+
+    @Override
+    public abstract String toString();
 }

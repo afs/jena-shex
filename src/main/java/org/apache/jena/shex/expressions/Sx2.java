@@ -22,7 +22,8 @@ import java.util.function.Supplier;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 
-public class Sx {
+/** Misc internal code */
+public class Sx2 {
     public static boolean TRACE = false;
 
     public static IndentedWriter out = IndentedWriter.clone(IndentedWriter.stdout);

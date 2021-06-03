@@ -73,7 +73,7 @@ public class NumRangeConstraint extends NodeConstraint {
     }
 
     @Override
-    public void visit(ShapeExpressionVisitor visitor) {
+    public void visit(ShapeExprVisitor visitor) {
         visitor.visit(this);
     }
 

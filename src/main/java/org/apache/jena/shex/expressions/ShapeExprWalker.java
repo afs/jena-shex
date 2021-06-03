@@ -18,21 +18,21 @@
 
 package org.apache.jena.shex.expressions;
 
-public class ShapeExpressionWalker implements ShapeExpressionVisitor {
+public class ShapeExprWalker implements ShapeExprVisitor {
 
-    private final ShapeExpressionVisitor beforeVisitor;
-    private final ShapeExpressionVisitor afterVisitor;
-    private final TripleExpressionVisitor tripleExprWalker;
+    private final ShapeExprVisitor beforeVisitor;
+    private final ShapeExprVisitor afterVisitor;
+    private final TripleExprVisitor tripleExprWalker;
 
 //    public ShapeExpressionWalker(ShapeExpressionVisitor beforeVisitor, ShapeExpressionVisitor afterVisitor) {
 //        this(beforeVisitor, afterVisitor, null, null);
 //    }
 
-    public ShapeExpressionWalker(ShapeExpressionVisitor beforeVisitor, ShapeExpressionVisitor afterVisitor,
-                                 TripleExpressionVisitor beforeTripleExprVisitor, TripleExpressionVisitor afterTripleExprVisitor) {
+    public ShapeExprWalker(ShapeExprVisitor beforeVisitor, ShapeExprVisitor afterVisitor,
+                                 TripleExprVisitor beforeTripleExprVisitor, TripleExprVisitor afterTripleExprVisitor) {
         this.beforeVisitor = beforeVisitor;
         this.afterVisitor = afterVisitor;
-        this.tripleExprWalker = new TripleExpressionWalker(beforeTripleExprVisitor, afterTripleExprVisitor, this);
+        this.tripleExprWalker = new TripleExprWalker(beforeTripleExprVisitor, afterTripleExprVisitor, this);
     }
 
 
@@ -46,56 +46,56 @@ public class ShapeExpressionWalker implements ShapeExpressionVisitor {
             shape.visit(afterVisitor);
     }
 
-    @Override public void visit(ShapeExpressionAND shape) {
+    @Override public void visit(ShapeExprAND shape) {
         before(shape);
         shape.expressions().forEach(sh->sh.visit(this));
         after(shape);
     }
 
-    @Override public void visit(ShapeExpressionOR shape) {
+    @Override public void visit(ShapeExprOR shape) {
         before(shape);
         shape.expressions().forEach(sh->sh.visit(this));
         after(shape);
     }
 
-    @Override public void visit(ShapeExpressionNOT shape) {
+    @Override public void visit(ShapeExprNOT shape) {
         before(shape);
         shape.subShape().visit(this);
         after(shape);
     }
 
     @Override
-    public void visit(ShapeExpressionRef shape) {
+    public void visit(ShapeExprRef shape) {
         before(shape);
         after(shape);
     }
 
     @Override
-    public void visit(ShapeExpressionFalse shape) {
+    public void visit(ShapeExprFalse shape) {
         before(shape);
         after(shape);
     }
 
     @Override
-    public void visit(ShapeExpressionNone shape) {
+    public void visit(ShapeExprNone shape) {
         before(shape);
         after(shape);
     }
 
     @Override
-    public void visit(ShapeExpressionTrue shape) {
+    public void visit(ShapeExprTrue shape) {
         before(shape);
         after(shape);
     }
 
     @Override
-    public void visit(ShapeExpressionExternal shape) {
+    public void visit(ShapeExprExternal shape) {
         before(shape);
         after(shape);
     }
 
     @Override
-    public void visit(ShapeTripleExpression shape) {
+    public void visit(ShapeExprTripleExpr shape) {
         before(shape);
         if ( shape.getTripleExpr() != null )
             shape.getTripleExpr().visit(tripleExprWalker);

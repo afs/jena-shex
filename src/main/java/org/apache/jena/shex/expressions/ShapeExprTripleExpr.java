@@ -27,7 +27,7 @@ import org.apache.jena.shex.eval.ShapeEval;
 import org.apache.jena.shex.sys.ValidationContext;
 
 // Shape
-public class ShapeTripleExpression extends ShapeExpression {
+public class ShapeExprTripleExpr extends ShapeExpression {
     // [shex] This is the inlineShapeDefinition
     // Can we combine with a top-level ShexShape?
 
@@ -51,7 +51,7 @@ public class ShapeTripleExpression extends ShapeExpression {
 
     public static Builder newBuilder() { return new Builder(); }
 
-    private ShapeTripleExpression(Node label, Set<Node> extras, boolean closed, TripleExpression tripleExpr) {
+    private ShapeExprTripleExpr(Node label, Set<Node> extras, boolean closed, TripleExpression tripleExpr) {
         super();
         this.label = label;
         if ( extras == null || extras.isEmpty() )
@@ -92,8 +92,13 @@ public class ShapeTripleExpression extends ShapeExpression {
     }
 
     @Override
-    public void visit(ShapeExpressionVisitor visitor) {
+    public void visit(ShapeExprVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        return "Shape: "+((label==null)?"":label);
     }
 
     @Override
@@ -109,13 +114,8 @@ public class ShapeTripleExpression extends ShapeExpression {
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        ShapeTripleExpression other = (ShapeTripleExpression)obj;
+        ShapeExprTripleExpr other = (ShapeExprTripleExpr)obj;
         return closed == other.closed && Objects.equals(label, other.label) && Objects.equals(tripleExpr, other.tripleExpr);
-    }
-
-    @Override
-    public String toString() {
-        return "Shape: "+((label==null)?"":label);
     }
 
     public static class Builder {
@@ -142,9 +142,9 @@ public class ShapeTripleExpression extends ShapeExpression {
 
         public Builder shapeExpr(TripleExpression tripleExpr) { this.tripleExpr = tripleExpr; return this; }
 
-        public ShapeTripleExpression build() {
+        public ShapeExprTripleExpr build() {
             boolean isClosed = (closed == null) ? false : closed.get();
-            return new ShapeTripleExpression(label, extras, isClosed, tripleExpr);
+            return new ShapeExprTripleExpr(label, extras, isClosed, tripleExpr);
         }
     }
 }

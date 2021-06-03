@@ -34,7 +34,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.system.stream.Locator;
 import org.apache.jena.riot.system.stream.LocatorFile;
 import org.apache.jena.riot.system.stream.StreamManager;
-import org.apache.jena.shex.expressions.Sx;
+import org.apache.jena.shex.expressions.Sx2;
 
 public class ShexTests {
     static boolean VERBOSE = false;
@@ -116,7 +116,7 @@ public class ShexTests {
         }
 
         if ( ! includes.isEmpty() )
-            Sx.TRACE = true;
+            Sx2.TRACE = true;
     }
 
     private static Collection<String> bNodeLabeltests() {

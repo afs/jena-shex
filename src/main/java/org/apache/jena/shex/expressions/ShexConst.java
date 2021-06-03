@@ -18,11 +18,12 @@
 
 package org.apache.jena.shex.expressions;
 
-public interface TripleExpressionVisitor {
-    public default void visit(TripleExpressionCardinality object) {}
-    public default void visit(TripleExpressionEachOf object) {}
-    public default void visit(TripleExpressionOneOf object) {}
-    public default void visit(TripleExpressionNone object) {}
-    public default void visit(TripleExpressionRef object) {}
-    public default void visit(TripleConstraint object) {}
+/** Misc  */
+class ShexConst {
+    static final int hashShExprTrue     = 60;
+    static final int hashShExprFalse    = 61;
+    static final int hashShExprNone     = 62;
+    static final int hashShExprExternal = 63;
+
+    static final int hashTripleExprNone     = 60;
 }

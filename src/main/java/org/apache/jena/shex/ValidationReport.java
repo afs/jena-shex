@@ -31,8 +31,7 @@ import org.apache.jena.shared.impl.PrefixMappingImpl;
 
 public class ValidationReport {
 
-    private static ValidationReport singletonReportConformsTrue =
-            new ValidationReport(Collections.emptySet(), (Resource)null);
+    private static ValidationReport singletonReportConformsTrue = new ValidationReport(Collections.emptySet(), (Resource)null);
     private final Collection<ReportItem> entries;
     private final Resource resultResource;
 

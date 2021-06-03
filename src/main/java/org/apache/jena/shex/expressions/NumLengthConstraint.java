@@ -127,8 +127,13 @@ public class NumLengthConstraint extends NodeConstraint {
     }
 
     @Override
-    public void visit(ShapeExpressionVisitor visitor) {
+    public void visit(ShapeExprVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        return "NumLength["+lengthType.label()+" "+length+"]";
     }
 
     @Override
@@ -146,10 +151,5 @@ public class NumLengthConstraint extends NodeConstraint {
             return false;
         NumLengthConstraint other = (NumLengthConstraint)obj;
         return length == other.length && lengthType == other.lengthType;
-    }
-
-    @Override
-    public String toString() {
-        return "NumLength["+lengthType.label()+" "+length+"]";
     }
 }
