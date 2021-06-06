@@ -63,18 +63,20 @@ public class ShexParser {
      */
     public static ShexShapes parse(String filename, String baseURI) {
         InputStream input = IO.openFileBuffered(filename);
-        return parse(input, baseURI);
+        ShExJavacc parser = new ShExJavacc(input, StandardCharsets.UTF_8.name());
+        return parse$(parser, filename, baseURI, null);
     }
 
     /**
      * Parse the {@code InputStream} to get ShEx shapes.
      * @param input
+     * @param originURI The source from where the data was read from.
      * @param baseURI
      * @return ShexShapes
      */
-    public static ShexShapes parse(InputStream input, String baseURI) {
+    public static ShexShapes parse(InputStream input, String originURI, String baseURI) {
         ShExJavacc parser = new ShExJavacc(input, StandardCharsets.UTF_8.name());
-        return parse$(parser, baseURI, null);
+        return parse$(parser, originURI, baseURI, null);
     }
 
     /**
@@ -85,7 +87,7 @@ public class ShexParser {
      */
     public static ShexShapes parse(StringReader input, String baseURI) {
         ShExJavacc parser = new ShExJavacc(input);
-        return parse$(parser, baseURI, null);
+        return parse$(parser, null, baseURI, null);
     }
 
     // ---- Shex Shape Map
@@ -134,16 +136,18 @@ public class ShexParser {
 
     // --------
 
-    private static ShexShapes parse$(ShExJavacc parser, String baseURI, Context context) {
+    private static ShexShapes parse$(ShExJavacc parser, String sourceURI, String baseURI, Context context) {
         ParserProfile profile = new ParserProfileStd(RiotLib.factoryRDF(),
                                                      ErrorHandlerFactory.errorHandlerStd,
                                                      IRIxResolver.create(baseURI).build(),
                                                      PrefixMapFactory.create(),
                                                      context, false, false);
         //addStandardPrefixes(profile.getPrefixMap());
+        sourceURI = IRILib.filenameToIRI(sourceURI);
         parser.setProfile(profile);
         // We don't use the StreamRDF.
         parser.setDest(StreamRDFLib.sinkNull());
+        parser.setSourceAndBase(sourceURI, baseURI);
         try {
             parser.parseShapesStart();
             parser.UnitShapes();

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REPO=/home/afs/.m2/repo
-JVER=4.1.0-SNAPSHOT
+JVER=4.2.0-SNAPSHOT
 
 read -r -d '' DEV << EOM
 $REPO/org/apache/jena/apache-jena-libs/$JVER/apache-jena-libs-$JVER.pom

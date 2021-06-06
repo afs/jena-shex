@@ -34,10 +34,12 @@ public class ShexShapes {
 
     private ShexShapes shapesWithImports = null;
 
+    private final String sourceURI;
+    private final String baseURI;
     private final PrefixMap prefixes;
     private final List<String> imports;
 
-    public static ShexShapes shapes(PrefixMap prefixes, ShexShape startShape,
+    public static ShexShapes shapes(String source, String baseURI, PrefixMap prefixes, ShexShape startShape,
                                     List<ShexShape> shapes, List<String> imports,
                                     Map<Node, TripleExpression> tripleRefs) {
         shapes = new ArrayList<>(shapes);
@@ -51,11 +53,12 @@ public class ShexShapes {
 
         tripleRefs = new LinkedHashMap<>(tripleRefs);
 
-        return new ShexShapes(prefixes, startShape, shapes, shapesMap, imports, tripleRefs);
+        return new ShexShapes(source, baseURI, prefixes, startShape, shapes, shapesMap, imports, tripleRefs);
     }
 
-    /*package*/ ShexShapes(PrefixMap prefixes, ShexShape startShape, List<ShexShape> shapes, Map<Node, ShexShape> shapesMap, List<String> imports, Map<Node, TripleExpression> tripleRefMap) {
-        // Start shape not in the map.
+    /*package*/ ShexShapes(String source, String baseURI, PrefixMap prefixes, ShexShape startShape, List<ShexShape> shapes, Map<Node, ShexShape> shapesMap, List<String> imports, Map<Node, TripleExpression> tripleRefMap) {
+        this.sourceURI = source;
+        this.baseURI = baseURI;
         this.prefixes = prefixes;
         this.startShape = startShape;
         this.shapes = shapes;
@@ -112,6 +115,14 @@ public class ShexShapes {
         return imports;
     }
 
+    public String getSource() {
+        return sourceURI;
+    }
+
+    public String getBase() {
+        return baseURI;
+    }
+
     /**
      * Import form of this ShexShape collection.
      * This involves removing the START reference.
@@ -130,6 +141,8 @@ public class ShexShapes {
             // Harmless.
 
             Set<String> importsVisited = new HashSet<>();
+            if ( sourceURI != null )
+                importsVisited.add(sourceURI);
             List<ShexShapes> others = new ArrayList<>();
             others.add(this);
 
@@ -145,7 +158,7 @@ public class ShexShapes {
                 mergeOne(importedSchema, mergedShapes, mergedShapesMap, mergedTripleRefs);
             }
             //mergedShapesMap.remove(SysShex.startNode);
-            shapesWithImports = new ShexShapes(prefixes, startShape, mergedShapes, mergedShapesMap, null, mergedTripleRefs);
+            shapesWithImports = new ShexShapes(sourceURI, baseURI, prefixes, startShape, mergedShapes, mergedShapesMap, null, mergedTripleRefs);
             return shapesWithImports;
         }
     }

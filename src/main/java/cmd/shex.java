@@ -38,12 +38,11 @@ public class shex {
         version.print(IndentedWriter.stdout);
         System.exit(0) ;
     }
-    
+
     public static void main(String...args) {
         if ( args.length == 0 ) {
-            System.err.println("Usage: shacl SUB ARGS...");
+            System.err.println("Usage: shex SUB ARGS...");
             System.exit(1);
-            //throw new CmdException("Usage: shacl SUB ARGS...");
         }
 
         String cmd = args[0];
@@ -73,7 +72,6 @@ public class shex {
             case "parse": case "p": case "print":
                 cmdExec = "parse";
                 break;
-
         }
 
         // Execute sub-command

@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
 @RunWith(RunnerShexSyntax.class)
 @Label("Shex Syntax")
 @Directories({
-    "files/spec/syntax"
+    "src/test/files/spec/syntax"
 })
 
 public class TestShexSyntax {}

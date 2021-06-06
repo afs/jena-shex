@@ -42,7 +42,7 @@ public class ShexShapeAssociation {
     }
 
     public ShexShapeAssociation(ShexShapeAssociation assoc, String status, String reason) {
-        // reporting form.
+        // Reporting form.
         this(assoc.node, assoc.pattern, assoc.shapeExprLabel, status, reason);
     }
 

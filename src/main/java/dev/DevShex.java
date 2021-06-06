@@ -63,12 +63,14 @@ public class DevShex {
             );
 
     public static void main(String[] args) {
+
+        cmd.shex_parse.main("/home/afs/ASF/shapes/jena-shex/shapes.shex");
+
 //        runOne();
-//        System.exit(0);
+        System.exit(0);
 
         parsePrint();
-        //parsePrintFile("file:///home/afs/ASF/shapes/jena-shex/files/spec/schemas/2OneInclude1.shex");
-        //parsePrintFile("file:///home/afs/ASF/shapes/jena-shex/files/spec/schemas/1NOTvs.shex");
+        //parsePrintFile("file:///home/afs/ASF/shapes/jena-shex/src/test/files/spec/schemas/2OneInclude1.shex");
         //ShapeEvalEachOf.DEBUG = true;
         //validate();
         //validate2();
@@ -77,14 +79,6 @@ public class DevShex {
     }
 
     public static void runOne() {
-
-//        Schema:   file:///home/afs/ASF/shapes/jena-shex/files/spec/validation/nPlus1.shex
-//            Data:     file:///home/afs/ASF/shapes/jena-shex/files/spec/validation/nPlus1.ttl
-//            Shape:    <http://a.example.org/S>
-//            Focus:    <file:///home/afs/ASF/shapes/jena-shex/files/spec/validation/x>
-//            Positive: true
-
-
 
         String fnShapes = "nPlus1.shex";
         String fnData = "nPlus1.ttl";
@@ -311,7 +305,7 @@ public class DevShex {
     }
 
     public static void parsePrint() {
-        //parsePrintFile("/home/afs/ASF/shapes/jena-shex/files/spec/schemas/1val1IRIREF.shex", true, true);
+        //parsePrintFile("/home/afs/ASF/shapes/jena-shex/src/test/files/spec/schemas/1val1IRIREF.shex", true, true);
         parsePrintString(strParserTest, true, true);
     }
 

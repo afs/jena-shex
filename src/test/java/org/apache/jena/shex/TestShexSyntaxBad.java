@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 @RunWith(RunnerShexBadSyntax.class)
 @Label("Shex Bad Syntax")
 @Directories({
-    "files/spec/negativeSyntax"
+    "src/test/files/spec/negativeSyntax"
 })
 
 public class TestShexSyntaxBad {

@@ -67,7 +67,7 @@ public class RunnerShexBadSyntax extends AbstractRunnerFiles {
         String str = IO.readWholeFileAsUTF8(filename);
         InputStream input = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
         try {
-            ShexShapes shapes = ShexParser.parse(input, null);
+            ShexShapes shapes = ShexParser.parse(input, filename, null);
             // Should not get here.
             System.out.print("-- ");
             System.out.println(FileOps.basename(filename));

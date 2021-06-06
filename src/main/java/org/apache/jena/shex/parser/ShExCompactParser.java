@@ -58,6 +58,9 @@ public class ShExCompactParser extends LangParserBase {
     // The distinguished start shape. This is also in the list of all shapes.
     private ShexShape startShape = null;
     private List<String> imports = null;
+    private String sourceURI = null;
+    private boolean explicitBase = false;
+    private String baseURI = null;
 
     // The shape currently in progress.
     private Node currentShexShapeLabel = null;
@@ -104,6 +107,21 @@ public class ShExCompactParser extends LangParserBase {
 
     // -- Parser
 
+    @Override
+    protected void setBase(String iriStr, int line, int column) {
+        super.setBase(iriStr, line, column);
+        if ( ! explicitBase )
+            // Record first base seen.
+            this.baseURI = iriStr;
+        this.explicitBase = true;
+    }
+
+    public void setSourceAndBase(String originURI, String baseURI ) {
+        this.sourceURI = originURI;
+        this.explicitBase = false;
+        this.baseURI = baseURI;
+    }
+
     public void parseShapesStart() { }
 
     public ShexShapes parseShapesFinish() {
@@ -112,13 +130,14 @@ public class ShExCompactParser extends LangParserBase {
             throw new InternalErrorException("shape in-progress");
         if (! shapeExprStack.isEmpty() )
             throw new InternalErrorException("shape expresion stack not empty");
-        return ShexShapes.shapes(super.profile.getPrefixMap(), startShape, shapes, imports, tripleExprRefs);
+        // last base seen.
+        return ShexShapes.shapes(sourceURI, baseURI, super.profile.getPrefixMap(), startShape, shapes, imports, tripleExprRefs);
     }
 
     protected void imports(String iri, int line, int column) {
         if ( imports == null )
             imports = new ArrayList<>();
-        if ( IRIs.check(iri) )
+        if ( ! IRIs.check(iri) )
             profile.getErrorHandler().warning("Bad IRI: <"+iri+">", line, column);
         imports.add(iri);
     }

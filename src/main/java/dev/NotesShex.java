@@ -22,7 +22,11 @@ public class NotesShex {
     // Grammar. Check file for ToDo and other notes.
     // Test Suite
 
+    // [SHACL] Imports validation?
 
+    // [ ] Read a fil e-> base name -> add to
+    // [ ] cmds
+    // [ ] files => src/test/files
     // [ ] EachOf partition generation produce duplicates. -> algorithm H!
     // [ ] Unlink from SHACL :: PLib
     // [ ] negativeStructure tests
@@ -35,7 +39,6 @@ public class NotesShex {
 
     // == Part 1
 
-    // [ ] **** Clean up ****
     // [ ] Reporting.
 
     // [x] ShapesMap
@@ -54,7 +57,7 @@ public class NotesShex {
     // [ ] ShexJ, ShexR
 
     // [ ] Validation debug
-    // [ ] test for XSDFuncOp.isNumberic??
+    // [ ] test for XSDFuncOp.isNumeric??
     // [ ] test for ShexParserlib.unescapeShexRegex
 
     // https://github.com/hsolbrig/PyShEx/blob/master/pyshex/shape_expressions_language/p5_5_shapes_and_triple_expressions.py

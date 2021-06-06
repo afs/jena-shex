@@ -16,3 +16,7 @@ PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
     foaf:phone      IRI*;          # any number of phone numbers.
     foaf:mbox       IRI            # one FOAF mbox.
 }
+
+<ManagerShape> {
+    foaf:mbox       IRI
+}
