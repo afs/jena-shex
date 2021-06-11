@@ -28,7 +28,7 @@ import java.util.Set;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.shex.ShexShapes;
+import org.apache.jena.shex.ShexSchema;
 import org.apache.jena.shex.parser.ShexParseException;
 import org.apache.jena.shex.parser.ShexParser;
 import org.apache.jena.shex.sys.SysShex;
@@ -63,11 +63,11 @@ public class RunnerShexBadSyntax extends AbstractRunnerFiles {
         return ()->fileBadSyntax(filename);
     }
 
-    public static ShexShapes fileBadSyntax(String filename) {
+    public static ShexSchema fileBadSyntax(String filename) {
         String str = IO.readWholeFileAsUTF8(filename);
         InputStream input = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
         try {
-            ShexShapes shapes = ShexParser.parse(input, filename, null);
+            ShexSchema shapes = ShexParser.parse(input, filename, null);
             // Should not get here.
             System.out.print("-- ");
             System.out.println(FileOps.basename(filename));

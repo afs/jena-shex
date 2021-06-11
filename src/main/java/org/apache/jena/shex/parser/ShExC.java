@@ -18,8 +18,8 @@
 
 package org.apache.jena.shex.parser;
 
-import static org.apache.jena.shex.parser.ShExCompactParser.Inline.INLINE;
-import static org.apache.jena.shex.parser.ShExCompactParser.Inline.NOT_INLINE;
+import static org.apache.jena.shex.parser.ShExC.Inline.INLINE;
+import static org.apache.jena.shex.parser.ShExC.Inline.NOT_INLINE;
 
 import java.util.*;
 import java.util.function.Function;
@@ -39,8 +39,8 @@ import org.apache.jena.shex.*;
 import org.apache.jena.shex.expressions.*;
 import org.apache.jena.shex.sys.SysShex;
 
-/** ShExCompactParser */
-public class ShExCompactParser extends LangParserBase {
+/** ShEx Compact syntax parser */
+public class ShExC extends LangParserBase {
 
     private IndentedWriter out;
     public static boolean DEBUG = false;
@@ -49,7 +49,7 @@ public class ShExCompactParser extends LangParserBase {
 
     static enum Inline { INLINE, NOT_INLINE }
 
-    public ShExCompactParser() {
+    public ShExC() {
         this.out = IndentedWriter.clone(IndentedWriter.stdout);
     }
 
@@ -124,14 +124,14 @@ public class ShExCompactParser extends LangParserBase {
 
     public void parseShapesStart() { }
 
-    public ShexShapes parseShapesFinish() {
+    public ShexSchema parseShapesFinish() {
         // Check stacks empty.
         if ( currentShexShapeLabel != null )
             throw new InternalErrorException("shape in-progress");
         if (! shapeExprStack.isEmpty() )
             throw new InternalErrorException("shape expresion stack not empty");
         // last base seen.
-        return ShexShapes.shapes(sourceURI, baseURI, super.profile.getPrefixMap(), startShape, shapes, imports, tripleExprRefs);
+        return ShexSchema.shapes(sourceURI, baseURI, super.profile.getPrefixMap(), startShape, shapes, imports, tripleExprRefs);
     }
 
     protected void imports(String iri, int line, int column) {
@@ -184,6 +184,7 @@ public class ShExCompactParser extends LangParserBase {
     }
 
     private ShexShape newShape(ShapeExpression sExpr) {
+        //System.out.println("Shape - "+currentShexShapeLabel);
         ShexShape newShexShape = new ShexShape(currentShexShapeLabel, sExpr);
         shapes.add(newShexShape);
         currentShexShapeLabel = null;

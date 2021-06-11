@@ -32,7 +32,7 @@ import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.shex.Shex;
-import org.apache.jena.shex.ShexShapes;
+import org.apache.jena.shex.ShexSchema;
 import org.apache.jena.shex.parser.ShexParseException;
 import org.apache.jena.sys.JenaSystem;
 
@@ -128,7 +128,7 @@ public class shex_parse extends CmdGeneral {
     }
 
     private void exec(String fn, boolean multipleFiles) {
-        ShexShapes shapes;
+        ShexSchema shapes;
         PrintStream out = System.out;
         PrintStream err = System.err;
 
@@ -169,7 +169,7 @@ public class shex_parse extends CmdGeneral {
         }
     }
 
-    private boolean printText(PrintStream out, PrintStream err, ShexShapes shapes) {
+    private boolean printText(PrintStream out, PrintStream err, ShexSchema shapes) {
         Shex.printShapes(shapes);
 //        IndentedWriter iOut  = new IndentedWriter(out);
 //        ShLib.printShapes(iOut, shapes);
@@ -194,13 +194,13 @@ public class shex_parse extends CmdGeneral {
         return true;
     }
 
-    private boolean printRDF(PrintStream out, PrintStream err, ShexShapes shapes) {
+    private boolean printRDF(PrintStream out, PrintStream err, ShexSchema shapes) {
 //        RDFDataMgr.write(out, shapes.getGraph(), Lang.TTL);
 //        return ! shapes.getGraph().isEmpty() && ! shapes.getGraph().getPrefixMapping().hasNoMappings();
         return true;
     }
 
-    private boolean printCompact(PrintStream out, PrintStream err, ShexShapes shapes) {
+    private boolean printCompact(PrintStream out, PrintStream err, ShexSchema shapes) {
 //        try {
 //            ShaclcWriter.print(out, shapes);
 //        } catch (ShaclException ex) {

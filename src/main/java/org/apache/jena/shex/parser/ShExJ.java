@@ -16,8 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shex.extra;
+package org.apache.jena.shex.parser;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,54 +27,54 @@ import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonException;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.json.JsonValue;
-import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shex.ShexException;
 import org.apache.jena.shex.ShexShapeAssociation;
 import org.apache.jena.shex.ShexShapeMap;
 
-/** In support of testing */
-public class Extra {
-
-    /**
-     * Read a file in JSON syntax and create a {@link ShexShapeMap}.
-     */
-    public static ShexShapeMap parseShapesMapJson(String filenameOrUri) {
-        TypedInputStream in = RDFDataMgr.open(filenameOrUri);
-        return parseShapesMapJson(in.getInputStream());
-    }
-
+public class ShExJ {
     /**
      * Parse the {@code InputStream} to get a ShEx shape map from JSON syntax.
      * @param input
      * @return ShexShapeMap
      */
-    public static ShexShapeMap parseShapesMapJson(InputStream input) {
+    public static ShexShapeMap readShapesMapJson(InputStream input) {
+        if ( input instanceof BufferedInputStream )
+            input = new BufferedInputStream(input, 128*1024);
         JsonValue x = JSON.parseAny(input);
         if ( ! x.isArray() )
             throw new ShexException("Shex shape map: not a JSON array");
         List<ShexShapeAssociation> associations = new ArrayList<>();
-        // Just enough to parse the maps in the validation test suite.
         x.getAsArray().forEach(j->{
             if ( !j.isObject() ) {}
             ShexShapeAssociation a = parseShapesMapEntry(j.getAsObject());
             associations.add(a);
         });
         return new ShexShapeMap(associations);
-
-//        node: an RDF node, or a triple pattern which is used to select RDF nodes.
-//        shape: ShEx shapeExprLabel or the string "START" for the start shape expression.
-//        status: [default="conformant"] "nonconformant" or "conformant".
-//        reason: [optional] a string stating a reason for failure or success.
-//        appInfo: [optional] an application-specific JSON-LD structure
     }
 
     private static ShexShapeAssociation parseShapesMapEntry(JsonObject obj) {
+        // Just enough to parse the maps in the validation test suite.
+
+        // Full:
+//      node: an RDF node, or a triple pattern which is used to select RDF nodes.
+//      shape: ShEx shapeExprLabel or the string "START" for the start shape expression.
+//      status: [default="conformant"] "nonconformant" or "conformant".
+//      reason: [optional] a string stating a reason for failure or success.
+//      appInfo: [optional] an application-specific JSON-LD structure
+
         try {
-            String uri = obj.get("node").getAsString().value();
-            String shapeURI = obj.get("shape").getAsString().value();
+            String uri = getStrOrNull(obj, "node");
+            if ( uri == null )
+                throw new ShexException("Missing: required field: \"node\"");
+            String shapeURI = getStrOrNull(obj, "shape");
+            if ( shapeURI == null )
+                throw new ShexException("Missing: required field: \"shape\"");
+
+//            String status = getStrOrNull(obj, "status");
+//            String reason = getStrOrNull(obj, "reason");
+//            String appInfo = getStrOrNull(obj, "appInfo");
             Node nodeFocus = NodeFactory.createURI(uri);
             Node nodeShape = NodeFactory.createURI(shapeURI);
             return new ShexShapeAssociation(nodeFocus, null, nodeShape);
@@ -81,4 +82,14 @@ public class Extra {
             throw new ShexException("Failed to parse shape map entry: "+JSON.toStringFlat(obj));
         }
     }
+
+    private static String getStrOrNull(JsonObject obj, String field) {
+        JsonValue jv = obj.get(field);
+        if ( jv == null )
+            return null;
+        if ( jv.isString() )
+            return jv.getAsString().value();
+        return null ;
+    }
+
 }

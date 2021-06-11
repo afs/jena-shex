@@ -25,11 +25,7 @@ import org.apache.jena.shex.expressions.ShapeExpression;
 import org.apache.jena.shex.sys.SysShex;
 import org.apache.jena.shex.sys.ValidationContext;
 
-// [shex] Isa Shape?
-// ShapeTripleExpression -- TripleExpression.
-// ShexShape - ShapeExpression
-
-// A labelled shape.
+/** A labelled ShEx shape. */
 public class ShexShape {
     private final Node label;
     private ShapeExpression shExpression;

@@ -18,44 +18,70 @@
 
 package org.apache.jena.shex;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.io.StringReader;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.riot.system.RiotLib;
+import org.apache.jena.shex.parser.ShExJ;
 import org.apache.jena.shex.parser.ShexParser;
 
 public class Shex {
+    /**
+     * Parse the string in ShExC syntax to produce a ShEx schema.
+     * @param inputStr
+     * @return ShexSchema
+     */
+    public static ShexSchema shapesFromString(String inputStr) {
+        return shapesFromString(inputStr, null);
+    }
 
-    public static ShexShapes shapesFromString(String inputStr) {
-        InputStream input = new ByteArrayInputStream(inputStr.getBytes(StandardCharsets.UTF_8));
-        ShexShapes shapes = ShexParser.parse(input, null, null);
+    /**
+     * Parse the string in ShExC syntax to produce a ShEx schema.
+     * @param inputStr
+     * @param baseURI
+     * @return ShexSchema
+     */
+    public static ShexSchema shapesFromString(String inputStr, String baseURI) {
+        ShexSchema shapes = ShexParser.parse(new StringReader(inputStr), baseURI);
         return shapes;
     }
 
-    public static ShexShapes readShapes(String filenameOrURL) {
+    /**
+     * Read the file to produce a ShEx schema.
+     * @param filenameOrURL
+     * @return ShexSchema
+     */
+    public static ShexSchema readShapes(String filenameOrURL) {
         return readShapes(filenameOrURL, null);
     }
 
-    public static ShexShapes readShapes(String filenameOrURL, String base) {
+    /**
+     * Read the file to produce a ShEx schema.
+     * @param filenameOrURL
+     * @param base
+     * @return ShexSchema
+     */
+    public static ShexSchema readShapes(String filenameOrURL, String base) {
         InputStream input = RDFDataMgr.open(filenameOrURL);
-        if ( ! ( input instanceof BufferedInputStream ) )
-            input = new BufferedInputStream(input, 128*1024);
+        // Buffering done in ShexParser
+//        if ( ! ( input instanceof BufferedInputStream ) )
+//            input = new BufferedInputStream(input, 128*1024);
         String parserBase = (base != null) ? base : IRILib.filenameToIRI(filenameOrURL);
-        ShexShapes shapes = ShexParser.parse(input, IRILib.filenameToIRI(filenameOrURL), parserBase);
+        ShexSchema shapes = ShexParser.parse(input, IRILib.filenameToIRI(filenameOrURL), parserBase);
         return shapes;
     }
 
     /** Print shapes - the format details the internal structure */
-    public static void printShapes(ShexShapes shapes) {
+    public static void printShapes(ShexSchema shapes) {
         IndentedWriter iOut = IndentedWriter.clone(IndentedWriter.stdout);
         iOut.setLinePrefix("");
         Set<String> visited = new HashSet<>();
@@ -64,7 +90,7 @@ public class Shex {
         printShapes(iOut, shapes, visited);
     }
 
-    private static void printShapes(IndentedWriter iOut, ShexShapes shapes, Set<String> visited) {
+    private static void printShapes(IndentedWriter iOut, ShexSchema shapes, Set<String> visited) {
         boolean havePrinted = false;
 
         if ( ! shapes.getPrefixMap().isEmpty() ) {
@@ -108,7 +134,7 @@ public class Shex {
                 iOut.println("Import = <"+iriStr+">");
                 iOut.incIndent(4);
                 try {
-                    ShexShapes imports = readShapes(iriStr);
+                    ShexSchema imports = readShapes(iriStr);
                     iOut.setLinePrefix(prefix+"I");
                     printShapes(iOut, imports, visited);
                 } catch (Exception ex) {
@@ -121,5 +147,60 @@ public class Shex {
             havePrinted = true;
         }
         iOut.flush();
+    }
+
+    /**
+     * Parse the file to get a ShEx shape map.
+     * @param filename
+     * @return ShexShapeMap
+     */
+    public static ShexShapeMap readShapesMap(String filename) {
+        return readShapesMap(filename, IRILib.filenameToIRI(filename));
+    }
+
+    /**
+     * Parse the file to get a ShEx shape map.
+     * @param filename
+     * @param baseURI
+     * @return ShexShapeMap
+     */
+    public static ShexShapeMap readShapesMap(String filename, String baseURI) {
+        InputStream input = IO.openFile(filename);
+        return readShapesMap(input, baseURI);
+    }
+
+    /**
+     * Parse the {@code InputStream} to get a ShEx shape map.
+     * @param input
+     * @param baseURI
+     * @return ShexShapeMap
+     */
+    public static ShexShapeMap readShapesMap(InputStream input, String baseURI) {
+        return ShexParser.parseShapesMap(input, baseURI);
+    }
+
+    /**
+     * Parse a shape map from a {@code StringReader}.
+     * @param inputStr
+     * @param baseURI
+     * @return ShexShapeMap
+     */
+    public static ShexShapeMap shapesMapFromString(String inputStr, String baseURI) {
+        return ShexParser.parseShapesMap(new StringReader(inputStr), baseURI);
+    }
+
+    /** Read a {@link ShexShapeMap} from a file or URL. */
+    public static ShexShapeMap readShapesMapJson(String filenameOrURL) {
+        TypedInputStream in = RDFDataMgr.open(filenameOrURL);
+        return readShapesMapJson(in.getInputStream());
+    }
+
+    /**
+     * Parse the {@code InputStream} to get a ShEx shape map from JSON syntax.
+     * @param input
+     * @return ShexShapeMap
+     */
+    public static ShexShapeMap readShapesMapJson(InputStream input) {
+        return ShExJ.readShapesMapJson(input);
     }
 }

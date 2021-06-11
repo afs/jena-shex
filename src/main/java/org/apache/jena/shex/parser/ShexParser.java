@@ -20,9 +20,7 @@ package org.apache.jena.shex.parser;
 
 import static java.lang.String.format;
 
-import java.io.InputStream;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
+import java.io.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +33,7 @@ import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.shex.ShexShape;
 import org.apache.jena.shex.ShexShapeMap;
-import org.apache.jena.shex.ShexShapes;
+import org.apache.jena.shex.ShexSchema;
 import org.apache.jena.shex.expressions.*;
 import org.apache.jena.shex.parser.javacc.ParseException;
 import org.apache.jena.shex.parser.javacc.ShExJavacc;
@@ -49,9 +47,9 @@ public class ShexParser {
     /**
      * Parse the file to get ShEx shapes.
      * @param filename
-     * @return ShexShapes
+     * @return ShexSchema
      */
-    public static ShexShapes parse(String filename) {
+    public static ShexSchema parse(String filename) {
         return parse(filename,  IRILib.filenameToIRI(filename));
     }
 
@@ -59,12 +57,11 @@ public class ShexParser {
      * Parse the file to get ShEx shapes.
      * @param filename
      * @param baseURI
-     * @return ShexShapes
+     * @return ShexSchema
      */
-    public static ShexShapes parse(String filename, String baseURI) {
-        InputStream input = IO.openFileBuffered(filename);
-        ShExJavacc parser = new ShExJavacc(input, StandardCharsets.UTF_8.name());
-        return parse$(parser, filename, baseURI, null);
+    public static ShexSchema parse(String filename, String baseURI) {
+        InputStream input = IO.openFile(filename);
+        return parse(input, filename, baseURI);
     }
 
     /**
@@ -72,22 +69,43 @@ public class ShexParser {
      * @param input
      * @param originURI The source from where the data was read from.
      * @param baseURI
-     * @return ShexShapes
+     * @return ShexSchema
      */
-    public static ShexShapes parse(InputStream input, String originURI, String baseURI) {
-        ShExJavacc parser = new ShExJavacc(input, StandardCharsets.UTF_8.name());
-        return parse$(parser, originURI, baseURI, null);
+    public static ShexSchema parse(InputStream input, String originURI, String baseURI) {
+        // All InputStream calls come this way.
+        try ( Reader r = setReader(input) ) {
+            ShExJavacc parser = new ShExJavacc(r);
+            return parse$(parser, originURI, baseURI, null);
+        } catch (IOException ex) {
+            IO.exception(ex);
+            return null;
+        }
+    }
+
+    // Add buffering if not already done.
+    private static Reader setReader(InputStream input) {
+        Reader r = IO.asUTF8(input);
+        // If not buffered, add a buffering layer.
+        if (  ! ( input instanceof BufferedInputStream ) ) {
+            // Javacc reads in chunks using "read(char[])"
+            // so the cost of synchronized on "int read()" is negligible.
+            // Convert to Java chars in large chunks.
+            r = new BufferedReader(r, 128*1024);
+        }
+        return r;
     }
 
     /**
      * Parse from a {@code StringReader}.
      * @param input
      * @param baseURI
-     * @return ShexShapes
+     * @return ShexSchema
      */
-    public static ShexShapes parse(StringReader input, String baseURI) {
-        ShExJavacc parser = new ShExJavacc(input);
-        return parse$(parser, null, baseURI, null);
+    public static ShexSchema parse(StringReader input, String baseURI) {
+        try ( input ) {
+            ShExJavacc parser = new ShExJavacc(input);
+            return parse$(parser, null, baseURI, null);
+        }
     }
 
     // ---- Shex Shape Map
@@ -98,7 +116,7 @@ public class ShexParser {
      * @return ShexShapeMap
      */
     public static ShexShapeMap parseShapesMap(String filename) {
-        return parseShapesMap(filename, null);
+        return parseShapesMap(filename, IRILib.filenameToIRI(filename));
     }
 
     /**
@@ -108,7 +126,7 @@ public class ShexParser {
      * @return ShexShapeMap
      */
     public static ShexShapeMap parseShapesMap(String filename, String baseURI) {
-        InputStream input = IO.openFileBuffered(filename);
+        InputStream input = IO.openFile(filename);
         return parseShapesMap(input, baseURI);
     }
 
@@ -119,8 +137,13 @@ public class ShexParser {
      * @return ShexShapeMap
      */
     public static ShexShapeMap parseShapesMap(InputStream input, String baseURI) {
-        ShExJavacc parser = new ShExJavacc(input, StandardCharsets.UTF_8.name());
-        return parseShapeMap$(parser, baseURI, null);
+        try ( Reader r = setReader(input) ) {
+            ShExJavacc parser = new ShExJavacc(r);
+            return parseShapeMap$(parser, baseURI, null);
+        } catch (IOException ex) {
+            IO.exception(ex);
+            return null;
+        }
     }
 
     /**
@@ -136,7 +159,7 @@ public class ShexParser {
 
     // --------
 
-    private static ShexShapes parse$(ShExJavacc parser, String sourceURI, String baseURI, Context context) {
+    private static ShexSchema parse$(ShExJavacc parser, String sourceURI, String baseURI, Context context) {
         ParserProfile profile = new ParserProfileStd(RiotLib.factoryRDF(),
                                                      ErrorHandlerFactory.errorHandlerStd,
                                                      IRIxResolver.create(baseURI).build(),
@@ -151,7 +174,7 @@ public class ShexParser {
         try {
             parser.parseShapesStart();
             parser.UnitShapes();
-            ShexShapes shapes = parser.parseShapesFinish();
+            ShexSchema shapes = parser.parseShapesFinish();
             validatePhase2(shapes);
             return shapes;
         } catch (ParseException ex) {
@@ -173,13 +196,13 @@ public class ShexParser {
      *
      * (only after imports closure)
      */
-    private static void validatePhase2(ShexShapes shapes) {
+    private static void validatePhase2(ShexSchema shapes) {
         if ( ! SysShex.STRICT )
             return;
         shapes.getShapes().forEach(shape->validatePhase2(shapes, shape));
     }
 
-    private static void validatePhase2(ShexShapes shapes, ShexShape shape) {
+    private static void validatePhase2(ShexSchema shapes, ShexShape shape) {
         ShapeExpression shExpr = shape.getShapeExpression();
         ShapeExprVisitor checker = new CheckFacets();
         TripleExprVisitor tExprVisitor = new TripleExprVisitor() {

@@ -27,7 +27,7 @@ import org.apache.jena.graph.*;
 import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 import java.util.*;
 
-public class ShExJavacc extends ShExCompactParser implements ShExJavaccConstants {
+public class ShExJavacc extends ShExC implements ShExJavaccConstants {
 
   final public void UnitShapes() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {

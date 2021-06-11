@@ -18,6 +18,7 @@
 
 package org.apache.jena.shex;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,16 +32,16 @@ import org.apache.jena.shex.sys.ValidationContext;
 public class ShexValidation {
 
     /** Validate data using a collection of shapes and a shape map */
-    public static ValidationReport validate(Graph graph, ShexShapes shapes, ShexShapeMap shapeMap) {
+    public static ValidationReport validate(Graph graph, ShexSchema shapes, ShexShapeMap shapeMap) {
         shapes = shapes.importsClosure();
         ValidationContext vCxt = new ValidationContext(graph, shapes);
         shapeMap.entries().forEach(e->{
-            List<Node> focusNodes;
+            Collection<Node> focusNodes;
             if ( e.node != null ) {
                 focusNodes = List.of(e.node);
             } else if ( e.pattern != null ) {
                 Triple t = e.asMatcher();
-                focusNodes = graph.find(t).mapWith(triple-> (e.isSubjectFocus()?triple.getSubject():triple.getObject()) ).toList();
+                focusNodes = graph.find(t).mapWith(triple-> (e.isSubjectFocus()?triple.getSubject():triple.getObject()) ).toSet();
             } else
                 throw new InternalErrorException("Shex shape mapping has no node and no pattern");
             if ( focusNodes.isEmpty() ) {
@@ -56,7 +57,7 @@ public class ShexValidation {
     }
 
     /** Validate a specific node (the focus), with a specific shape in a set of shapes. */
-    public static ValidationReport validate(Graph graphData, ShexShapes shapes, Node shapeRef, Node focus) {
+    public static ValidationReport validate(Graph graphData, ShexSchema shapes, Node shapeRef, Node focus) {
         Objects.requireNonNull(shapeRef);
         shapes = shapes.importsClosure();
         ValidationContext vCxt = new ValidationContext(graphData, shapes);
@@ -68,7 +69,7 @@ public class ShexValidation {
     }
 
     /** Validate a specific node (the focus), against a shape. */
-    public static ValidationReport validate(Graph graphData, ShexShapes shapes, ShexShape shape, Node focus) {
+    public static ValidationReport validate(Graph graphData, ShexSchema shapes, ShexShape shape, Node focus) {
         Objects.requireNonNull(shape);
         shapes = shapes.importsClosure();
         ValidationContext vCxt = new ValidationContext(graphData, shapes);

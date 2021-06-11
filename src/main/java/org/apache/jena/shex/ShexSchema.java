@@ -25,21 +25,21 @@ import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.shex.expressions.TripleExpression;
 import org.apache.jena.shex.sys.SysShex;
 
-public class ShexShapes {
+public class ShexSchema {
 
     private final ShexShape startShape;
     private final List<ShexShape> shapes;
     private final Map<Node, ShexShape> shapesMap;
     private final Map<Node, TripleExpression> tripleRefs;
 
-    private ShexShapes shapesWithImports = null;
+    private ShexSchema shapesWithImports = null;
 
     private final String sourceURI;
     private final String baseURI;
     private final PrefixMap prefixes;
     private final List<String> imports;
 
-    public static ShexShapes shapes(String source, String baseURI, PrefixMap prefixes, ShexShape startShape,
+    public static ShexSchema shapes(String source, String baseURI, PrefixMap prefixes, ShexShape startShape,
                                     List<ShexShape> shapes, List<String> imports,
                                     Map<Node, TripleExpression> tripleRefs) {
         shapes = new ArrayList<>(shapes);
@@ -53,10 +53,10 @@ public class ShexShapes {
 
         tripleRefs = new LinkedHashMap<>(tripleRefs);
 
-        return new ShexShapes(source, baseURI, prefixes, startShape, shapes, shapesMap, imports, tripleRefs);
+        return new ShexSchema(source, baseURI, prefixes, startShape, shapes, shapesMap, imports, tripleRefs);
     }
 
-    /*package*/ ShexShapes(String source, String baseURI, PrefixMap prefixes, ShexShape startShape, List<ShexShape> shapes, Map<Node, ShexShape> shapesMap, List<String> imports, Map<Node, TripleExpression> tripleRefMap) {
+    /*package*/ ShexSchema(String source, String baseURI, PrefixMap prefixes, ShexShape startShape, List<ShexShape> shapes, Map<Node, ShexShape> shapesMap, List<String> imports, Map<Node, TripleExpression> tripleRefMap) {
         this.sourceURI = source;
         this.baseURI = baseURI;
         this.prefixes = prefixes;
@@ -66,27 +66,6 @@ public class ShexShapes {
         this.imports = imports;
         this.tripleRefs = tripleRefMap;
     }
-
-    //merge(ShexShapes...)
-    // merge(List<ShexShapes>)
-
-//    // Import - no start.
-//    public ShexShapes x_asImport() {
-//        // Remove START.
-//        List<ShexShape> shapes2 = shapes.stream().filter(s->
-//            ! SysShex.startNode.equals(s.getLabel())
-//        ).collect(Collectors.toList());
-//        // No imports.
-//        return new ShexShapes(this.prefixes, shapes2, null, tripleRefs);
-//    }
-
-//    private void addShape(ShexShape shape) {
-//        shapes.add(shape);
-//        if ( shape.getLabel() == null )
-//            System.err.println("No shape label");
-//        else
-//            shapesMap.put(shape.getLabel(), shape);
-//    }
 
     /*
      * Get START shape.
@@ -127,7 +106,7 @@ public class ShexShapes {
      * Import form of this ShexShape collection.
      * This involves removing the START reference.
      */
-    public ShexShapes importsClosure() {
+    public ShexSchema importsClosure() {
         if ( shapesWithImports != null )
             return shapesWithImports;
         if ( imports == null || imports.isEmpty() )
@@ -143,7 +122,7 @@ public class ShexShapes {
             Set<String> importsVisited = new HashSet<>();
             if ( sourceURI != null )
                 importsVisited.add(sourceURI);
-            List<ShexShapes> others = new ArrayList<>();
+            List<ShexSchema> others = new ArrayList<>();
             others.add(this);
 
             closure(imports, importsVisited, others);
@@ -154,16 +133,16 @@ public class ShexShapes {
             Map<Node, TripleExpression> mergedTripleRefs = new LinkedHashMap<>();
 
             mergeOne(this, mergedShapes, mergedShapesMap, mergedTripleRefs);
-            for ( ShexShapes importedSchema : others ) {
+            for ( ShexSchema importedSchema : others ) {
                 mergeOne(importedSchema, mergedShapes, mergedShapesMap, mergedTripleRefs);
             }
             //mergedShapesMap.remove(SysShex.startNode);
-            shapesWithImports = new ShexShapes(sourceURI, baseURI, prefixes, startShape, mergedShapes, mergedShapesMap, null, mergedTripleRefs);
+            shapesWithImports = new ShexSchema(sourceURI, baseURI, prefixes, startShape, mergedShapes, mergedShapesMap, null, mergedTripleRefs);
             return shapesWithImports;
         }
     }
 
-    private static void mergeOne(ShexShapes schema,
+    private static void mergeOne(ShexSchema schema,
                                  List<ShexShape> mergedShapes,
                                  Map<Node, ShexShape> mergedShapesMap,
                                  Map<Node, TripleExpression> mergedTripleRefs
@@ -176,14 +155,14 @@ public class ShexShapes {
         mergedTripleRefs.putAll(schema.tripleRefs);
     }
 
-    private static void closure(List<String> imports, Set<String> importsVisited, List<ShexShapes> visited) {
+    private static void closure(List<String> imports, Set<String> importsVisited, List<ShexSchema> visited) {
         if ( imports == null || imports.isEmpty() )
             return;
         for ( String imp : imports ) {
             if ( importsVisited.contains(imp) )
                 continue;
             importsVisited.add(imp);
-            ShexShapes others = Shex.readShapes(imp);
+            ShexSchema others = Shex.readShapes(imp);
             visited.add(others);
             closure(others.imports, importsVisited, visited);
         }

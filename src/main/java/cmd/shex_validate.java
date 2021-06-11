@@ -24,13 +24,9 @@ import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;
-import org.apache.jena.shex.Shex;
-import org.apache.jena.shex.ShexShapes;
-import org.apache.jena.shex.ShexValidation;
-import org.apache.jena.shex.ValidationReport;
+import org.apache.jena.shex.*;
 import org.apache.jena.sys.JenaSystem;
 
 /** ShEx validation.
@@ -48,10 +44,12 @@ public class shex_validate extends CmdGeneral {
     //private ArgDecl argOutputRDF   = new ArgDecl(false, "--rdf");
     private ArgDecl argData        = new ArgDecl(true, "--data", "--datafile", "-d");
     private ArgDecl argShapes      = new ArgDecl(true, "--shapes", "--shapesfile", "--shapefile", "-s");
+    private ArgDecl argShapeMap    = new ArgDecl(true, "--map");
     private ArgDecl argTargetNode  = new ArgDecl(true, "--target", "--node", "-n");
 
     private String  datafile = null;
     private String  shapesfile = null;
+    private String  mapfile = null;
     private String  targetNode = null;  // Parse later.
     private boolean textOutput = false;
 
@@ -63,6 +61,7 @@ public class shex_validate extends CmdGeneral {
         super(argv) ;
         super.add(argShapes,        "--shapes", "Shapes file");
         super.add(argData,          "--data",   "Data file");
+        super.add(argShapeMap,      "--map",    "ShEx shapes map");
         super.add(argTargetNode,    "--target", "Validate specific node [may use prefixes from the data]");
         super.add(argOutputText,    "--text",   "Output in concise text format");
         //super.add(argOutputRDF,  "--rdf", "Output in RDF (Turtle) format");
@@ -70,7 +69,7 @@ public class shex_validate extends CmdGeneral {
 
     @Override
     protected String getSummary() {
-        return getCommandName()+" [--target URI] --shapes shapesFile --data dataFile";
+        return getCommandName()+" [--target URI|--map mapsFile] --shapes shapesFile --data dataFile";
     }
 
     @Override
@@ -98,26 +97,39 @@ public class shex_validate extends CmdGeneral {
          if ( contains(argTargetNode) ) {
              targetNode = getValue(argTargetNode);
          }
+         if ( contains(argShapeMap) )
+             mapfile = getValue(argShapeMap);
+
+         if ( targetNode != null && mapfile != null )
+             throw new CmdException("Only one of target node and map file");
     }
 
     @Override
     protected void exec() {
 
-        //Graph shapesGraph = load(shapesfile, "shapes file");
+        ShexSchema shapes = Shex.readShapes(shapesfile);
 
-        ShexShapes shapes = Shex.readShapes(shapesfile);
+        Graph dataGraph = load(datafile, "data file");
 
-        Graph dataGraph;
-//        if ( datafile.equals(shapesfile) )
-//            dataGraph = shapesGraph;
-//        else
-            dataGraph = load(datafile, "data file");
+//        if ( targetNode != null ) {
+//            String x = dataGraph.getPrefixMapping().expandPrefix(targetNode);
+//            Node node = NodeFactory.createURI(x);
+//            ShexValidation.validate(graphData, shapes, shapeRef, focus)
+//        }
 
-        Node node = null;
-        if ( targetNode != null ) {
-            String x = dataGraph.getPrefixMapping().expandPrefix(targetNode);
-            node = NodeFactory.createURI(x);
+        if ( mapfile != null ) {
+            ShexShapeMap map = Shex.readShapesMap(mapfile);
+            ValidationReport report = ShexValidation.validate(dataGraph, shapes, map);
+            // XXX Print report function
+            // ShexLib.
+            if ( report.conforms() ) {
+                System.out.println("OK");
+            } else {
+                report.getEntries().forEach(e->System.out.println(e));
+            }
+            System.exit(0);
         }
+
 
 //        if ( isVerbose() )
 //            ValidationContext.VERBOSE = true;
@@ -155,6 +167,6 @@ public class shex_validate extends CmdGeneral {
 
     @Override
     protected String getCommandName() {
-        return "shacl_validate";
+        return "shex_validate";
     }
 }

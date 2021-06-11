@@ -31,7 +31,6 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shex.*;
 import org.apache.jena.shex.expressions.PLib;
-import org.apache.jena.shex.extra.Extra;
 
 /** A Shex validation test. Created by {@link RunnerShexValidation}.  */
 public class ShexValidationTest implements Runnable {
@@ -42,7 +41,7 @@ public class ShexValidationTest implements Runnable {
     private final Node shape;
     private final Resource data;
     private final Node focus;
-    private final ShexShapes shapes;
+    private final ShexSchema shapes;
     private final String shapeMapURI;
     private final ShexShapeMap shapeMap;
     private final boolean positiveTest;
@@ -107,7 +106,7 @@ public class ShexValidationTest implements Runnable {
         this.shapeMapURI = shapeMapRef;
         this.shapeMap = (shapeMapRef == null)
                 ? null
-                : Extra.parseShapesMapJson(shapeMapRef);
+                : Shex.readShapesMapJson(shapeMapRef);
         this.shapes = Shex.readShapes(schema.getURI(), base);
         this.positiveTest = entry.getTestType().equals(ShexT.cValidationTest);
     }

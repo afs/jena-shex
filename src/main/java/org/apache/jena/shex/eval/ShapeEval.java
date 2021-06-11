@@ -31,7 +31,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shex.ShexException;
-import org.apache.jena.shex.ShexShapes;
+import org.apache.jena.shex.ShexSchema;
 import org.apache.jena.shex.expressions.*;
 import org.apache.jena.shex.sys.ValidationContext;
 import org.apache.jena.util.iterator.ExtendedIterator;
@@ -124,7 +124,7 @@ public class ShapeEval {
     }
 
     // Recursive.
-    private static TripleExprVisitor walk(ShexShapes shapes, TripleExprVisitor step) {
+    private static TripleExprVisitor walk(ShexSchema shapes, TripleExprVisitor step) {
         //Walker
         return new TripleExprVisitor() {
             @Override
@@ -177,7 +177,7 @@ public class ShapeEval {
         return predicates;
     }
 
-    private static <X> TripleExprVisitor accumulator(ShexShapes shapes, Set<X> acc, Function<TripleConstraint, X> mapper) {
+    private static <X> TripleExprVisitor accumulator(ShexSchema shapes, Set<X> acc, Function<TripleConstraint, X> mapper) {
         TripleExprVisitor step = new TripleExprVisitor() {
             @Override
             public void visit(TripleConstraint tripleConstraint) {

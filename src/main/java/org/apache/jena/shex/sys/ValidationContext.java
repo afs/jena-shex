@@ -30,7 +30,7 @@ import org.apache.jena.shex.*;
 import org.apache.jena.shex.expressions.TripleExpression;
 
 public class ValidationContext {
-    private final ShexShapes shapes;
+    private final ShexSchema shapes;
     private final Graph data;
     private boolean verbose = false;
     private boolean seenValidationReportEntry = false;
@@ -45,12 +45,12 @@ public class ValidationContext {
         return new ValidationContext(vCxt.data, vCxt.shapes, vCxt.inProgress);
     }
 
-    public ValidationContext(Graph data, ShexShapes shapes) {
+    public ValidationContext(Graph data, ShexSchema shapes) {
         this(data, shapes, null);
 
     }
 
-    private ValidationContext(Graph data, ShexShapes shapes ,Deque<Pair<Node, ShexShape>> progress) {
+    private ValidationContext(Graph data, ShexSchema shapes ,Deque<Pair<Node, ShexShape>> progress) {
         this.data = data;
         this.shapes = shapes;
         if ( progress != null )
@@ -61,7 +61,7 @@ public class ValidationContext {
         return shapes.getTripleExpression(label);
     }
 
-    public ShexShapes getShapes() {
+    public ShexSchema getShapes() {
         return shapes;
     }
 

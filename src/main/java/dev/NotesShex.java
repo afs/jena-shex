@@ -22,31 +22,36 @@ public class NotesShex {
     // Grammar. Check file for ToDo and other notes.
     // Test Suite
 
-    // [SHACL] Imports validation?
+    // == Initial Jena commit
 
-    // [ ] Read a fil e-> base name -> add to
-    // [ ] cmds
-    // [ ] files => src/test/files
-    // [ ] EachOf partition generation produce duplicates. -> algorithm H!
+    // [ ] Reporting
+    // [ ] Rename ValidationReport -> ShexReport -> map for { shape, node, error } subclass of ShexShapeMap
+    // [x] Example(s)
+    // [x] cmds, but printing could be better
+    // [x] ShEx vs Shex Shex for classes. ShExC, ShExJ, ShExR for languages.
+    // [ ] ShexShapes -> ShexSchema
+    // [ ] ShapesMap -> ShapeMap
     // [ ] Unlink from SHACL :: PLib
-    // [ ] negativeStructure tests
-
-    // [x] TripleExpressionRef - a cross imported files.
-    // [x] ShexMap
-    //     JSON form (required by tests)
-
-    // [x] Better imports - keep individual read in ShexShapes.
+    // [x] Shex.parseShapesMapJson-> ShExJ
 
     // == Part 1
 
-    // [ ] Reporting.
+    // [ ] EachOf partition generation produce duplicates. -> algorithm H!
+    // [ ] negativeStructure tests
+    // [ ] Schema requirements (5.7), including only one START
+    //     START - and check only one.
+
+    // [SHACL] Imports validation?
+    //         Different - done as owl:imports closure then parse all. Default - no.
+    //         What about SHACLC?
+    //         How does this happen in validation?
+
+    //     Currently:
+    //         shapes = shapes.importsClosure(); <-- include in SHACL.
 
     // [x] ShapesMap
     // [ ] Annotations (?)
     // [ ] Semantic Actions
-
-    // [ ] Schema requirements (5.7), including only one START
-    //     START - and check only one.
 
     // == Part 2
 
@@ -54,7 +59,7 @@ public class NotesShex {
 
     // [ ] Extension "MAP{}" -- including via imports. TARGET { ... }
     // [ ] Compact writer
-    // [ ] ShexJ, ShexR
+    // [ ] ShExJ, ShExR
 
     // [ ] Validation debug
     // [ ] test for XSDFuncOp.isNumeric??
