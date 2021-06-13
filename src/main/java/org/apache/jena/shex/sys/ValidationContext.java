@@ -33,15 +33,15 @@ public class ValidationContext {
     private final ShexSchema shapes;
     private final Graph data;
     private boolean verbose = false;
-    private boolean seenValidationReportEntry = false;
+    private boolean seenReportEntry = false;
     // <data node, shape>
     private Deque<Pair<Node, ShexShape>> inProgress = new ArrayDeque<>();
 
-    private final ValidationReport.Builder validationReportBuilder = ValidationReport.create();
+    private final ShexReport.Builder reportBuilder = ShexReport.create();
 
 
     public static ValidationContext create(ValidationContext vCxt) {
-        // Fresh ValidationReport.Builder
+        // Fresh ShexReport.Builder
         return new ValidationContext(vCxt.data, vCxt.shapes, vCxt.inProgress);
     }
 
@@ -72,9 +72,6 @@ public class ValidationContext {
     public Graph getData() {
         return data;
     }
-
-//    private Deque<Pair<Node, ShexShape>> inProgress = new ArrayDeque<>();
-//    private Deque<Node> shapesLabelsDone = new ArrayDeque<>();
 
     public void startValidate(ShexShape shape, Node data) {
         inProgress.push(Pair.create(data,  shape));
@@ -108,18 +105,18 @@ public class ValidationContext {
 
     // In ShEx "satisfies" returns a boolean.
 //    public boolean conforms() { return validationReportBuilder.isEmpty(); }
-    public boolean hasEntries() { return ! validationReportBuilder.isEmpty(); }
+    public boolean hasEntries() { return ! reportBuilder.isEmpty(); }
 
     /** Current state. */
     public List<ReportItem> getReportItems() {
-        return validationReportBuilder.getItems();
+        return reportBuilder.getItems();
     }
 
     public void reportEntry(ReportItem item) {
-        validationReportBuilder.addReportItem(item);
+        reportBuilder.addReportItem(item);
     }
 
-    public ValidationReport generateReport() {
-        return validationReportBuilder.build();
+    public ShexReport generateReport() {
+        return reportBuilder.build();
     }
 }

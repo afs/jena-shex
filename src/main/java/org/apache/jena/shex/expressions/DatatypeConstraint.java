@@ -18,7 +18,7 @@
 
 package org.apache.jena.shex.expressions;
 
-import static org.apache.jena.shex.expressions.PLib.*;
+import static org.apache.jena.shex.sys.ShexLib.*;
 
 import java.util.Objects;
 

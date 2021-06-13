@@ -54,7 +54,7 @@ import org.apache.jena.graph.*;
 import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 import java.util.*;
 
-public class ShExJavacc extends ShExCompactParser
+public class ShExJavacc extends ParserShExC
 {}
 PARSER_END(ShExJavacc)
 

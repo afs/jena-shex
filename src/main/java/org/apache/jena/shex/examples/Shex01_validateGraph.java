@@ -35,11 +35,11 @@ public class Shex01_validateGraph {
 
         // XXX Move.
         System.out.println("Read shapes map");
-        ShexShapeMap shapesMap = Shex.readShapesMap(SHAPES_MAP);
+        ShexShapeMap shapeMap = Shex.readShapeMap(SHAPES_MAP);
 
         // XXX ShexReport
         System.out.println("Validate");
-        ValidationReport report = ShexValidation.validate(dataGraph, shapes, shapesMap);
+        ShexReport report = ShexValidation.validate(dataGraph, shapes, shapeMap);
 
         // XXX Print report.
         // ShexLib.

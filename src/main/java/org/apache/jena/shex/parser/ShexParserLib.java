@@ -21,7 +21,7 @@ package org.apache.jena.shex.parser;
 import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.lib.Hex;
 
-public class ShexParserLib {
+class ShexParserLib {
 
     // Nearly the same as EscapeStr.unescape.
     // Shex regex allows /\{\}/ -- single \ for a regular expression metacharacter.

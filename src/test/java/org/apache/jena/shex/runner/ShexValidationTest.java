@@ -30,7 +30,7 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shex.*;
-import org.apache.jena.shex.expressions.PLib;
+import org.apache.jena.shex.sys.ShexLib;
 
 /** A Shex validation test. Created by {@link RunnerShexValidation}.  */
 public class ShexValidationTest implements Runnable {
@@ -106,7 +106,7 @@ public class ShexValidationTest implements Runnable {
         this.shapeMapURI = shapeMapRef;
         this.shapeMap = (shapeMapRef == null)
                 ? null
-                : Shex.readShapesMapJson(shapeMapRef);
+                : Shex.readShapeMapJson(shapeMapRef);
         this.shapes = Shex.readShapes(schema.getURI(), base);
         this.positiveTest = entry.getTestType().equals(ShexT.cValidationTest);
     }
@@ -117,7 +117,7 @@ public class ShexValidationTest implements Runnable {
         try {
             if ( ShexTests.dumpTest )
                 describeTest();
-            ValidationReport report;
+            ShexReport report;
             switch (this.testType) {
                 case ShapeFocus :
                     report = ShexValidation.validate(graph, shapes, shape, focus);
@@ -162,9 +162,9 @@ public class ShexValidationTest implements Runnable {
         System.out.println("Data:     "+data);
 
         if ( shape != null )
-            System.out.println("Shape:    "+PLib.displayStr(shape));
+            System.out.println("Shape:    "+ShexLib.displayStr(shape));
         if ( focus != null )
-            System.out.println("Focus:    "+PLib.displayStr(focus));
+            System.out.println("Focus:    "+ShexLib.displayStr(focus));
         if ( shapeMapURI != null )
             System.out.println("Map:      "+shapeMapURI);
 

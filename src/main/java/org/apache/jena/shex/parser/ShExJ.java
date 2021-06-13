@@ -33,13 +33,14 @@ import org.apache.jena.shex.ShexException;
 import org.apache.jena.shex.ShexShapeAssociation;
 import org.apache.jena.shex.ShexShapeMap;
 
+/** Shape Expressions : JSON syntax */
 public class ShExJ {
     /**
      * Parse the {@code InputStream} to get a ShEx shape map from JSON syntax.
      * @param input
      * @return ShexShapeMap
      */
-    public static ShexShapeMap readShapesMapJson(InputStream input) {
+    public static ShexShapeMap readShapeMapJson(InputStream input) {
         if ( input instanceof BufferedInputStream )
             input = new BufferedInputStream(input, 128*1024);
         JsonValue x = JSON.parseAny(input);
@@ -48,13 +49,13 @@ public class ShExJ {
         List<ShexShapeAssociation> associations = new ArrayList<>();
         x.getAsArray().forEach(j->{
             if ( !j.isObject() ) {}
-            ShexShapeAssociation a = parseShapesMapEntry(j.getAsObject());
+            ShexShapeAssociation a = parseShapeMapEntry(j.getAsObject());
             associations.add(a);
         });
         return new ShexShapeMap(associations);
     }
 
-    private static ShexShapeAssociation parseShapesMapEntry(JsonObject obj) {
+    private static ShexShapeAssociation parseShapeMapEntry(JsonObject obj) {
         // Just enough to parse the maps in the validation test suite.
 
         // Full:

@@ -32,7 +32,7 @@ import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.shex.parser.ShExJ;
-import org.apache.jena.shex.parser.ShexParser;
+import org.apache.jena.shex.parser.ShExC;
 
 public class Shex {
     /**
@@ -51,7 +51,7 @@ public class Shex {
      * @return ShexSchema
      */
     public static ShexSchema shapesFromString(String inputStr, String baseURI) {
-        ShexSchema shapes = ShexParser.parse(new StringReader(inputStr), baseURI);
+        ShexSchema shapes = ShExC.parse(new StringReader(inputStr), baseURI);
         return shapes;
     }
 
@@ -76,7 +76,7 @@ public class Shex {
 //        if ( ! ( input instanceof BufferedInputStream ) )
 //            input = new BufferedInputStream(input, 128*1024);
         String parserBase = (base != null) ? base : IRILib.filenameToIRI(filenameOrURL);
-        ShexSchema shapes = ShexParser.parse(input, IRILib.filenameToIRI(filenameOrURL), parserBase);
+        ShexSchema shapes = ShExC.parse(input, IRILib.filenameToIRI(filenameOrURL), parserBase);
         return shapes;
     }
 
@@ -154,8 +154,8 @@ public class Shex {
      * @param filename
      * @return ShexShapeMap
      */
-    public static ShexShapeMap readShapesMap(String filename) {
-        return readShapesMap(filename, IRILib.filenameToIRI(filename));
+    public static ShexShapeMap readShapeMap(String filename) {
+        return readShapeMap(filename, IRILib.filenameToIRI(filename));
     }
 
     /**
@@ -164,9 +164,9 @@ public class Shex {
      * @param baseURI
      * @return ShexShapeMap
      */
-    public static ShexShapeMap readShapesMap(String filename, String baseURI) {
+    public static ShexShapeMap readShapeMap(String filename, String baseURI) {
         InputStream input = IO.openFile(filename);
-        return readShapesMap(input, baseURI);
+        return readShapeMap(input, baseURI);
     }
 
     /**
@@ -175,8 +175,8 @@ public class Shex {
      * @param baseURI
      * @return ShexShapeMap
      */
-    public static ShexShapeMap readShapesMap(InputStream input, String baseURI) {
-        return ShexParser.parseShapesMap(input, baseURI);
+    public static ShexShapeMap readShapeMap(InputStream input, String baseURI) {
+        return ShExC.parseShapeMap(input, baseURI);
     }
 
     /**
@@ -185,14 +185,14 @@ public class Shex {
      * @param baseURI
      * @return ShexShapeMap
      */
-    public static ShexShapeMap shapesMapFromString(String inputStr, String baseURI) {
-        return ShexParser.parseShapesMap(new StringReader(inputStr), baseURI);
+    public static ShexShapeMap shapeMapFromString(String inputStr, String baseURI) {
+        return ShExC.parseShapeMap(new StringReader(inputStr), baseURI);
     }
 
     /** Read a {@link ShexShapeMap} from a file or URL. */
-    public static ShexShapeMap readShapesMapJson(String filenameOrURL) {
+    public static ShexShapeMap readShapeMapJson(String filenameOrURL) {
         TypedInputStream in = RDFDataMgr.open(filenameOrURL);
-        return readShapesMapJson(in.getInputStream());
+        return readShapeMapJson(in.getInputStream());
     }
 
     /**
@@ -200,7 +200,7 @@ public class Shex {
      * @param input
      * @return ShexShapeMap
      */
-    public static ShexShapeMap readShapesMapJson(InputStream input) {
-        return ShExJ.readShapesMapJson(input);
+    public static ShexShapeMap readShapeMapJson(InputStream input) {
+        return ShExJ.readShapeMapJson(input);
     }
 }

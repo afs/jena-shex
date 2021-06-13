@@ -24,15 +24,16 @@ public class NotesShex {
 
     // == Initial Jena commit
 
-    // [ ] Reporting
-    // [ ] Rename ValidationReport -> ShexReport -> map for { shape, node, error } subclass of ShexShapeMap
+    // [ ] Unlink from SHACL :: PLib
+    // [ ] Reporting: printing
+
+    // [x] ShapesMap -> ShapeMap
+    // [x] Rename ValidationReport -> ShexReport -> map for { shape, node, error } subclass of ShexShapeMap
     // [x] Example(s)
     // [x] cmds, but printing could be better
     // [x] ShEx vs Shex Shex for classes. ShExC, ShExJ, ShExR for languages.
-    // [ ] ShexShapes -> ShexSchema
-    // [ ] ShapesMap -> ShapeMap
-    // [ ] Unlink from SHACL :: PLib
-    // [x] Shex.parseShapesMapJson-> ShExJ
+    // [x] ShexShapes -> ShexSchema
+    // [x] Shex.parseShapeMapJson-> ShExJ
 
     // == Part 1
 

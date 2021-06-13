@@ -26,6 +26,7 @@ import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.shex.ReportItem;
+import org.apache.jena.shex.sys.ShexLib;
 import org.apache.jena.shex.sys.ValidationContext;
 
 public class NumLengthConstraint extends NodeConstraint {
@@ -43,32 +44,25 @@ public class NumLengthConstraint extends NodeConstraint {
     @Override
     public ReportItem nodeSatisfies(ValidationContext vCxt, Node n) {
         if ( ! n.isLiteral() ) {
-            String msg = format("NumericConstraint: Not numeric: %s ", PLib.displayStr(n));
+            String msg = format("NumericConstraint: Not numeric: %s ", ShexLib.displayStr(n));
             return new ReportItem(msg, n);
         }
 
         RDFDatatype rdfDT = n.getLiteralDatatype();
         if ( ! ( rdfDT instanceof XSDDatatype ) ) {
-            String msg = format("NumericConstraint: Not a numeric: %s ", PLib.displayStr(n));
+            String msg = format("NumericConstraint: Not a numeric: %s ", ShexLib.displayStr(n));
             return new ReportItem(msg, n);
         }
 
         if ( XSDDatatype.XSDfloat.equals(rdfDT) || XSDDatatype.XSDdouble.equals(rdfDT) ) {
-            String msg = format("NumericConstraint: Numeric not compatible with xsd:decimal: %s ", PLib.displayStr(n));
+            String msg = format("NumericConstraint: Numeric not compatible with xsd:decimal: %s ", ShexLib.displayStr(n));
             return new ReportItem(msg, n);
         }
         String lexicalForm = n.getLiteralLexicalForm();
         if ( ! rdfDT.isValid(lexicalForm) ) {
-            String msg = format("NumericConstraint: Not a valid xsd:decimal: %s ", PLib.displayStr(n));
+            String msg = format("NumericConstraint: Not a valid xsd:decimal: %s ", ShexLib.displayStr(n));
             return new ReportItem(msg, n);
         }
-
-
-//        if ( ! XSDFuncOp.isDecimalDatatype((XSDDatatype)rdfDT) ) {
-//            //if ( ! XSDFuncOp.isNumeric(n) ) {
-//            String msg = format("NumericConstraint: Not an xsd:decimal number: %s ", PLib.displayStr(n));
-//            return new ReportItem(msg, n);
-//        }
 
         String str = lexicalForm;
         int N = str.length();

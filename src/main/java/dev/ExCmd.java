@@ -44,20 +44,23 @@ public class ExCmd {
         String SHAPES_MAP = "examples/shape-map.shexmap";
         String DATA = "examples/data.ttl";
 
+        // -- Data
         System.out.println("Read data");
         Graph dataGraph = RDFDataMgr.loadGraph(DATA);
         System.out.println("Read shapes");
         ShexSchema shapes = Shex.readShapes(SHAPES);
 
+        // -- Map
         // XXX Move.
         System.out.println("Read shapes map");
-        ShexShapeMap shapesMap = Shex.readShapesMap(SHAPES_MAP);
+        ShexShapeMap shapeMap = Shex.readShapeMap(SHAPES_MAP);
 
-        // XXX ShexReport
+        // -- Validate
         System.out.println("Validate");
-        ValidationReport report = ShexValidation.validate(dataGraph, shapes, shapesMap);
+        ShexReport report = ShexValidation.validate(dataGraph, shapes, shapeMap);
 
-        // XXX Print report.
+
+        // -- Print report.
         // ShexLib.
         if ( report.conforms() ) {
             System.out.println("OK");

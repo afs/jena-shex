@@ -24,6 +24,7 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shex.ShexShape;
+import org.apache.jena.shex.sys.ShexLib;
 import org.apache.jena.shex.sys.ValidationContext;
 
 /** Shape expression that redirects. */
@@ -45,7 +46,7 @@ public class ShapeExprRef extends ShapeExpression {
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {
         out.print("ShapeRef: ");
-        out.print(PLib.displayStr(ref));
+        out.print(ShexLib.displayStr(ref));
         out.println();
     }
 

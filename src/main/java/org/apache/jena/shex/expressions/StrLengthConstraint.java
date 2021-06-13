@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.shex.ReportItem;
+import org.apache.jena.shex.sys.ShexLib;
 import org.apache.jena.shex.sys.ValidationContext;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 
@@ -53,7 +54,7 @@ public class StrLengthConstraint extends NodeConstraint {
     @Override
     public ReportItem nodeSatisfies(ValidationContext vCxt, Node n) {
         if ( ! n.isLiteral() && ! n.isURI() ) {
-            String msg = format("%s: Not a literal or URI: %s", lengthType.label(), PLib.displayStr(n));
+            String msg = format("%s: Not a literal or URI: %s", lengthType.label(), ShexLib.displayStr(n));
             return new ReportItem(msg, n);
         }
         String str = NodeFunctions.str(n);

@@ -27,7 +27,7 @@ import java.util.Set;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.shex.ShexSchema;
-import org.apache.jena.shex.parser.ShexParser;
+import org.apache.jena.shex.parser.ShExC;
 import org.junit.runners.model.InitializationError;
 
 public class RunnerShexSyntax extends AbstractRunnerFiles {
@@ -60,7 +60,7 @@ public class RunnerShexSyntax extends AbstractRunnerFiles {
         String str = IO.readWholeFileAsUTF8(filename);
         InputStream input = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
         try {
-            ShexSchema shapes = ShexParser.parse(input, filename, null);
+            ShexSchema shapes = ShExC.parse(input, filename, null);
             return shapes;
         } catch (RuntimeException ex) {
             System.out.print("-- ");

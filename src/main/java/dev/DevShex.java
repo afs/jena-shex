@@ -18,9 +18,16 @@
 
 package dev;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
+import org.apache.http.util.ByteArrayBuffer;
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.LogCtl;
@@ -35,7 +42,7 @@ import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shex.*;
 import org.apache.jena.shex.eval.ShapeEval;
-import org.apache.jena.shex.parser.ShExC;
+import org.apache.jena.shex.parser.ParserShExC;
 import org.apache.jena.shex.sys.ValidationContext;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
@@ -60,7 +67,14 @@ public class DevShex {
 
     static final String DIR = "src/test/files/spec/";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        byte[] b = Bytes.string2bytes("é");
+        ByteArrayInputStream in = new ByteArrayInputStream(b);
+        Reader r = new InputStreamReader(in, StandardCharsets.US_ASCII);
+        int ch = r.read();
+        System.out.printf("ch = %04X\n", ch);
+        System.out.println("ch = "+(char)ch);
+        System.exit(0);
 
 //        System.out.println("Waiting ...");
 //        System.in.read();
@@ -123,7 +137,7 @@ public class DevShex {
         System.out.println("--");
 
 
-        ValidationReport report = ShexValidation.validate(data, shapes, shapeRef, focus);
+        ShexReport report = ShexValidation.validate(data, shapes, shapeRef, focus);
         boolean b = report.conforms();
         System.out.println(b);
     }
@@ -171,7 +185,7 @@ public class DevShex {
     }
 
     private static void validate(Graph graph, ShexSchema shapes, ShexShapeMap shapeMap) {
-        ValidationReport report = ShexValidation.validate(graph, shapes, shapeMap);
+        ShexReport report = ShexValidation.validate(graph, shapes, shapeMap);
         if ( report.conforms() )
             System.out.println("OK");
         else
@@ -209,7 +223,7 @@ public class DevShex {
         Node testShape = SSE.parseNode("<http://example/s3>");
         ShexShape shape = shapes.get(testShape);
         System.out.println("---- Validation");
-        ValidationReport report = ShexValidation.validate(graph, shapes, shape, focus);
+        ShexReport report = ShexValidation.validate(graph, shapes, shape, focus);
         if ( report.conforms() )
             System.out.println("OK");
         else {
@@ -350,8 +364,8 @@ public class DevShex {
     }
 
     private static ShexSchema parse(Supplier<ShexSchema> supplier, boolean debug, boolean debugParse) {
-        ShExC.DEBUG = debug;
-        ShExC.DEBUG_PARSE = debugParse;
+        ParserShExC.DEBUG = debug;
+        ParserShExC.DEBUG_PARSE = debugParse;
         return supplier.get();
     }
 
@@ -363,7 +377,7 @@ public class DevShex {
             System.out.println();
         System.out.println("----");
 
-        ShexShapeMap shapeMap = Shex.readShapesMap(str2, null);
+        ShexShapeMap shapeMap = Shex.readShapeMap(str2, null);
         return shapeMap;
     }
 

@@ -29,7 +29,7 @@ public class ShexSchema {
 
     private final ShexShape startShape;
     private final List<ShexShape> shapes;
-    private final Map<Node, ShexShape> shapesMap;
+    private final Map<Node, ShexShape> shapeMap;
     private final Map<Node, TripleExpression> tripleRefs;
 
     private ShexSchema shapesWithImports = null;
@@ -43,26 +43,26 @@ public class ShexSchema {
                                     List<ShexShape> shapes, List<String> imports,
                                     Map<Node, TripleExpression> tripleRefs) {
         shapes = new ArrayList<>(shapes);
-        Map<Node, ShexShape> shapesMap = new LinkedHashMap<>();
+        Map<Node, ShexShape> shapeMap = new LinkedHashMap<>();
         for ( ShexShape shape:  shapes) {
         if ( shape.getLabel() == null )
             System.err.println("No shape label");
         else
-            shapesMap.put(shape.getLabel(), shape);
+            shapeMap.put(shape.getLabel(), shape);
         }
 
         tripleRefs = new LinkedHashMap<>(tripleRefs);
 
-        return new ShexSchema(source, baseURI, prefixes, startShape, shapes, shapesMap, imports, tripleRefs);
+        return new ShexSchema(source, baseURI, prefixes, startShape, shapes, shapeMap, imports, tripleRefs);
     }
 
-    /*package*/ ShexSchema(String source, String baseURI, PrefixMap prefixes, ShexShape startShape, List<ShexShape> shapes, Map<Node, ShexShape> shapesMap, List<String> imports, Map<Node, TripleExpression> tripleRefMap) {
+    /*package*/ ShexSchema(String source, String baseURI, PrefixMap prefixes, ShexShape startShape, List<ShexShape> shapes, Map<Node, ShexShape> shapeMap, List<String> imports, Map<Node, TripleExpression> tripleRefMap) {
         this.sourceURI = source;
         this.baseURI = baseURI;
         this.prefixes = prefixes;
         this.startShape = startShape;
         this.shapes = shapes;
-        this.shapesMap = shapesMap;
+        this.shapeMap = shapeMap;
         this.imports = imports;
         this.tripleRefs = tripleRefMap;
     }
@@ -129,28 +129,28 @@ public class ShexSchema {
 
             // Calculate the merge
             List<ShexShape> mergedShapes = new ArrayList<>();
-            Map<Node, ShexShape> mergedShapesMap = new LinkedHashMap<>();
+            Map<Node, ShexShape> mergedShapeMap = new LinkedHashMap<>();
             Map<Node, TripleExpression> mergedTripleRefs = new LinkedHashMap<>();
 
-            mergeOne(this, mergedShapes, mergedShapesMap, mergedTripleRefs);
+            mergeOne(this, mergedShapes, mergedShapeMap, mergedTripleRefs);
             for ( ShexSchema importedSchema : others ) {
-                mergeOne(importedSchema, mergedShapes, mergedShapesMap, mergedTripleRefs);
+                mergeOne(importedSchema, mergedShapes, mergedShapeMap, mergedTripleRefs);
             }
-            //mergedShapesMap.remove(SysShex.startNode);
-            shapesWithImports = new ShexSchema(sourceURI, baseURI, prefixes, startShape, mergedShapes, mergedShapesMap, null, mergedTripleRefs);
+            //mergedShapeMap.remove(SysShex.startNode);
+            shapesWithImports = new ShexSchema(sourceURI, baseURI, prefixes, startShape, mergedShapes, mergedShapeMap, null, mergedTripleRefs);
             return shapesWithImports;
         }
     }
 
     private static void mergeOne(ShexSchema schema,
                                  List<ShexShape> mergedShapes,
-                                 Map<Node, ShexShape> mergedShapesMap,
+                                 Map<Node, ShexShape> mergedShapeMap,
                                  Map<Node, TripleExpression> mergedTripleRefs
                                  ) {
         // Without start shape.
         schema.getShapes().stream().filter(sh->!SysShex.startNode.equals(sh.getLabel())).forEach(shape->{
             mergedShapes.add(shape);
-            mergedShapesMap.put(shape.getLabel(), shape);
+            mergedShapeMap.put(shape.getLabel(), shape);
         });
         mergedTripleRefs.putAll(schema.tripleRefs);
     }
@@ -169,11 +169,11 @@ public class ShexSchema {
     }
 
     public ShexShape get(Node n) {
-        return shapesMap.get(n);
+        return shapeMap.get(n);
     }
 
     public boolean hasShape(Node n) {
-        return shapesMap.containsKey(n);
+        return shapeMap.containsKey(n);
     }
 
     public PrefixMap getPrefixMap() { return prefixes; }

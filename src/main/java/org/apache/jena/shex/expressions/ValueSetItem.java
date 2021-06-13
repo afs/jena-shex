@@ -24,6 +24,7 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shex.ShexException;
+import org.apache.jena.shex.sys.ShexLib;
 
 public class ValueSetItem {
     String iriStr;
@@ -37,7 +38,7 @@ public class ValueSetItem {
         this.literal = literal;
         this.isStem = isStem;
         if ( literal != null && ! literal.isLiteral() )
-            throw new ShexException("Not literal: "+PLib.displayStr(literal));
+            throw new ShexException("Not literal: "+ShexLib.displayStr(literal));
     }
 
     public void print(IndentedWriter out, NodeFormatter nFmt) {
@@ -54,7 +55,7 @@ public class ValueSetItem {
         String str = "invalid";
         if ( iriStr != null ) str = "<"+iriStr+">";
         else if ( langStr != null ) str = "@"+langStr;
-        else if ( literal != null ) str = PLib.displayDT(literal);
+        else if ( literal != null ) str = ShexLib.displayDT(literal);
 
         if ( isStem )
             str = str+"~";

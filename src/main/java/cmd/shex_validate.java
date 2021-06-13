@@ -118,8 +118,8 @@ public class shex_validate extends CmdGeneral {
 //        }
 
         if ( mapfile != null ) {
-            ShexShapeMap map = Shex.readShapesMap(mapfile);
-            ValidationReport report = ShexValidation.validate(dataGraph, shapes, map);
+            ShexShapeMap map = Shex.readShapeMap(mapfile);
+            ShexReport report = ShexValidation.validate(dataGraph, shapes, map);
             // XXX Print report function
             // ShexLib.
             if ( report.conforms() ) {
@@ -140,7 +140,7 @@ public class shex_validate extends CmdGeneral {
 
         Node shapeRef = null;
         Node focus = null;
-        ValidationReport report = ShexValidation.validate(dataGraph, shapes, shapeRef, focus);
+        ShexReport report = ShexValidation.validate(dataGraph, shapes, shapeRef, focus);
 
         if ( report.conforms() )
             System.out.println("OK");

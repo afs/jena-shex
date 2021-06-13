@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.shex.parser.ShexParseException;
-import org.apache.jena.shex.parser.ShexParser;
+import org.apache.jena.shex.parser.ShExC;
 import org.junit.Test;
 
 public class TestShexShapeMapSyntax {
@@ -79,7 +79,7 @@ public class TestShexShapeMapSyntax {
 
     private ShexShapeMap parseShapeMap(String s) {
         InputStream input = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
-        ShexShapeMap shapeMap = ShexParser.parseShapesMap(input, null);
+        ShexShapeMap shapeMap = ShExC.parseShapeMap(input, null);
         return shapeMap;
     }
 }

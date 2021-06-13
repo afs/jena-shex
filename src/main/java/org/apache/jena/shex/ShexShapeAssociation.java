@@ -20,7 +20,7 @@ package org.apache.jena.shex;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.shex.expressions.PLib;
+import org.apache.jena.shex.sys.ShexLib;
 import org.apache.jena.shex.sys.SysShex;
 
 public class ShexShapeAssociation {
@@ -97,6 +97,6 @@ public class ShexShapeAssociation {
             return "FOCUS";
         if ( x == SysShex.startNode )
             return "START";
-        return PLib.displayStr(x);
+        return ShexLib.displayStr(x);
     }
 }

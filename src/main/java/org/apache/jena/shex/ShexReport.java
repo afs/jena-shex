@@ -29,9 +29,9 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 
-public class ValidationReport {
+public class ShexReport {
 
-    private static ValidationReport singletonReportConformsTrue = new ValidationReport(Collections.emptySet(), (Resource)null);
+    private static ShexReport singletonReportConformsTrue = new ShexReport(Collections.emptySet(), (Resource)null);
     private final Collection<ReportItem> entries;
     private final Resource resultResource;
 
@@ -40,11 +40,11 @@ public class ValidationReport {
     }
 
     /** Return an immutable report that records no validation errors (violations or any other level of severity) */
-    public static ValidationReport reportConformsTrue() {
+    public static ShexReport reportConformsTrue() {
         return singletonReportConformsTrue;
     }
 
-    private ValidationReport(Collection<ReportItem> entries, PrefixMapping prefixes) {
+    private ShexReport(Collection<ReportItem> entries, PrefixMapping prefixes) {
         this(entries, generate(entries, prefixes));
     }
 
@@ -52,7 +52,7 @@ public class ValidationReport {
         return null;
     }
 
-    private ValidationReport(Collection<ReportItem> entries, Resource resultResource) {
+    private ShexReport(Collection<ReportItem> entries, Resource resultResource) {
         this.entries = entries;
         this.resultResource = resultResource;
     }
@@ -88,8 +88,8 @@ public class ValidationReport {
             entries.add(e);
         }
 
-        public ValidationReport build() {
-            return new ValidationReport(entries, prefixes);
+        public ShexReport build() {
+            return new ShexReport(entries, prefixes);
         }
 
     }

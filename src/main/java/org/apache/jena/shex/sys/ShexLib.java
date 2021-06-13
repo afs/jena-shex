@@ -18,9 +18,20 @@
 
 package org.apache.jena.shex.sys;
 
+import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.riot.out.NodeFormatterTTL;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shex.expressions.*;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.XSD;
 
 public class ShexLib {
+    /** Extract the fragment from a URI. Return "". */
     public static String fragment(String uri) {
         int idx = uri.indexOf('#');
         if ( idx < 0 )
@@ -38,8 +49,45 @@ public class ShexLib {
                             TripleExprVisitor beforeTripleExpressionVisitor, TripleExprVisitor afterTripleExpressionVisitor
                             ) {
         ShapeExprWalker walker = new ShapeExprWalker(beforeVisitor, afterVisitor,
-                                                                 beforeTripleExpressionVisitor,
-                                                                 afterTripleExpressionVisitor);
+                                                     beforeTripleExpressionVisitor, afterTripleExpressionVisitor);
         shExpr.visit(walker);
+    }
+
+    private static PrefixMap displayPrefixMap = PrefixMapFactory.createForOutput();
+    private static NodeFormatter nodeFmtAbbrev = new NodeFormatterTTL(null, displayPrefixMap);
+
+    static {
+        displayPrefixMap.add("owl",  OWL.getURI());
+        displayPrefixMap.add("rdf",  RDF.getURI());
+        displayPrefixMap.add("rdfs", RDFS.getURI());
+        displayPrefixMap.add("xsd",  XSD.getURI());
+    }
+
+    /** Display string for human-readable output. */
+    public static String displayDT(Node n) {
+        if ( n.isLiteral() && n.getLiteralDatatypeURI().startsWith(XSD.getURI()) ) {
+            int x = XSD.getURI().length();
+            String s = n.getLiteralDatatypeURI().substring(x);
+            return "xsd:"+s;
+        }
+        String s = "<"+n.getLiteralDatatypeURI()+">";
+        return s;
+    }
+
+    /** Display string for human-readable output. */
+    public static String displayStr(Node n) {
+        if ( n == null )
+            return "<null>";
+        if ( n == SysShex.focusNode )
+            return "FOCUS";
+        if ( n == SysShex.startNode )
+            return "START";
+        return displayStr(n, nodeFmtAbbrev);
+    }
+
+    private static String displayStr(Node n, NodeFormatter nodeFmt) {
+        IndentedLineBuffer sw = new IndentedLineBuffer() ;
+        nodeFmt.format(sw, n);
+        return sw.toString() ;
     }
 }

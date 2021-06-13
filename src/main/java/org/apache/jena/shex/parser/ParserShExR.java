@@ -16,33 +16,8 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shex;
+package org.apache.jena.shex.parser;
 
-import org.apache.jena.graph.Node;
-import org.apache.jena.shex.sys.ShexLib;
+public class ParserShExR {
 
-/**
- * Result of validation of a constraint.
- */
-public class ReportItem {
-    private final String message;
-    private final Node value;
-
-    public ReportItem(String message, Node value) {
-        this.message = message;
-        this.value = value;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public Node getValue() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return message+" ("+ShexLib.displayStr(value)+")";
-    }
 }

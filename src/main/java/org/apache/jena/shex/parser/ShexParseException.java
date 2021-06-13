@@ -24,8 +24,8 @@ public class ShexParseException extends JenaException {
     private int line ;
     private int column ;
 
-    public ShexParseException(int line, int column)
-    { this(null, null, line, column) ; }
+    public ShexParseException(String msg)
+    { this(msg, null, -1, -1) ; }
 
     public ShexParseException(Throwable cause, int line, int column)
     { this(null, cause, line, column) ; }
@@ -33,15 +33,15 @@ public class ShexParseException extends JenaException {
     public ShexParseException(String msg, int line, int column)
     { this(msg, null, line, column) ; }
 
-    public ShexParseException(String msg, Throwable cause, int line, int column)
-    {
-        //super(formatMessage(msg, line, column), cause) ;
+    public ShexParseException(String msg, Throwable cause, int line, int column) {
         super(msg, cause) ;
         set(line, column) ;
     }
 
-    private void set(int line, int column)
-    { this.line = line ; this.column = column ; }
+    private void set(int line, int column) {
+        this.line = line;
+        this.column = column;
+    }
 
     /** Column number where the parse exception occurred. */
     public int getColumn() { return column ; }
@@ -49,15 +49,13 @@ public class ShexParseException extends JenaException {
     /** Line number where the parse exception occurred. */
     public int getLine()   { return line ; }
 
-    public static String formatMessage(String msg, int line, int column)
-    {
+    public static String formatMessage(String msg, int line, int column) {
         if ( line == -1 || column == -1 )
             return msg ;
         return String.format("[line: %d, col: %d] "+msg, line, column) ;
     }
-
-    @Override
-    public Throwable fillInStackTrace() {
-        return this;
-    }
+//    @Override
+//    public Throwable fillInStackTrace() {
+//        return this;
+//    }
 }

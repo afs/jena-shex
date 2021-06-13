@@ -26,13 +26,13 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.shex.expressions.PLib;
+import org.apache.jena.shex.sys.ShexLib;
 import org.apache.jena.shex.sys.ValidationContext;
 
 public class ShexValidation {
 
     /** Validate data using a collection of shapes and a shape map */
-    public static ValidationReport validate(Graph graph, ShexSchema shapes, ShexShapeMap shapeMap) {
+    public static ShexReport validate(Graph graph, ShexSchema shapes, ShexShapeMap shapeMap) {
         shapes = shapes.importsClosure();
         ValidationContext vCxt = new ValidationContext(graph, shapes);
         shapeMap.entries().forEach(e->{
@@ -52,24 +52,24 @@ public class ShexValidation {
                 validationStep(vCxt, e.shapeExprLabel, focus);
             }
         });
-        ValidationReport report = vCxt.generateReport();
+        ShexReport report = vCxt.generateReport();
         return vCxt.generateReport();
     }
 
     /** Validate a specific node (the focus), with a specific shape in a set of shapes. */
-    public static ValidationReport validate(Graph graphData, ShexSchema shapes, Node shapeRef, Node focus) {
+    public static ShexReport validate(Graph graphData, ShexSchema shapes, Node shapeRef, Node focus) {
         Objects.requireNonNull(shapeRef);
         shapes = shapes.importsClosure();
         ValidationContext vCxt = new ValidationContext(graphData, shapes);
         boolean rtn = validationStep(vCxt, shapeRef, focus);
         if ( rtn )
-            return ValidationReport.reportConformsTrue();
+            return ShexReport.reportConformsTrue();
         atLeastOneReport(vCxt, focus);
         return vCxt.generateReport();
     }
 
     /** Validate a specific node (the focus), against a shape. */
-    public static ValidationReport validate(Graph graphData, ShexSchema shapes, ShexShape shape, Node focus) {
+    public static ShexReport validate(Graph graphData, ShexSchema shapes, ShexShape shape, Node focus) {
         Objects.requireNonNull(shape);
         shapes = shapes.importsClosure();
         ValidationContext vCxt = new ValidationContext(graphData, shapes);
@@ -78,7 +78,7 @@ public class ShexValidation {
         // [shex] Reports accumulate for validation paths not taken.
         vCxt.finishValidate(shape, focus);
         if ( b )
-            return ValidationReport.reportConformsTrue();
+            return ShexReport.reportConformsTrue();
         // Ensure at least one entry.
         atLeastOneReport(vCxt, focus);
         return vCxt.generateReport();
@@ -88,7 +88,7 @@ public class ShexValidation {
         ValidationContext vCxt = ValidationContext.create(vCxt1);
         ShexShape shape = vCxt.getShape(shapeRef);
         if ( shape == null ) {
-            ReportItem item = new ReportItem("No such shape: "+PLib.displayStr(shapeRef), shapeRef);
+            ReportItem item = new ReportItem("No such shape: "+ShexLib.displayStr(shapeRef), shapeRef);
             vCxt.reportEntry(item);
             return false;
         }

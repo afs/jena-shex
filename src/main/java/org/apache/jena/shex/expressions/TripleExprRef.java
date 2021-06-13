@@ -23,6 +23,7 @@ import java.util.Objects;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.shex.sys.ShexLib;
 
 public class TripleExprRef extends TripleExpression {
 
@@ -68,6 +69,6 @@ public class TripleExprRef extends TripleExpression {
 
     @Override
     public String toString() {
-        return "TripleExpressionRef["+PLib.displayStr(ref)+"]";
+        return "TripleExpressionRef["+ShexLib.displayStr(ref)+"]";
     }
 }
