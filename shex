@@ -1,6 +1,0 @@
-#!/bin/bash
-
-CP="$(jena CP)"
-CP="$HOME/ASF/shapes/jena-shex/target/classes:$CP"
-#echo $CP
-exec java -cp "$CP" cmd.shex "$@"

@@ -50,6 +50,7 @@ import org.apache.jena.sys.JenaSystem;
 public class DevShex {
 
     static {
+        //JenaSystem.DEBUG_INIT = true;
         JenaSystem.init();
         LogCtl.setLog4j2();
         RIOT.getContext().set(RIOT.symTurtleDirectiveStyle, "sparql");
@@ -75,7 +76,6 @@ public class DevShex {
 
         mainTimeTokens();
         System.exit(0);
-
 
         //ShexSchema shapes = Shex.readShapes(DIR+"syntax/0.shex");
         //ShexSchema shapes = Shex.readShapes("no-shapes.shex");

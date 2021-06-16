@@ -28,7 +28,7 @@ public class NotesShex {
     // [x] Reporting: printing
     // [x] <CODE> needs work.
     // [?] Cardinality parsing and string tests
-    // [ ] Check for // [shex]
+    // [x] Check for // [shex]
     // [x] Rework report items and shex reports in Validation Context
 
     // [x] ShapesMap -> ShapeMap
@@ -39,6 +39,13 @@ public class NotesShex {
     // [x] ShexShapes -> ShexSchema
     // [x] Shex.parseShapeMapJson-> ShExJ
 
+    // [ ] OSGi
+	// [ ] Injectable commands.
+	// [x] Clean POM; remove Junit5.
+	// [ ] Template for "shex" command.
+    // [ ] Services init.
+
+
     // == Part 1
 
     // [ ] Rework report items and shex reports again in Validation Context
@@ -46,6 +53,7 @@ public class NotesShex {
     // [ ] negativeStructure tests
     // [ ] Schema requirements (5.7), including only one START
     //     START - and check only one.
+    // [ ] Check for // [shex]
 
     // [SHACL] Imports validation?
     //         Different - done as owl:imports closure then parse all. Default - no.

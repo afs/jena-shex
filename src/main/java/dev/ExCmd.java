@@ -18,7 +18,8 @@
 
 package dev;
 
-import cmd.shex_validate;
+import shex.*;
+
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.RDFDataMgr;
