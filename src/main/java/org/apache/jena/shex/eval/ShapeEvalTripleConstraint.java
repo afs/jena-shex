@@ -40,17 +40,12 @@ public class ShapeEvalTripleConstraint {
             // [shex] Fudge.
             matchables = G.find(vCxt.getData(), null, predicate, node).toSet();
         } else {
-//            if ( extras == null)
-//                extras = Set.of();
             if ( ! matchables.stream().allMatch(t->predicate.equals(t.getPredicate())) ) {
                 // Other predicates present.
                 return false;
             }
         }
-
-
         // Find same predicate.
-
         Set<Triple> triples = StreamOps.toSet(matchables.stream().filter(t->predicate.equals(t.getPredicate())));
         int min = tripleConstraint.min();
         int max = tripleConstraint.max();
@@ -77,14 +72,6 @@ public class ShapeEvalTripleConstraint {
             vCxt.reportEntry(new ReportItem("Cardinality violation (max="+max+"): "+N, null));
             return false;
         }
-
-        //        // [shex] UNCLEAR
-        //        // Any other predicates passed in?
-        //        boolean strays = matchables.stream().anyMatch(t->predicate.equals(t.getPredicate()));
-        //        if ( strays )
-        //            return false;
-
         return true;
     }
-
 }

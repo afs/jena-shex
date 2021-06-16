@@ -20,11 +20,18 @@ package org.apache.jena.shex.sys;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
-import org.apache.jena.shex.expressions.*;
+import org.apache.jena.shex.ShexReport;
+import org.apache.jena.shex.ShexShapeAssociation;
+import org.apache.jena.shex.Status;
+import org.apache.jena.shex.expressions.ShapeExprVisitor;
+import org.apache.jena.shex.expressions.ShapeExprWalker;
+import org.apache.jena.shex.expressions.ShapeExpression;
+import org.apache.jena.shex.expressions.TripleExprVisitor;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
@@ -64,7 +71,7 @@ public class ShexLib {
     }
 
     /** Display string for human-readable output. */
-    public static String displayDT(Node n) {
+    public static String strDatatype(Node n) {
         if ( n.isLiteral() && n.getLiteralDatatypeURI().startsWith(XSD.getURI()) ) {
             int x = XSD.getURI().length();
             String s = n.getLiteralDatatypeURI().substring(x);
@@ -89,5 +96,45 @@ public class ShexLib {
         IndentedLineBuffer sw = new IndentedLineBuffer() ;
         nodeFmt.format(sw, n);
         return sw.toString() ;
+    }
+
+    public static String displayStr(Triple triple) {
+        return displayStr(triple.getSubject())+" "+displayStr(triple.getPredicate())+" "+displayStr(triple.getObject());
+    }
+
+    public static void printReport(ShexReport report) {
+//        if ( report.conforms() ) {
+//                System.out.println("OK");
+//        } else {
+//            report.getEntries().forEach(e->System.out.println(e));
+//        }
+        if ( report.conforms() ) {
+            System.out.println("OK");
+        } else {
+            report.getReports().forEach(reportEntry->printReport(reportEntry));
+        }
+    }
+
+    private static void printReport(ShexShapeAssociation reportEntry) {
+        Node targetNode = reportEntry.node;
+        Triple triplePattern = reportEntry.pattern;
+        Node shapeLabel = reportEntry.shapeExprLabel;
+        Status status = reportEntry.status;
+        String reason = reportEntry.reason;
+        Node focusNode = reportEntry.focus;
+
+        switch (status) {
+            case conformant :
+                System.out.printf("Node = %s, Shape = %s, Focus = %s, Status = %s\n",
+                                  displayStr(targetNode), displayStr(shapeLabel),
+                                  displayStr(focusNode), status.toString());
+                break;
+            case nonconformant :
+                System.out.printf("Node = %s, Shape = %s, Focus = %s, Status = %s, Reason = %s\n",
+                                  displayStr(targetNode), displayStr(shapeLabel),
+                                  displayStr(focusNode), status.toString(),
+                                  (reason==null)?"--": reason);
+                break;
+        }
     }
 }

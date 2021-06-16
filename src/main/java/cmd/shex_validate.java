@@ -27,6 +27,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.shex.*;
+import org.apache.jena.shex.sys.ShexLib;
 import org.apache.jena.sys.JenaSystem;
 
 /** ShEx validation.
@@ -43,7 +44,7 @@ public class shex_validate extends CmdGeneral {
     private ArgDecl argOutputText  = new ArgDecl(false, "--text");
     //private ArgDecl argOutputRDF   = new ArgDecl(false, "--rdf");
     private ArgDecl argData        = new ArgDecl(true, "--data", "--datafile", "-d");
-    private ArgDecl argShapes      = new ArgDecl(true, "--shapes", "--shapesfile", "--shapefile", "-s");
+    private ArgDecl argShapes      = new ArgDecl(true, "--shapes", "--shapesfile", "--shapefile", "--schema", "-s");
     private ArgDecl argShapeMap    = new ArgDecl(true, "--map");
     private ArgDecl argTargetNode  = new ArgDecl(true, "--target", "--node", "-n");
 
@@ -107,9 +108,21 @@ public class shex_validate extends CmdGeneral {
     @Override
     protected void exec() {
 
-        ShexSchema shapes = Shex.readShapes(shapesfile);
+        ShexSchema shapes;
+        try {
+            shapes = Shex.readShapes(shapesfile);
+        } catch (ShexException ex) {
+            System.err.println("Failed to read shapes: " + ex.getMessage());
+            throw new CmdException();
+        }
 
-        Graph dataGraph = load(datafile, "data file");
+        Graph dataGraph;
+        try {
+            dataGraph = load(datafile, "data file");
+        } catch (RiotException ex) {
+            System.err.println("Failed to data: " + ex.getMessage());
+            throw new CmdException();
+        }
 
 //        if ( targetNode != null ) {
 //            String x = dataGraph.getPrefixMapping().expandPrefix(targetNode);
@@ -118,18 +131,17 @@ public class shex_validate extends CmdGeneral {
 //        }
 
         if ( mapfile != null ) {
-            ShexShapeMap map = Shex.readShapeMap(mapfile);
-            ShexReport report = ShexValidation.validate(dataGraph, shapes, map);
-            // XXX Print report function
-            // ShexLib.
-            if ( report.conforms() ) {
-                System.out.println("OK");
-            } else {
-                report.getEntries().forEach(e->System.out.println(e));
+            ShexShapeMap map;
+            try {
+                map = Shex.readShapeMap(mapfile);
+            } catch (ShexException ex) {
+                System.err.println("Failed to read shapes map: " + ex.getMessage());
+                throw new CmdException();
             }
-            System.exit(0);
+            ShexReport report = ShexValidation.validate(dataGraph, shapes, map);
+            ShexLib.printReport(report);
+            return;
         }
-
 
 //        if ( isVerbose() )
 //            ValidationContext.VERBOSE = true;
@@ -141,18 +153,7 @@ public class shex_validate extends CmdGeneral {
         Node shapeRef = null;
         Node focus = null;
         ShexReport report = ShexValidation.validate(dataGraph, shapes, shapeRef, focus);
-
-        if ( report.conforms() )
-            System.out.println("OK");
-        else {
-            report.getEntries().forEach(e->System.out.println(e));
-        }
-//
-//
-//        if ( textOutput )
-//            ShLib.printReport(report);
-//        else
-//            RDFDataMgr.write(System.out, report.getGraph(), Lang.TTL);
+        ShexLib.printReport(report);
     }
 
     private Graph load(String filename, String scope) {

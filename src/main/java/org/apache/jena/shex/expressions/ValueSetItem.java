@@ -55,7 +55,7 @@ public class ValueSetItem {
         String str = "invalid";
         if ( iriStr != null ) str = "<"+iriStr+">";
         else if ( langStr != null ) str = "@"+langStr;
-        else if ( literal != null ) str = ShexLib.displayDT(literal);
+        else if ( literal != null ) str = ShexLib.strDatatype(literal);
 
         if ( isStem )
             str = str+"~";

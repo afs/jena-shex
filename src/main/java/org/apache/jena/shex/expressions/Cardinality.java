@@ -54,17 +54,23 @@ public class Cardinality {
                 min = integerRange(matcher.group(1), UNSET);
                 if ( matcher.groupCount() != 3 )
                     throw new InternalErrorException("ShExC: Unexpected cardinality: '"+image+"'");
+                String comma = matcher.group(2);
+                if ( comma == null ) {
+                    max = min;
+                    break;
+                }
+                // Has comma
                 String g = matcher.group(3);
-                max = integerRange(g, min);
+                max = integerRange(g, UNBOUNDED);
             }
         }
         return new Cardinality(image, min, max);
-        //debug("Cardinality: %s min=%s, max=%d", image, min, max);
+
     }
 
-    private static int integerRange(String str, int i) {
+    private static int integerRange(String str, int dftValue) {
         if ( str == null )
-            return i;
+            return dftValue;
         if ( str.equals("*") )
             return UNBOUNDED;
         try {
@@ -76,33 +82,32 @@ public class Cardinality {
 
 
     static String cardStr(int min, int max) {
-        String cardinality="";
-        if ( min != -1 || max != -1 ) {
-            if ( min == 0 && max == -2 )
-                cardinality = "*";
-            else if ( min == 1 && max == -2 )
-                cardinality = "+";
-            else if ( min == 0 && max == 1 )
-                cardinality = "?";
-            else if ( max == -2 )
-                cardinality = "{"+min+",*}";
-            else {
-                cardinality = "{"+cardStr(min);
-                if ( max ==-1 )
-                    cardinality = cardinality+"}";
-                else
-                    cardinality = cardinality+","+cardStr(max)+"}";
-            }
-        }
-        return cardinality;
+        // min is never UNBOUNDED
+        // "{,number}" is not legal syntax
+
+        if ( min == UNSET && max == UNSET )
+            return "";
+
+        // Special syntax
+        if ( min == 0 && max == UNBOUNDED )
+            return "*";
+        if ( min == 1 && max == UNBOUNDED )
+            return "+";
+        if ( min == 0 && max == 1 )
+            return "?";
+        // max == min => no comma.
+        if ( max == min )
+            return "{"+min+"}";
+        // Max UNBOUNDED
+        if ( max == UNBOUNDED )
+            return "{"+min+",}";
+        // General
+        return "{"+min+","+max+"}";
     }
 
-    private static String cardStr(int x) {
-        if ( x == UNSET )
-            return "1";
-        if ( x == UNBOUNDED )
-            return "*";
-        return Integer.toString(x);
+    @Override
+    public String toString() {
+        return cardStr(min, max);
     }
 
     @Override

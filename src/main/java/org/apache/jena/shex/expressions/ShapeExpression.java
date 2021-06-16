@@ -53,7 +53,11 @@ public abstract class ShapeExpression {
     public String asString() {
         IndentedLineBuffer x = new IndentedLineBuffer();
         print(x, nodeFmtAbbrev);
-        return x.asString();
+        String s = x.asString();
+        // [shex] Yuk
+        if ( s.endsWith("\n") )
+            s = s.substring(0, s.length()-1);
+        return s;
     }
 
     public abstract void visit(ShapeExprVisitor visitor);

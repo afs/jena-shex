@@ -29,6 +29,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.shex.*;
 import org.apache.jena.shex.expressions.TripleExpression;
 
+/** Context for a validation and collector of the results. */
 public class ValidationContext {
     private final ShexSchema shapes;
     private final Graph data;
@@ -47,7 +48,6 @@ public class ValidationContext {
 
     public ValidationContext(Graph data, ShexSchema shapes) {
         this(data, shapes, null);
-
     }
 
     private ValidationContext(Graph data, ShexSchema shapes ,Deque<Pair<Node, ShexShape>> progress) {
@@ -74,7 +74,7 @@ public class ValidationContext {
     }
 
     public void startValidate(ShexShape shape, Node data) {
-        inProgress.push(Pair.create(data,  shape));
+        inProgress.push(Pair.create(data, shape));
     }
 
     // Return true if done or in-progress (i.e. don't)
@@ -91,29 +91,37 @@ public class ValidationContext {
         throw new InternalErrorException("Eval stack error");
     }
 
-
-//    public void reportEntry(ReportItem item, Shape shape, Node focusNode, Path path, Constraint constraint) {
-//        reportEntry(item.getMessage(), shape, focusNode, path, item.getValue(), constraint);
-//    }
-//
-//    public void reportEntry(String message, Shape shape, Node focusNode, Path path, Node valueNode, Constraint constraint) {
-//        if ( verbose )
-//            System.out.println("Validation report entry");
-//        seenValidationReportEntry = true;
-//        validationReportBuilder.addReportEntry(message, shape, focusNode, path, valueNode, constraint);
-//    }
-
     // In ShEx "satisfies" returns a boolean.
-//    public boolean conforms() { return validationReportBuilder.isEmpty(); }
-    public boolean hasEntries() { return ! reportBuilder.isEmpty(); }
+    //    public boolean conforms() { return validationReportBuilder.isEmpty(); }
+
+    public boolean hasEntries() { return reportBuilder.hasEntries(); }
+
+    /** Update other with "this" state */
+    public void copyInto(ValidationContext other) {
+        reportBuilder.getItems().forEach(item->other.reportEntry(item));
+        reportBuilder.getReports().forEach(reportLine->other.shexReport(reportLine));
+    }
+
+    private void shexReport(ShexShapeAssociation reportLine) {
+        reportBuilder.shexReport(reportLine);
+    }
 
     /** Current state. */
     public List<ReportItem> getReportItems() {
         return reportBuilder.getItems();
     }
 
+    /** Current state. */
+    public List<ShexShapeAssociation> getShexReportItems() {
+        return reportBuilder.getReports();
+    }
+
     public void reportEntry(ReportItem item) {
         reportBuilder.addReportItem(item);
+    }
+
+    public void shexReport(ShexShapeAssociation entry, Node focusNode, Status result, String reason) {
+        reportBuilder.shexReport(entry, focusNode, result, reason);
     }
 
     public ShexReport generateReport() {

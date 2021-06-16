@@ -76,7 +76,7 @@ public class DatatypeConstraint extends NodeConstraint {
             return new ReportItem(toString()+" : Not a literal", n);
         //String dtStr = vCxt.getShapesGraph().getPrefixMapping().qnameFor(dtURI);
         Node dt = NodeFactory.createURI(n.getLiteralDatatypeURI());
-        String errMsg = toString()+" -- Wrong datatype: "+displayDT(n)+" for focus node: "+displayStr(n);
+        String errMsg = toString()+" -- Wrong datatype: "+strDatatype(n)+" for focus node: "+displayStr(n);
         return new ReportItem(errMsg, n);
     }
 

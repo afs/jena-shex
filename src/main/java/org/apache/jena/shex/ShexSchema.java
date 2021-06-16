@@ -136,12 +136,18 @@ public class ShexSchema {
             for ( ShexSchema importedSchema : others ) {
                 mergeOne(importedSchema, mergedShapes, mergedShapeMap, mergedTripleRefs);
             }
-            //mergedShapeMap.remove(SysShex.startNode);
+            // Does not include the start shape.
+            // The "get" operation of a ShexSchem know about "start"
+//            if ( this.startShape != null )
+//                mergedShapeMap.put(SysShex.startNode, startShape);
             shapesWithImports = new ShexSchema(sourceURI, baseURI, prefixes, startShape, mergedShapes, mergedShapeMap, null, mergedTripleRefs);
             return shapesWithImports;
         }
     }
 
+    /** Merge a schema into the accumulators.
+     * Any start node is skipped.
+     */
     private static void mergeOne(ShexSchema schema,
                                  List<ShexShape> mergedShapes,
                                  Map<Node, ShexShape> mergedShapeMap,
@@ -169,6 +175,8 @@ public class ShexSchema {
     }
 
     public ShexShape get(Node n) {
+        if ( SysShex.startNode.equals(n) )
+            return startShape;
         return shapeMap.get(n);
     }
 

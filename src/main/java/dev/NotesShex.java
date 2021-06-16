@@ -24,20 +24,25 @@ public class NotesShex {
 
     // == Initial Jena commit
 
-    // [ ] Unlink from SHACL :: PLib
-    // [ ] Reporting: printing
+    // [x] Unlink from SHACL :: PLib
+    // [x] Reporting: printing
+    // [x] <CODE> needs work.
+    // [?] Cardinality parsing and string tests
+    // [ ] Check for // [shex]
+    // [x] Rework report items and shex reports in Validation Context
 
     // [x] ShapesMap -> ShapeMap
     // [x] Rename ValidationReport -> ShexReport -> map for { shape, node, error } subclass of ShexShapeMap
     // [x] Example(s)
     // [x] cmds, but printing could be better
-    // [x] ShEx vs Shex Shex for classes. ShExC, ShExJ, ShExR for languages.
+    // [x] ShEx vs Shex : Shex for classes. ShExC, ShExJ, ShExR for languages.
     // [x] ShexShapes -> ShexSchema
     // [x] Shex.parseShapeMapJson-> ShExJ
 
     // == Part 1
 
-    // [ ] EachOf partition generation produce duplicates. -> algorithm H!
+    // [ ] Rework report items and shex reports again in Validation Context
+    // [ ] EachOf partition generation produce duplicates -> algorithm H!
     // [ ] negativeStructure tests
     // [ ] Schema requirements (5.7), including only one START
     //     START - and check only one.

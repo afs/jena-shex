@@ -18,18 +18,14 @@
 
 package dev;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
+import java.io.StringReader;
 import java.util.function.Supplier;
 
-import org.apache.http.util.ByteArrayBuffer;
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.atlas.lib.Timer;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -43,6 +39,8 @@ import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shex.*;
 import org.apache.jena.shex.eval.ShapeEval;
 import org.apache.jena.shex.parser.ParserShExC;
+import org.apache.jena.shex.parser.javacc.ShExJavacc;
+import org.apache.jena.shex.parser.javacc.Token;
 import org.apache.jena.shex.sys.ValidationContext;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
@@ -67,22 +65,21 @@ public class DevShex {
 
     static final String DIR = "src/test/files/spec/";
 
+
     public static void main(String[] args) throws IOException {
-        byte[] b = Bytes.string2bytes("é");
-        ByteArrayInputStream in = new ByteArrayInputStream(b);
-        Reader r = new InputStreamReader(in, StandardCharsets.US_ASCII);
-        int ch = r.read();
-        System.out.printf("ch = %04X\n", ch);
-        System.out.println("ch = "+(char)ch);
+
+//        shex_parse.main("local/schema.shex");
+//        System.out.println();
+//        shex_validate.main("--data=local/data.ttl", "--schema=local/schema.shex", "--map=local/map.shexmap");
+
+        mainTimeTokens();
         System.exit(0);
 
-//        System.out.println("Waiting ...");
-//        System.in.read();
-        ShexSchema shapes = Shex.readShapes("fhir.shex");
+
         //ShexSchema shapes = Shex.readShapes(DIR+"syntax/0.shex");
         //ShexSchema shapes = Shex.readShapes("no-shapes.shex");
         System.out.println("Parsed");
-        Shex.printShapes(shapes);
+        //Shex.printShapes(shapes);
 
         //cmd.shex_parse.main("/home/afs/ASF/shapes/jena-shex/fhir.shex");
 
@@ -96,6 +93,56 @@ public class DevShex {
         //validate2();
         //validate_eric_wiki();
         //validateByMap();
+
+    }
+
+    public static void mainTimeTokens(String... args) throws IOException {
+
+        //public ShExJavacc(java.io.Reader stream) {
+//        SimpleCharStream jj_input_stream = new SimpleCharStream(stream, 1, 1);
+//        ShExJavaccTokenManager token_source = new ShExJavaccTokenManager(jj_input_stream);
+//        token_source.getNextToken()
+
+        if ( false )
+        {
+            Timer timer = new Timer();
+            timer.startTimer();
+            // {} - why?
+
+
+//            String fn = "src/test/files/spec/syntax/1dotNoCode1.shex";
+////            String fn = "src/test/files/spec/syntax/1dotCodeWithEscapes1.shex";
+////            String fn = "src/test/files/spec/syntax/1dotCode1.shex";
+////            String fn = "src/test/files/spec/syntax/1dotCode3.shex";
+//            String s = IO.readWholeFileAsUTF8(fn);
+//            System.out.println(s);
+
+            String fn = "fhir.shex";
+            String s = IO.readWholeFileAsUTF8(fn);
+
+            StringReader r = new StringReader(s);
+            ShExJavacc p = new ShExJavacc(r);
+            Token t;
+            int N = 0 ;
+            do {
+                t = p.getNextToken();
+                N++;
+            }
+            while ( t.kind != 0 );
+            long x1 = timer.endTimer();
+
+            System.out.printf("Token num = %d :: time = %s\n ", N, Timer.timeStr(x1));
+            System.exit(0);
+        }
+
+        String s = IO.readWholeFileAsUTF8("local/fhir.shex");
+        long x =
+                Timer.time(()->{
+                    //Shex.readShapes("fhir.shex");
+                    Shex.shapesFromString(s);
+                });
+        System.out.println("Parse time : "+ Timer.timeStr(x));
+        System.exit(0);
     }
 
     public static void runOne() {

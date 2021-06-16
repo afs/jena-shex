@@ -20,44 +20,56 @@ package org.apache.jena.shex;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 
+/** ShEx validation report.
+ * <p>
+ * This has a ShEx <a href ="https://shexspec.github.io/shape-map/#shapemap-structure">defined structure</a> (one item per shape)
+ * and also all the validation item reports more in the style of SHACL/
+ */
 public class ShexReport {
-
-    private static ShexReport singletonReportConformsTrue = new ShexReport(Collections.emptySet(), (Resource)null);
+//
+//    private static ShexReport singletonReportConformsTrue = new ShexReport(Collections.emptySet(),
+//                                                                           Collections.emptyList(),
+//                                                                           (Resource)null);
     private final Collection<ReportItem> entries;
     private final Resource resultResource;
+    private final List<ShexShapeAssociation> reports;
 
     public static Builder create() {
         return new Builder();
     }
 
-    /** Return an immutable report that records no validation errors (violations or any other level of severity) */
-    public static ShexReport reportConformsTrue() {
-        return singletonReportConformsTrue;
+//    /** Return an immutable report that records no validation errors (violations or any other level of severity) */
+//    public static ShexReport reportConformsTrue() {
+//        return singletonReportConformsTrue;
+//    }
+
+    private ShexReport(Collection<ReportItem> entries, List<ShexShapeAssociation> reports, PrefixMapping prefixes) {
+        this(entries, reports, generate(entries, prefixes));
     }
 
-    private ShexReport(Collection<ReportItem> entries, PrefixMapping prefixes) {
-        this(entries, generate(entries, prefixes));
-    }
-
-    private static Resource generate(Collection<ReportItem> entries2, PrefixMapping prefixes) {
+    private static Resource generate(Collection<ReportItem> entries, PrefixMapping prefixes) {
+        // [shex] No graph for now.
         return null;
     }
 
-    private ShexReport(Collection<ReportItem> entries, Resource resultResource) {
-        this.entries = entries;
+    private ShexReport(Collection<ReportItem> entries, List<ShexShapeAssociation> reports, Resource resultResource) {
+        this.entries = new ArrayList<>(entries);
+        this.reports = new ArrayList<>(reports);
         this.resultResource = resultResource;
     }
 
     public Collection<ReportItem> getEntries() { return entries; }
+
+    public List<ShexShapeAssociation> getReports() { return reports; }
 
     public Resource getResource() { return resultResource; }
 
@@ -67,11 +79,26 @@ public class ShexReport {
         return getModel().getGraph();
     }
 
-    public boolean conforms() { return entries.isEmpty(); }
+    public boolean conforms() {
+        boolean b1 = entries.isEmpty();
+        boolean b2 = reports.stream().allMatch(a -> a.status == Status.conformant);
+        if ( b1 != b2 ) {
+            long x = reports.stream().filter(a -> a.status == Status.conformant).count();
+            System.err.printf("conforms() inconsistent:  e:%s/r:%s %d/%d[%d]\n", b1, b2, entries.size(), reports.size(),x);
+            System.err.println(entries);
+            System.err.println(reports);
+            System.err.println();
+        }
+        return b2;
+
+    }
+    //public boolean conforms() { return entries.isEmpty(); }
 
 
     public static class Builder {
+
         private final List<ReportItem> entries = new ArrayList<>();
+        private final List<ShexShapeAssociation> reports = new ArrayList<>();
         private PrefixMapping prefixes = new PrefixMappingImpl();
 
         public Builder() { }
@@ -80,16 +107,29 @@ public class ShexReport {
             this.prefixes.setNsPrefixes(pmap);
         }
 
-        public boolean isEmpty() { return entries.isEmpty(); }
+        public boolean hasEntries() { return ! entries.isEmpty(); }
+        public boolean hasReports() { return ! reports.isEmpty(); }
 
-        public List<ReportItem> getItems() { return new ArrayList<>(entries); }
+        public List<ReportItem> getItems() { return entries; }
+        public List<ShexShapeAssociation> getReports() { return reports; }
 
         public void addReportItem(ReportItem e) {
             entries.add(e);
         }
 
+        /** Create a new report line item from an exists (shex map) entry and add it to the reports */
+        public void shexReport(ShexShapeAssociation entry, Node focusNode, Status result, String reason) {
+            // [shex] focus node.
+            ShexShapeAssociation ssa = new ShexShapeAssociation(entry, focusNode, result, reason);
+            shexReport(ssa);
+        }
+
+        public void shexReport(ShexShapeAssociation entry) {
+            reports.add(entry);
+        }
+
         public ShexReport build() {
-            return new ShexReport(entries, prefixes);
+            return new ShexReport(entries, reports, prefixes);
         }
 
     }

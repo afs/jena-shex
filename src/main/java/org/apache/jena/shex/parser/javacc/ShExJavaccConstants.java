@@ -85,7 +85,7 @@ public interface ShExJavaccConstants {
   /** RegularExpression Id. */
   int EXTRA = 39;
   /** RegularExpression Id. */
-  int CODE = 40;
+  int CODE_BLOCK = 40;
   /** RegularExpression Id. */
   int REPEAT_RANGE = 41;
   /** RegularExpression Id. */
@@ -266,7 +266,7 @@ public interface ShExJavaccConstants {
     "\"fractiondigits\"",
     "\"closed\"",
     "\"extra\"",
-    "<CODE>",
+    "<CODE_BLOCK>",
     "<REPEAT_RANGE>",
     "\"true\"",
     "\"false\"",

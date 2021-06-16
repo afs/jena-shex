@@ -119,11 +119,7 @@ public class TripleConstraint extends TripleExpression {
         iOut.println();
         shapeExpression.print(iOut, nFmt);
         if ( cardinality != null ) {
-            //iOut.print(cardinality.image);
-            if ( cardinality.image.length() != 1 )
-                iOut.printf("{%d,%d}", min, max);
-            else
-                iOut.printf(cardinality.image);
+            iOut.print(cardinality.toString());
             iOut.println();
         }
         iOut.decIndent();

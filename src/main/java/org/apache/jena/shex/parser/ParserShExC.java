@@ -184,7 +184,6 @@ public class ParserShExC extends LangParserBase {
     }
 
     private ShexShape newShape(ShapeExpression sExpr) {
-        //System.out.println("Shape - "+currentShexShapeLabel);
         ShexShape newShexShape = new ShexShape(currentShexShapeLabel, sExpr);
         shapes.add(newShexShape);
         currentShexShapeLabel = null;

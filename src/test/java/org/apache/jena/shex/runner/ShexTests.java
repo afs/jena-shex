@@ -49,10 +49,10 @@ public class ShexTests {
     static {
         setup();
         //Sx.TRACE : true if there are inclusions
+        //includes.add("#1val1IRIREFExtra1_pass-iri2");
+        //includes.add("#start2RefS1-IstartS2");
 
-        //includes.add("#skipped"); // Shape partition?
-        //includes.add("#2EachInclude1-IS2_pass"); // Triple expression reference across files.
-
+        VERBOSE = ! includes.isEmpty();
         // --- Exclusions - development
 
         // # External
@@ -193,8 +193,9 @@ public class ShexTests {
 
         bNodeLabelTests.add("#1focusBNODE_dot_fail-iriFocusLabel-equal");
         bNodeLabelTests.add("#1focusBNODE_dot_pass");
-        bNodeLabelTests.add("#bnode1dot_pass-others_lexicallyEarlier");
 
+        bNodeLabelTests.add("#bnode1dot_fail-missing");
+        bNodeLabelTests.add("#bnode1dot_pass-others_lexicallyEarlier");
 
         return bNodeLabelTests;
     }

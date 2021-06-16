@@ -33,25 +33,27 @@ public class ShexShapeAssociation {
     public final Node node;
     public final Triple pattern;
     public final Node shapeExprLabel;
-    public final String status;
+    public final Status status;
     public final String reason;
-//    public final String appInfo;
+    public final Node focus;
+//  public final String appInfo;
 
     public ShexShapeAssociation(Node node, Triple pattern, Node shapeExprLabel) {
-        this(node, pattern, shapeExprLabel, null, null);
+        this(node, pattern, shapeExprLabel, null, null, null);
     }
 
-    public ShexShapeAssociation(ShexShapeAssociation assoc, String status, String reason) {
+    public ShexShapeAssociation(ShexShapeAssociation assoc, Node focusNode, Status status, String reason) {
         // Reporting form.
-        this(assoc.node, assoc.pattern, assoc.shapeExprLabel, status, reason);
+        this(assoc.node, assoc.pattern, assoc.shapeExprLabel, focusNode, status, reason);
     }
 
-    private ShexShapeAssociation(Node node, Triple pattern, Node shapeExprLabel, String status, String reason) {
+    private ShexShapeAssociation(Node node, Triple pattern, Node shapeExprLabel, Node focusNode, Status status, String reason) {
         super();
         this.node = node;
         this.pattern = pattern;
         this.shapeExprLabel = shapeExprLabel;
         this.status = status;
+        this.focus = focusNode;
         this.reason = reason;
     }
 
@@ -78,6 +80,18 @@ public class ShexShapeAssociation {
 
     @Override
     public String toString() {
+        StringBuilder sBuff = new StringBuilder();
+        String str = toStringBasic();
+        if ( focus != null )
+            str = str+" "+ShexLib.displayStr(focus);
+        if ( status != null )
+            str = str+" "+status;
+        if ( reason != null )
+            str = str+" :: "+reason;
+        return str;
+    }
+
+    private String toStringBasic() {
         if ( pattern != null ) {
             return String.format("{ %s %s %s } @ %s",
                                  str(pattern.getSubject()), str(pattern.getPredicate()), str(pattern.getObject()),
@@ -86,7 +100,6 @@ public class ShexShapeAssociation {
         if ( node != null ) {
             return String.format("%s @ %s", str(node), str(shapeExprLabel));
         }
-
         return "ShexShapeAssociation/null";
     }
 

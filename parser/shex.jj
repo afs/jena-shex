@@ -663,7 +663,21 @@ void semanticActions() : {}
 
 void codeDecl() : {}
 {
-    <PERCENT_CHAR> iri() (<CODE> | <PERCENT_CHAR> )
+    // Spec:
+    // <CODE>                 ::=         "{" ([^%\\] | "\\" [%\\] | UCHAR)* "%" "}"
+    //    <PERCENT_CHAR> iri() (<CODE> | <PERCENT_CHAR> )
+    
+    // Avoid <CODE> token which causes a lot of backtracking.
+    // It starts "{" which is used for blocks - and it is only the "%}"
+    // that causes the decision of <CODE> or <LBRACE>
+    
+    // CODE_BLOCK this as a single token introduced with "%".
+    
+    <CODE_BLOCK>
+
+    // try:
+    // 
+    //  <PERCENT_CHAR> and token state change
 }
 
 Node literal() : { Node n ; }
@@ -930,7 +944,19 @@ TOKEN [IGNORE_CASE] :
 | <CLOSED           : "closed" >
 | <EXTRA            : "extra" >
 
-| <CODE             : "{" (~[ "%","\\"] | "\\" ["%","\\"] | <UCHAR>)* "%" "}" >
+// Works but slow.
+//| <CODE             : "{" (~[ "%","\\"] | "\\" ["%","\\"] )* "%" "}" >
+
+| <CODE_BLOCK    : <PERCENT_CHAR>
+                         (" ")*
+                         (<IRIref>|<PNAME_LN>|<PNAME_NS>)
+                         (" ")*
+                         (  <LBRACE>
+                            ( ~[ "%","\\"] | ("\\" ["%","\\"]) | <UCHAR> )*
+                            <PERCENT_CHAR><RBRACE>
+                         |  <PERCENT_CHAR> ) >
+                            
+
 // Why is this a token?
 | <REPEAT_RANGE	    : <LBRACE> <INTEGER> ( <COMMA> (<INTEGER> | <STAR> )? )? <RBRACE> >
 
@@ -958,7 +984,7 @@ TOKEN [IGNORE_CASE] :
 | <COMMA               : "," >
 | <USCORE              : "_" >
 
-// Break PNAME_NS
+// Breaks PNAME_NS
 // | <COLON               : ":" >
 | <SEMI_COLON          : ";" >
 | <DOLLAR              : "$" >

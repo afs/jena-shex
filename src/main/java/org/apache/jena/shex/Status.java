@@ -18,19 +18,4 @@
 
 package org.apache.jena.shex;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-public class ShexShapeMap {
-
-    protected final List<ShexShapeAssociation> associations;
-
-    public ShexShapeMap(List<ShexShapeAssociation> associations) {
-        this.associations = new ArrayList<>(associations);
-    }
-
-    public List<ShexShapeAssociation> entries() {
-        return Collections.unmodifiableList(associations);
-    }
-}
+public enum Status { nonconformant, conformant }
