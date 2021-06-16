@@ -79,14 +79,11 @@ public
             return false;
 
         // And now eval.
-        // [shex] How to account for unmatched.
-
         for ( List<Set<Triple>> partition : partitions ) {
             boolean success = true;
             for ( int i = 0 ; i < N ; i++ ) {
                 Set<Triple> triples = partition.get(i);
                 TripleExpression tripleExpr = tripleExprs.get(i);
-                // [shex] TripleEpxerssion to have matches()
 
                 if ( ShapeEval.DEBUG_eachOf )
                     System.out.println("Partition: "+partition);

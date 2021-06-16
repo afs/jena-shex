@@ -41,6 +41,7 @@ import org.apache.jena.shex.eval.ShapeEval;
 import org.apache.jena.shex.parser.ParserShExC;
 import org.apache.jena.shex.parser.javacc.ShExJavacc;
 import org.apache.jena.shex.parser.javacc.Token;
+import org.apache.jena.shex.sys.ShexLib;
 import org.apache.jena.shex.sys.ValidationContext;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
@@ -233,10 +234,7 @@ public class DevShex {
 
     private static void validate(Graph graph, ShexSchema shapes, ShexShapeMap shapeMap) {
         ShexReport report = ShexValidation.validate(graph, shapes, shapeMap);
-        if ( report.conforms() )
-            System.out.println("OK");
-        else
-            report.getEntries().forEach(System.out::println);
+        ShexLib.printReport(report);
     }
 
 //    private static void partition() {
@@ -271,11 +269,7 @@ public class DevShex {
         ShexShape shape = shapes.get(testShape);
         System.out.println("---- Validation");
         ShexReport report = ShexValidation.validate(graph, shapes, shape, focus);
-        if ( report.conforms() )
-            System.out.println("OK");
-        else {
-            report.getEntries().forEach(e->System.out.println(e));
-        }
+        ShexLib.printReport(report);
     }
 
     static String strValidateTest = StrUtils.strjoinNL

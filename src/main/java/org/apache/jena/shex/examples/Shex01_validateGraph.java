@@ -21,6 +21,7 @@ package org.apache.jena.shex.examples;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shex.*;
+import org.apache.jena.shex.sys.ShexLib;
 
 public class Shex01_validateGraph {
     public static void main(String ...args) {
@@ -33,20 +34,15 @@ public class Shex01_validateGraph {
         System.out.println("Read shapes");
         ShexSchema shapes = Shex.readShapes(SHAPES);
 
-        // XXX Move.
+        // Shapes map.
         System.out.println("Read shapes map");
         ShexShapeMap shapeMap = Shex.readShapeMap(SHAPES_MAP);
 
-        // XXX ShexReport
+        // ShexReport
         System.out.println("Validate");
         ShexReport report = ShexValidation.validate(dataGraph, shapes, shapeMap);
 
-        // XXX Print report.
-        // ShexLib.
-        if ( report.conforms() ) {
-            System.out.println("OK");
-        } else {
-            report.getEntries().forEach(e->System.out.println(e));
-        }
+        // Print report.
+        ShexLib.printReport(report);
     }
 }

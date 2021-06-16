@@ -21,7 +21,9 @@ package org.apache.jena.shex;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Model;
@@ -32,32 +34,24 @@ import org.apache.jena.shared.impl.PrefixMappingImpl;
 /** ShEx validation report.
  * <p>
  * This has a ShEx <a href ="https://shexspec.github.io/shape-map/#shapemap-structure">defined structure</a> (one item per shape)
- * and also all the validation item reports more in the style of SHACL/
+ * and also all the validation item reports, more in the style of SHACL.
  */
 public class ShexReport {
-//
-//    private static ShexReport singletonReportConformsTrue = new ShexReport(Collections.emptySet(),
-//                                                                           Collections.emptyList(),
-//                                                                           (Resource)null);
     private final Collection<ReportItem> entries;
     private final Resource resultResource;
     private final List<ShexShapeAssociation> reports;
+    private final boolean conforms;
 
     public static Builder create() {
         return new Builder();
     }
-
-//    /** Return an immutable report that records no validation errors (violations or any other level of severity) */
-//    public static ShexReport reportConformsTrue() {
-//        return singletonReportConformsTrue;
-//    }
 
     private ShexReport(Collection<ReportItem> entries, List<ShexShapeAssociation> reports, PrefixMapping prefixes) {
         this(entries, reports, generate(entries, prefixes));
     }
 
     private static Resource generate(Collection<ReportItem> entries, PrefixMapping prefixes) {
-        // [shex] No graph for now.
+        // No graph for the report for now.
         return null;
     }
 
@@ -65,11 +59,25 @@ public class ShexReport {
         this.entries = new ArrayList<>(entries);
         this.reports = new ArrayList<>(reports);
         this.resultResource = resultResource;
+        // Conforms if all shape validations are conformant
+        this.conforms = reports.stream().allMatch(a -> a.status == Status.conformant);
+        // Consistency check.
+        if ( conforms != entries.isEmpty() ) {
+            long x = reports.stream().filter(a -> a.status == Status.conformant).count();
+            String msg = String.format("conforms() inconsistent:  e:%s/r:%s %d/%d[%d]\n", conforms, entries.isEmpty(), entries.size(), reports.size(),x);
+            throw new InternalErrorException(msg);
+        }
     }
 
-    public Collection<ReportItem> getEntries() { return entries; }
+    //public boolean hasEntries() { return ! entries.isEmpty(); }
+    public boolean hasReports() { return ! reports.isEmpty(); }
 
-    public List<ShexShapeAssociation> getReports() { return reports; }
+    public void forEachReport(Consumer<ShexShapeAssociation> action) {
+        reports.forEach(action);
+    }
+
+//    public Collection<ReportItem> getEntries()     { return entries; }
+//    public List<ShexShapeAssociation> getReports() { return reports; }
 
     public Resource getResource() { return resultResource; }
 
@@ -80,20 +88,9 @@ public class ShexReport {
     }
 
     public boolean conforms() {
-        boolean b1 = entries.isEmpty();
-        boolean b2 = reports.stream().allMatch(a -> a.status == Status.conformant);
-        if ( b1 != b2 ) {
-            long x = reports.stream().filter(a -> a.status == Status.conformant).count();
-            System.err.printf("conforms() inconsistent:  e:%s/r:%s %d/%d[%d]\n", b1, b2, entries.size(), reports.size(),x);
-            System.err.println(entries);
-            System.err.println(reports);
-            System.err.println();
-        }
-        return b2;
-
+        return conforms;
     }
     //public boolean conforms() { return entries.isEmpty(); }
-
 
     public static class Builder {
 
@@ -119,7 +116,6 @@ public class ShexReport {
 
         /** Create a new report line item from an exists (shex map) entry and add it to the reports */
         public void shexReport(ShexShapeAssociation entry, Node focusNode, Status result, String reason) {
-            // [shex] focus node.
             ShexShapeAssociation ssa = new ShexShapeAssociation(entry, focusNode, result, reason);
             shexReport(ssa);
         }

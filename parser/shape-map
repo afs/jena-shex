@@ -1,9 +1,0 @@
-GH version
-[1 ]    shapeMap           ::=  shapeAssociation (',' shapeAssociation)*
-[2 ]    shapeAssociation   ::=  nodeSpec shapeSpec
-[3 ]    nodeSpec           ::=  objectTerm | triplePattern
-[4 ]    subjectTerm        ::=  iri | BLANK_NODE_LABEL
-[5 ]    objectTerm         ::=  subjectTerm | literal
-[6 ]    triplePattern      ::=   '{' "FOCUS" predicate (objectTerm | '_') '}'
-                               | '{' (subjectTerm | '_') predicate "FOCUS" '}'
-[7 ]    shapeSpec          ::=  '@' (iri | "START") | AT_START

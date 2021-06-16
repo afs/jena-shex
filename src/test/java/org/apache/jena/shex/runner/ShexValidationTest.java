@@ -138,9 +138,6 @@ public class ShexValidationTest implements Runnable {
             if ( !b ) {
                 if ( ! ShexTests.dumpTest )
                     describeTest();
-                report.getEntries().forEach(System.out::println);
-                report.getReports().forEach(System.out::println);
-                System.out.println();
             }
             assertEquals(entry.getName(), positiveTest, report.conforms());
         } catch (java.lang.AssertionError ex) {

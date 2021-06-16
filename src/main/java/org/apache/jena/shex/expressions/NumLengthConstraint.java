@@ -40,7 +40,6 @@ public class NumLengthConstraint extends NodeConstraint {
         this.length = len;
     }
 
-    // [shex] revisit and rewrite
     @Override
     public ReportItem nodeSatisfies(ValidationContext vCxt, Node n) {
         if ( ! n.isLiteral() ) {

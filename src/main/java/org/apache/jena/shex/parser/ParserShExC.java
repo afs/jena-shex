@@ -154,7 +154,6 @@ public class ParserShExC extends LangParserBase {
         startShapeExpressionTop();
     }
 
-    // [shex] Shape.newBuilder
     protected void finishShapeExprDecl() {
         ShapeExpression sExpr = finishShapeExpressionTop();
         newShape(sExpr);
@@ -371,7 +370,6 @@ public class ParserShExC extends LangParserBase {
         start("ShapeDefinition");
     }
 
-    // [shex] Pass builder in at startShapeDefinition.
     protected void finishShapeDefinition(TripleExpression tripleExpr, List<Node> extras, boolean closed) {
         if ( tripleExpr == null )
             tripleExpr = TripleExprNone.get();
@@ -434,24 +432,14 @@ public class ParserShExC extends LangParserBase {
 
     protected int startTripleConstraint() {
         start("TripleConstraint");
-        // [shex] Now a flag now.
-//        currentTripleConstraint = new TripleConstraint(null, null);
-//        push(tripleConstraints, currentTripleConstraint);
         return startShapeOp();
     }
 
     protected void finishTripleConstraint(Node label, int idx, Node predicate, boolean reverse, Cardinality cardinality) {
         if ( label != null ) { /*ref*/ } // XXX
         List<ShapeExpression> args = finishShapeOp(idx);
-        // [shex] Remove!
-        if ( args == null ) {
-            TripleExpression tripleExpr = TripleExprNone.get();
-            push(tripleExprStack, tripleExpr);
-            if ( label != null )
-                tripleExprRefs.put(label, tripleExpr);
-            return ;
-        }
-
+        if ( args == null )
+            throw new InternalErrorException("TripleConstraint with null argument ShapeExpression.");
         if ( args.size() != 1 )
             throw new InternalErrorException("TripleConstraint with multiple ShapeExpressions");
 
@@ -667,7 +655,6 @@ public class ParserShExC extends LangParserBase {
     protected Node resolve_AT_PName(String image, int line, int column) {
         String prefixedName = image.substring(1);
         String iriStr = resolvePName(prefixedName, line, column);
-        // [shex] Rename as "createIRINode"
         return createURI(iriStr, line, column);
     }
 

@@ -24,6 +24,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RIOT;
 import org.apache.jena.shex.*;
+import org.apache.jena.shex.sys.ShexLib;
 import org.apache.jena.sys.JenaSystem;
 
 public class ExCmd {
@@ -51,7 +52,6 @@ public class ExCmd {
         ShexSchema shapes = Shex.readShapes(SHAPES);
 
         // -- Map
-        // XXX Move.
         System.out.println("Read shapes map");
         ShexShapeMap shapeMap = Shex.readShapeMap(SHAPES_MAP);
 
@@ -59,13 +59,7 @@ public class ExCmd {
         System.out.println("Validate");
         ShexReport report = ShexValidation.validate(dataGraph, shapes, shapeMap);
 
-
         // -- Print report.
-        // ShexLib.
-        if ( report.conforms() ) {
-            System.out.println("OK");
-        } else {
-            report.getEntries().forEach(e->System.out.println(e));
-        }
+        ShexLib.printReport(report);
     }
 }

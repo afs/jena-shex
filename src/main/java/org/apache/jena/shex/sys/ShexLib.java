@@ -103,15 +103,10 @@ public class ShexLib {
     }
 
     public static void printReport(ShexReport report) {
-//        if ( report.conforms() ) {
-//                System.out.println("OK");
-//        } else {
-//            report.getEntries().forEach(e->System.out.println(e));
-//        }
         if ( report.conforms() ) {
             System.out.println("OK");
         } else {
-            report.getReports().forEach(reportEntry->printReport(reportEntry));
+            report.forEachReport(reportEntry->printReport(reportEntry));
         }
     }
 

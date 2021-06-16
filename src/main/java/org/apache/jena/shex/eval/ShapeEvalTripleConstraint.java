@@ -37,7 +37,7 @@ public class ShapeEvalTripleConstraint {
                                         TripleConstraint tripleConstraint, Set<Node> extras) {
         Node predicate = tripleConstraint.getPredicate();
         if ( tripleConstraint.reverse() ) {
-            // [shex] Fudge.
+            // [shex] A bit of a fudge.
             matchables = G.find(vCxt.getData(), null, predicate, node).toSet();
         } else {
             if ( ! matchables.stream().allMatch(t->predicate.equals(t.getPredicate())) ) {

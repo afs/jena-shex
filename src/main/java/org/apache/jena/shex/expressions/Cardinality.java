@@ -59,9 +59,8 @@ public class Cardinality {
                     max = min;
                     break;
                 }
-                // Has comma
-                String g = matcher.group(3);
-                max = integerRange(g, UNBOUNDED);
+                // Has a comma, may have something after it.
+                max = integerRange(matcher.group(3), UNBOUNDED);
             }
         }
         return new Cardinality(image, min, max);
